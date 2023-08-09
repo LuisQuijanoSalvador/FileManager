@@ -1,0 +1,32 @@
+.imgLogo{
+    width: 30%;
+    display: flex;
+}
+.divImgLogo{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    
+}
+
+.fondoLogin{
+    background: url("/img/airport.jpg") no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding-top: 50px;
+    overflow: hidden;
+    height: 100vh;
+}
+.bg-gray-100{
+    background-color: transparent !important;
+}
+.sm\:justify-center {
+    justify-content:start;
+}
+.bg-white{
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(15px);
+}
+.textoLogin{
+    color: white;
+}
