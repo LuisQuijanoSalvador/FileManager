@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\admin\IndexController;
+use App\Http\Controllers\entidades\UsuarioController;
+use App\Http\Livewire\Entidades\Usuarios;
 
 
 /*
@@ -31,5 +33,9 @@ Route::get('/', function () {
 // });
 
 Route::group(['prefix'=>'admin'],function(){
-    Route::get('Inicio',[IndexController::class, 'index'])->name('dashboard');
+    Route::get('Inicio',[IndexController::class, 'index'])->name('inicio');
 });
+// Route::group(['prefix'=>'entidades'],function(){
+    
+// });
+Route::get('listaUsuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');

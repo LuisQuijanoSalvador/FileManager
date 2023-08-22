@@ -1,0 +1,56 @@
+.fondo-purpura{
+    background-color: #592a56;
+}
+.fondo-celeste{
+    background-color: #65bbd2;
+}
+.fondo-amarillo{
+    background-color: #f88010;
+}
+.fondo-rojo{
+    background-color: #be0e3c;
+}
+/*----------*/
+.tabla-listado{
+    width: 100%;
+    border: solid 1px #FFFFFF;
+    text-transform: uppercase;
+    border-collapse: initial;
+}
+.thead-listado{
+    background-color: #592a56;
+    color: #FFFFFF;
+    text-align: center;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+.div-filtro{
+    padding-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+
+}
+.txtFiltro{
+    height: 30px !important;
+    padding-bottom: 0;
+}
+.content-header{
+    padding: 5px;
+}
+.txtFiltro button{
+    margin: 0 !important;
+}
+.thAccion{
+    width: 160px;
+}
+.divConfirmacion{
+    display: flex;
+}
+.divIconWarning{
+    width: 30%;
+}
+.divIconWarning img{
+    width: 100%;
+}
