@@ -39,3 +39,9 @@ Route::group(['prefix'=>'admin'],function(){
     
 // });
 Route::get('listaUsuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
+
+Route::group(['prefix'=>'tablas'],function(){
+    Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');
+    Route::get('roles', function(){ return view('tablas.roles');})->name('listaRoles');
+    Route::get('tipodocumentoidentidad', function(){ return view('tablas.tipo-documento-identidad');})->name('listaTipoDocIdentidad');
+});

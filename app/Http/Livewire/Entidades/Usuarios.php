@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Entidades;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
 
 class Usuarios extends Component
@@ -15,6 +16,24 @@ class Usuarios extends Component
 
     public $idRegistro, $name, $email, $password, $estado, $rol;
 
+    // protected $rules = [
+    //     'name'      => 'required',
+    //     'email'     => 'required|email',
+    //     'password'     => 'required',
+    // ];
+    protected $messages = [
+        'name.required' => 'El campo Nombre no puede estar en blanco.',
+        'email.required' => 'El campo Email no puede estar en blanco.',
+        'email.email' => 'El campo Email no tiene el formato correcto.',
+        'password.required' => 'El campo Contraseña no puede estar en blanco.',
+    ];
+    public function rules(){
+        return[
+            'name'      => 'required',
+            'email'     => 'required|email',
+            'password'  => 'required'
+        ];
+    }
     public function render()
     {
         $usuarios = User::where('name', 'like', "%$this->search%")
@@ -39,6 +58,9 @@ class Usuarios extends Component
         }
     }
     public function grabar(){
+
+        $this->validate();
+
         $usuario = new User();
         $usuario->name = $this->name;
         $usuario->email = $this->email;
@@ -48,8 +70,10 @@ class Usuarios extends Component
 
         $usuario->save();
         $this->limpiarControles();
+        session()->flash('success', 'Los datos se han guardado exitosamente.');
     }
     public function limpiarControles(){
+        $this->idRegistro = 0;
         $this->name = "";
         $this->email = "";
         $this->password = "";
@@ -63,7 +87,7 @@ class Usuarios extends Component
         $this->idRegistro = $usuario->id;
         $this->name = $usuario->name;
         $this->email = $usuario->email;
-        $this->password = $usuario->password;
+        $this->password = Hash::make($usuario->password);
         $this->estado = $usuario->estado;
         $this->rol = $usuario->rol;
     }
@@ -71,7 +95,7 @@ class Usuarios extends Component
         $usuario = User::find($id);
         $usuario->name = $this->name;
         // $usuario->email = $this->email;
-        $usuario->password = $this->password;
+        $usuario->password = Hash::make($this->password);
         $usuario->estado = $this->estado;
         $usuario->rol = $this->rol;
         $usuario->save();

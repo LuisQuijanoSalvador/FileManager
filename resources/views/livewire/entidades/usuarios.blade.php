@@ -64,17 +64,31 @@
     {{$usuarios->links()}}
     {{-- Modal para Insertar y Actualizar --}}
     @include('components.modalheader')
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="mb-3">
             <label for="txtNombres" class="form-label">Nombres:</label>
-            <input type="text" class="form-control" id="txtNombres" wire:model.lazy="name" placeholder="Nombres y Apellidos...">
+            <input type="text" class="form-control" id="txtNombres" wire:model="name" placeholder="Nombres y Apellidos...">
+            @error('name')
+                <span class="error">{{$message}}</span>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="txtEmail" class="form-label">Email:</label>
             <input type="email" class="form-control" id="txtEmail" wire:model.lazy="email" placeholder="nombre@ejemplo.com">
+            @error('email')
+                <span class="error">{{$message}}</span>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="txtPassword" class="form-label">Contraseña:</label>
             <input type="password" class="form-control" id="txtPassword" wire:model.lazy="password" placeholder="">
+            @error('password')
+                <span class="error">{{$message}}</span>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="txtEstado" class="form-label">Estado:</label>

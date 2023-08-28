@@ -324,6 +324,28 @@ return [
                 ]
             ]
         ],
+        [
+            'text'        => 'Tablas',
+            'url'         => 'admin/pages',
+            'icon'        => 'fa-calendar-o',
+            // 'label'       => 4,
+            // 'label_color' => 'success',
+            'submenu'=>[
+                [
+                    'text' => 'Estados',
+                    'route' => 'listaEstados'
+                ],
+                [
+                    'text' => 'Roles',
+                    'route' => 'listaRoles'
+                ],
+                [
+                    'text' => 'Tipo Doc. Identidad',
+                    'route' => 'listaTipoDocIdentidad'
+                ],
+            ]
+        ],
+        
 
 
 
