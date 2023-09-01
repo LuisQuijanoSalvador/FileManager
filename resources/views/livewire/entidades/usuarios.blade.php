@@ -2,7 +2,11 @@
     {{-- Nothing in the world is as soft and yielding as water. --}}
     <div class="div-filtro">
         <input type="text" class="txtFiltro" wire:model="search" placeholder="Filtrar por Nombre">
-        <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal">Crear Usuario</button>
+        <div>
+            <button type="button" class="btn btn-success" wire:click='exportar'>Exportar</button>
+            <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal">Crear Usuario</button>
+        </div>
+        
     </div>
     <table class="tabla-listado">
         <thead class="thead-listado">
@@ -49,11 +53,11 @@
                 <td class="py-1">{{$usuario->id}}</td>
                 <td class="py-1">{{$usuario->name}}</td>
                 <td class="py-1">{{$usuario->email}}</td>
-                <td class="py-1">{{$usuario->estado}}</td>
-                <td class="py-1">{{$usuario->rol}}</td>
+                <td class="py-1">{{$usuario->tEstado->descripcion}}</td>
+                <td class="py-1">{{$usuario->tRol->descripcion}}</td>
                 <td class="py-1">
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-success mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$usuario->id}}")'>Editar</button>
+                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$usuario->id}}")'>Editar</button>
                         <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$usuario->id}}")'>Eliminar</button>
                     </div>
                 </td>
@@ -62,6 +66,7 @@
         </tbody>
     </table>
     {{$usuarios->links()}}
+
     {{-- Modal para Insertar y Actualizar --}}
     @include('components.modalheader')
         @if(session('success'))
@@ -91,12 +96,24 @@
             @enderror
         </div>
         <div class="mb-3">
-            <label for="txtEstado" class="form-label">Estado:</label>
-            <input type="text" class="form-control" id="txtEstado" wire:model.lazy="estado" placeholder="">
+            <label for="cboEstados" class="form-label">Estado:</label>
+            {{-- <input type="text" class="form-control" id="txtEstado" wire:model.lazy="estado" placeholder=""> --}}
+            <select name="cboEstados" class="form-select" id="cboEstados" wire:model="estado">
+                <option>==Seleccione una opción==</option>
+                @foreach ($estados as $estado)
+                    <option value={{$estado->id}}>{{$estado->descripcion}}</option>
+                @endforeach
+            </select>
         </div>
         <div class="mb-3">
-            <label for="txtRol" class="form-label">Rol:</label>
-            <input type="text" class="form-control" id="txtRol" wire:model.lazy="rol" placeholder="">
+            <label for="cboRol" class="form-label">Rol:</label>
+            {{-- <input type="text" class="form-control" id="txtRol" wire:model.lazy="rol" placeholder=""> --}}
+            <select name="cboRol" class="form-select" id="cboRol" wire:model="rol">
+                <option>==Seleccione una opción==</option>
+                @foreach ($roles as $rol)
+                    <option value={{$rol->id}}>{{$rol->descripcion}}</option>
+                @endforeach
+            </select>
         </div>
     @include('components.modalfooter')
     

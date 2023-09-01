@@ -60,4 +60,11 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function tRol(){
+        return $this->hasOne(Rol::class,'id','rol');
+    }
+    public function tEstado(){
+        return $this->hasOne(Estado::class,'id','estado');
+    }
 }

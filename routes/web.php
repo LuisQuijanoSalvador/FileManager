@@ -44,4 +44,6 @@ Route::group(['prefix'=>'tablas'],function(){
     Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');
     Route::get('roles', function(){ return view('tablas.roles');})->name('listaRoles');
     Route::get('tipodocumentoidentidad', function(){ return view('tablas.tipo-documento-identidad');})->name('listaTipoDocIdentidad');
+    Route::get('tipocliente', function(){ return view('tablas.tipo-clientes');})->name('listaTipoCLiente');
+    Route::get('tipocambio', function(){ return view('tablas.tipo-cambios');})->name('listaTipoCambio');
 });

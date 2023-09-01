@@ -2,10 +2,15 @@
 
 namespace App\Http\Livewire\Entidades;
 
+use App\Exports\UsersExportView;
+use App\Models\Estado;
+use App\Models\Rol;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
+use Termwind\Components\Dd;
 
 class Usuarios extends Component
 {
@@ -39,8 +44,11 @@ class Usuarios extends Component
         $usuarios = User::where('name', 'like', "%$this->search%")
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(6);
+        
+        $estados = Estado::all()->sortBy('descripcion');
+        $roles = Rol::all()->sortBy('descripcion');
 
-        return view('livewire.entidades.usuarios', compact('usuarios'));
+        return view('livewire.entidades.usuarios', compact('usuarios','estados','roles'));
     }
 
     public function order($sort){
@@ -67,7 +75,7 @@ class Usuarios extends Component
         $usuario->password = $this->password;
         $usuario->estado = $this->estado;
         $usuario->rol = $this->rol;
-
+        //dd($usuario);
         $usuario->save();
         $this->limpiarControles();
         session()->flash('success', 'Los datos se han guardado exitosamente.');
@@ -111,6 +119,10 @@ class Usuarios extends Component
         $usuario = User::find($id);
         $usuario->delete();
         $this->limpiarControles();
+    }
+
+    public function exportar(){
+        return Excel::download(new UsersExportView(),'usuarios.xlsx');
     }
     
 }

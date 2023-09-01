@@ -332,6 +332,10 @@ return [
             // 'label_color' => 'success',
             'submenu'=>[
                 [
+                    'text' => 'Tipo Cambio',
+                    'route' => 'listaTipoCambio'
+                ],
+                [
                     'text' => 'Estados',
                     'route' => 'listaEstados'
                 ],
@@ -342,6 +346,10 @@ return [
                 [
                     'text' => 'Tipo Doc. Identidad',
                     'route' => 'listaTipoDocIdentidad'
+                ],
+                [
+                    'text' => 'Tipo Cliente',
+                    'route' => 'listaTipoCLiente'
                 ],
             ]
         ],
