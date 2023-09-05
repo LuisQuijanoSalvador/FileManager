@@ -51,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tipodocumento', function(){ return view('tablas.tipo-documentos');})->name('listaTipoDocumento');
         Route::get('mediopago', function(){ return view('tablas.medio-pagos');})->name('listaMedioPago');
         Route::get('tipofacturacion', function(){ return view('tablas.tipo-facturacions');})->name('listaTipoFacturacion');
+        Route::get('tipopasajero', function(){ return view('tablas.tipo-pasajeros');})->name('listaTipoPasajeros');
+        Route::get('tiposervicio', function(){ return view('tablas.tipo-servicios');})->name('listaTipoServicios');
+        Route::get('tarjetacredito', function(){ return view('tablas.tarjeta-creditos');})->name('listaTarjetaCreditos');
     });
 });
 

@@ -363,6 +363,18 @@ return [
                     'text' => 'Tipo Facturacion',
                     'route' => 'listaTipoFacturacion'
                 ],
+                [
+                    'text' => 'Tipo Pasajeros',
+                    'route' => 'listaTipoPasajeros'
+                ],
+                [
+                    'text' => 'Tipo Servicios',
+                    'route' => 'listaTipoServicios'
+                ],
+                [
+                    'text' => 'Tarjetas de Credito',
+                    'route' => 'listaTarjetaCreditos'
+                ],
             ]
         ],
         
