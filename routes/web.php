@@ -38,12 +38,19 @@ Route::group(['prefix'=>'admin'],function(){
 // Route::group(['prefix'=>'entidades'],function(){
     
 // });
-Route::get('listaUsuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
 
-Route::group(['prefix'=>'tablas'],function(){
-    Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');
-    Route::get('roles', function(){ return view('tablas.roles');})->name('listaRoles');
-    Route::get('tipodocumentoidentidad', function(){ return view('tablas.tipo-documento-identidad');})->name('listaTipoDocIdentidad');
-    Route::get('tipocliente', function(){ return view('tablas.tipo-clientes');})->name('listaTipoCLiente');
-    Route::get('tipocambio', function(){ return view('tablas.tipo-cambios');})->name('listaTipoCambio');
+Route::middleware(['auth'])->group(function () {
+    Route::get('listaUsuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
+
+    Route::group(['prefix'=>'tablas'],function(){
+        Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');
+        Route::get('roles', function(){ return view('tablas.roles');})->name('listaRoles');
+        Route::get('tipodocumentoidentidad', function(){ return view('tablas.tipo-documento-identidad');})->name('listaTipoDocIdentidad');
+        Route::get('tipocliente', function(){ return view('tablas.tipo-clientes');})->name('listaTipoCLiente');
+        Route::get('tipocambio', function(){ return view('tablas.tipo-cambios');})->name('listaTipoCambio');
+        Route::get('tipodocumento', function(){ return view('tablas.tipo-documentos');})->name('listaTipoDocumento');
+        Route::get('mediopago', function(){ return view('tablas.medio-pagos');})->name('listaMedioPago');
+        Route::get('tipofacturacion', function(){ return view('tablas.tipo-facturacions');})->name('listaTipoFacturacion');
+    });
 });
+

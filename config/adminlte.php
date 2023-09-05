@@ -351,6 +351,18 @@ return [
                     'text' => 'Tipo Cliente',
                     'route' => 'listaTipoCLiente'
                 ],
+                [
+                    'text' => 'Tipo Documento',
+                    'route' => 'listaTipoDocumento'
+                ],
+                [
+                    'text' => 'Medios de Pago',
+                    'route' => 'listaMedioPago'
+                ],
+                [
+                    'text' => 'Tipo Facturacion',
+                    'route' => 'listaTipoFacturacion'
+                ],
             ]
         ],
         
