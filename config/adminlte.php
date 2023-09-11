@@ -321,6 +321,22 @@ return [
                 [
                     'text' => 'Usuarios',
                     'route' => 'listaUsuarios'
+                ],
+                [
+                    'text' => 'Clientes',
+                    'route' => 'listaClientes'
+                ],
+                [
+                    'text' => 'Counters',
+                    'route' => 'listaCounters'
+                ],
+                [
+                    'text' => 'Cobradores',
+                    'route' => 'listaCobradores'
+                ],
+                [
+                    'text' => 'Vendedores',
+                    'route' => 'listaVendedores'
                 ]
             ]
         ],
@@ -374,6 +390,14 @@ return [
                 [
                     'text' => 'Tarjetas de Credito',
                     'route' => 'listaTarjetaCreditos'
+                ],
+                [
+                    'text' => 'Monedas',
+                    'route' => 'listaMonedas'
+                ],
+                [
+                    'text' => 'Areas',
+                    'route' => 'listaAreas'
                 ],
             ]
         ],

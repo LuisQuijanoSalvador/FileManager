@@ -40,7 +40,14 @@ Route::group(['prefix'=>'admin'],function(){
 // });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('listaUsuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
+    Route::group(['prefix'=>'entidades'],function(){
+        Route::get('usuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
+        Route::get('counters', function(){ return view('entidades.counters');})->name('listaCounters');
+        Route::get('cobradores', function(){ return view('entidades.cobradors');})->name('listaCobradores');
+        Route::get('vendedores', function(){ return view('entidades.vendedors');})->name('listaVendedores');
+        Route::get('clientes', function(){ return view('entidades.clientes');})->name('listaClientes');
+    });
+    
 
     Route::group(['prefix'=>'tablas'],function(){
         Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');
@@ -54,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tipopasajero', function(){ return view('tablas.tipo-pasajeros');})->name('listaTipoPasajeros');
         Route::get('tiposervicio', function(){ return view('tablas.tipo-servicios');})->name('listaTipoServicios');
         Route::get('tarjetacredito', function(){ return view('tablas.tarjeta-creditos');})->name('listaTarjetaCreditos');
+        Route::get('monedas', function(){ return view('tablas.monedas');})->name('listaMonedas');
+        Route::get('areas', function(){ return view('tablas.areas');})->name('listaAreas');
     });
 });
 
