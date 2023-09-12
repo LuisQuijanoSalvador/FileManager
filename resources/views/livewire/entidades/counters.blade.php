@@ -8,56 +8,59 @@
         </div>
         
     </div>
-    <table class="tabla-listado">
-        <thead class="thead-listado">
-            <tr>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
-                    ID 
-                    @if ($sort == 'id')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('nombre')">
-                    Nombre 
-                    @if ($sort == 'nombre')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('codigo')">
-                    Codigo 
-                    @if ($sort == 'codigo')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
-                    Estado 
-                    @if ($sort == 'estado')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 thAccion">
-                    Acción
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($counters as $counter)
-
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="py-1">{{$counter->id}}</td>
-                <td class="py-1">{{$counter->nombre}}</td>
-                <td class="py-1">{{$counter->codigo}}</td>
-                <td class="py-1">{{$counter->tEstado->descripcion}}</td>
-                <td class="py-1">
-                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$counter->id}}")'>Editar</button>
-                        <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$counter->id}}")'>Eliminar</button>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="tabla">
+        <table class="tabla-listado">
+            <thead class="thead-listado">
+                <tr>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
+                        ID 
+                        @if ($sort == 'id')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('nombre')">
+                        Nombre 
+                        @if ($sort == 'nombre')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('codigo')">
+                        Codigo 
+                        @if ($sort == 'codigo')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
+                        Estado 
+                        @if ($sort == 'estado')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 thAccion">
+                        Acción
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($counters as $counter)
+    
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="py-1">{{$counter->id}}</td>
+                    <td class="py-1">{{$counter->nombre}}</td>
+                    <td class="py-1">{{$counter->codigo}}</td>
+                    <td class="py-1">{{$counter->tEstado->descripcion}}</td>
+                    <td class="py-1">
+                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                            <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$counter->id}}")'>Editar</button>
+                            <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$counter->id}}")'>Eliminar</button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    
     {{$counters->links()}}
 
     {{-- Modal para Insertar y Actualizar --}}

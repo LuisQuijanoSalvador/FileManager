@@ -312,9 +312,25 @@ return [
             'can'  => 'manage-blog',
         ],
         [
+            'text'        => 'Gestión',
+            'url'         => 'admin/pages',
+            'icon'        => 'fas fa-pen',
+            'submenu'     => [
+                [
+                    'text' => 'Boletos',
+                    'route' => 'listaBoletos',
+                    'icon'  => 'fas fa-pen'
+                ],
+                [
+                    'text' => 'Servicios',
+                    'route' => 'listaServicios'
+                ],
+            ]
+        ],
+        [
             'text'        => 'Entidades',
             'url'         => 'admin/pages',
-            'icon'        => 'fa-calendar-o',
+            'icon'        => 'fas fa-building',
             // 'label'       => 4,
             // 'label_color' => 'success',
             'submenu'=>[
@@ -343,7 +359,7 @@ return [
         [
             'text'        => 'Tablas',
             'url'         => 'admin/pages',
-            'icon'        => 'fa-calendar-o',
+            'icon'        => 'fas fa-table',
             // 'label'       => 4,
             // 'label_color' => 'success',
             'submenu'=>[

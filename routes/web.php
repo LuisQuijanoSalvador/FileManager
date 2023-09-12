@@ -40,6 +40,11 @@ Route::group(['prefix'=>'admin'],function(){
 // });
 
 Route::middleware(['auth'])->group(function () {
+    Route::group(['prefix'=>'gestion'],function(){
+        Route::get('boletos', function(){ return view('gestion.boletos');})->name('listaBoletos');
+        Route::get('servicios', function(){ return view('gestion.servicios');})->name('listaServicios');
+    });
+
     Route::group(['prefix'=>'entidades'],function(){
         Route::get('usuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
         Route::get('counters', function(){ return view('entidades.counters');})->name('listaCounters');
@@ -47,7 +52,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('vendedores', function(){ return view('entidades.vendedors');})->name('listaVendedores');
         Route::get('clientes', function(){ return view('entidades.clientes');})->name('listaClientes');
     });
-    
 
     Route::group(['prefix'=>'tablas'],function(){
         Route::get('estados', function(){ return view('tablas.estados');})->name('listaEstados');

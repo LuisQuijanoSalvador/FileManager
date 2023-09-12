@@ -59,3 +59,12 @@
     font-size: 0.8em;
     font-style: italic;
 }
+.tabla{
+    overflow:scroll;
+}
+a{
+    text-decoration: none !important;
+}
+.brand-text{
+    text-decoration: none !important;
+}
