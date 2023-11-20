@@ -15,6 +15,7 @@ use App\Models\TipoCambio;
 use App\Models\Area;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Clases\Funciones;
 
 class Integrador extends Component
 {
