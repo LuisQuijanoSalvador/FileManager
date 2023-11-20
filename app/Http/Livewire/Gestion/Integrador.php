@@ -245,7 +245,7 @@ class Integrador extends Component
             $this->grabarRutasSabre1($boleto->id);
             $this->grabarRutasSabre2($boleto->id);
             $this->grabarPagosSabre($boleto->id);
-            return redirect()->to('listaBoletos');
+            return redirect()->to('gestion/listaBoletos');
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }
@@ -308,7 +308,7 @@ class Integrador extends Component
             $this->grabarRutasKiu1($boleto->id);
             $this->grabarRutasKiu2($boleto->id);
             $this->grabarPagosKiu($boleto->id);
-            return redirect()->to('listaBoletos');
+            return redirect()->to('gestion/listaBoletos');
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }
@@ -373,7 +373,7 @@ class Integrador extends Component
             $this->grabarRutasNdc1($boleto->id);
             $this->grabarRutasNdc2($boleto->id);
             $this->grabarPagosNdc($boleto->id);
-            return redirect()->to('listaBoletos');
+            return redirect()->to('gestion/listaBoletos');
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }
