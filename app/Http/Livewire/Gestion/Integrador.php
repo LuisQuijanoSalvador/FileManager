@@ -12,6 +12,7 @@ use App\Models\BoletoPago;
 use App\Models\TarjetaCredito;
 use App\Models\MedioPago;
 use App\Models\TipoCambio;
+use App\Models\Area;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
