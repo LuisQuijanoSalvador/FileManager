@@ -369,6 +369,7 @@ class Integrador extends Component
             $this->grabarRutasNdc1($boleto->id);
             $this->grabarRutasNdc2($boleto->id);
             $this->grabarPagosNdc($boleto->id);
+            return redirect()->to('listaBoletos');
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }
