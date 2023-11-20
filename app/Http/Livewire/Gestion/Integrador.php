@@ -294,7 +294,7 @@ class Integrador extends Component
         $boleto->tarifaNormal = 0;
         $boleto->tarifaAlta = 0;
         $boleto->tarifaBaja = 0;
-        $boleto->idTipoPagoConsolidador = 6;
+        $boleto->idTipoPagoConsolidador = 9;
         $boleto->centroCosto = ' ';
         $boleto->cod1 = ' ';
         $boleto->cod2 = ' ';
