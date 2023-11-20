@@ -319,11 +319,14 @@ return [
                 [
                     'text' => 'Boletos',
                     'route' => 'listaBoletos',
-                    'icon'  => 'fas fa-pen'
                 ],
                 [
                     'text' => 'Servicios',
                     'route' => 'listaServicios'
+                ],
+                [
+                    'text' => 'Integrador',
+                    'route' => 'integradorBoletos'
                 ],
             ]
         ],
@@ -343,6 +346,14 @@ return [
                     'route' => 'listaClientes'
                 ],
                 [
+                    'text' => 'Solicitantes',
+                    'route' => 'listaSolicitantes'
+                ],
+                [
+                    'text' => 'Proveedores',
+                    'route' => 'listaProveedores'
+                ],
+                [
                     'text' => 'Counters',
                     'route' => 'listaCounters'
                 ],
@@ -353,6 +364,10 @@ return [
                 [
                     'text' => 'Vendedores',
                     'route' => 'listaVendedores'
+                ],
+                [
+                    'text' => 'Aerolineas',
+                    'route' => 'listaAerolineas'
                 ]
             ]
         ],
@@ -414,6 +429,22 @@ return [
                 [
                     'text' => 'Areas',
                     'route' => 'listaAreas'
+                ],
+                [
+                    'text' => 'Correlativos',
+                    'route' => 'listaCorrelativos'
+                ],
+                [
+                    'text' => 'Gds',
+                    'route' => 'listaGds'
+                ],
+                [
+                    'text' => 'Tipo Ticket',
+                    'route' => 'listaTipoTickets'
+                ],
+                [
+                    'text' => 'Tipo Pago',
+                    'route' => 'listaTipoPagos'
                 ],
             ]
         ],

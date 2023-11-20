@@ -41,8 +41,8 @@ class Clientes extends Component
             'tipoDocumentoIdentidad'    =>   'required',
             'numeroDocumentoIdentidad'  =>   'required',
             'numeroTelefono'            =>   'required',
-            'correoComercial'           =>   'email',
-            'correoCobranza'            =>   'email',
+            'correoComercial'           =>   'nullable|email',
+            'correoCobranza'            =>   'nullable|email',
             'montoCredito'              =>   'required',
             'moneda'                    =>   'required',
             'diasCredito'               =>   'required',
@@ -67,11 +67,9 @@ class Clientes extends Component
         'numeroTelefono.required'            =>   'Este campo es requerido',
         'contactoComercial.required'         =>   'Este campo es requerido',
         'telefonoComercial.required'         =>   'Este campo es requerido',
-        'correoComercial.required'           =>   'Este campo es requerido',
         'correoComercial.email'              =>   'Este campo no tiene el formato correcto',
         'contactoCobranza.required'          =>   'Este campo es requerido',
         'telefonoCobranza.required'          =>   'Este campo es requerido',
-        'correoCobranza.required'            =>   'Este campo es requerido',
         'correoCobranza.email'               =>   'Este campo no tiene el formato correcto',
         'montoCredito.required'              =>   'Este campo es requerido',
         'moneda.required'                    =>   'Debe seleccionar una opción',
@@ -257,7 +255,7 @@ class Clientes extends Component
     }
 
     public function exportar(){
-        return Excel::download(new ClienteExport,'Cobradores.xlsx');
+        return Excel::download(new ClienteExport,'Clientes.xlsx');
     }
 
 }

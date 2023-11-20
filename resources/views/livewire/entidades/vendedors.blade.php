@@ -83,14 +83,14 @@
         @endif
         <div class="mb-3">
             <label for="txtNombres" class="form-label">Nombres:</label>
-            <input type="text" class="form-control" id="txtNombres" wire:model.lazy="nombre" placeholder="Nombres y Apellidos..." autofocus>
+            <input type="text" class="form-control" id="txtNombres" wire:model.lazy="nombre" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
             @error('nombre')
                 <span class="error">{{$message}}</span>
             @enderror
         </div>
         <div class="mb-3">
             <label for="txtCodigo" class="form-label">Codigo:</label>
-            <input type="text" class="form-control" id="txtCodigo" wire:model.lazy="codigo" placeholder="" maxlength="3">
+            <input type="text" class="form-control" id="txtCodigo" wire:model.lazy="codigo" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" maxlength="3">
             @error('codigo')
                 <span class="error">{{$message}}</span>
             @enderror

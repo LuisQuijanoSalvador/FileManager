@@ -6,6 +6,7 @@ use App\Exports\TipoCambioExport;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\TipoCambio;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TipoCambios extends Component
@@ -32,6 +33,8 @@ class TipoCambios extends Component
 
     public function render()
     {
+        $fecha = Carbon::now();
+        $this->fechaCambio = $fecha->format('Y-m-d');
         $tipoCambios = TipoCambio::where('fechaCambio', 'like', "%$this->search%")
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(6);

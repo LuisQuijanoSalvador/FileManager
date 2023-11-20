@@ -68,3 +68,67 @@ a{
 .brand-text{
     text-decoration: none !important;
 }
+.logoAerolinea{
+    width: 150px;
+}
+.uTextBox{
+    font-size: 0.8em;
+    display: block;
+    width: 100%;
+    border: none;
+    border-bottom: #DEE2E6 1px solid;
+    appearance: none;
+}
+.uTextBox:focus{
+    border: none;
+    border-bottom: #592a56 1px solid;
+    outline: 0;
+}
+#cboCliente{
+    z-index: 3000;
+}
+.seccion1{
+    background-color: #d8dde2;
+    padding: 7px;
+    border-radius: 5px;
+}
+.seccion2{
+    background-color: #eaeef1;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+.uTextBoxInLine{
+    font-size: 0.8em;
+    display: inline;
+    width: 50%;
+    border: none;
+    border-bottom: #DEE2E6 1px solid;
+    appearance: none;
+}
+.uTextBoxInLine:focus{
+    border: none;
+    border-bottom: #592a56 1px solid;
+    outline: 0;
+}
+
+.uTextBoxInLine2{
+    font-size: 0.8em;
+    display: inline;
+    width: 60%;
+    border: none;
+    border-bottom: #DEE2E6 1px solid;
+    appearance: none;
+}
+.uTextBoxInLine2:focus{
+    border: none;
+    border-bottom: #592a56 1px solid;
+    outline: 0;
+}
+.uTextBox:disabled{
+    background-color: #f7f3f3;
+}
+.txtIntegradorBoleto{
+    width: 90%;
+    height: 400px;
+}

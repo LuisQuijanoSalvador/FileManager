@@ -60,14 +60,14 @@
         @endif
         <div class="mb-3">
             <label for="txtFecha" class="form-label">Descripcion:</label>
-            <input type="text" class="form-control" id="txtFecha" wire:model="descripcion" autofocus>
+            <input type="text" class="form-control" id="txtFecha" wire:model="descripcion" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
             @error('descripcion')
                 <span class="error">{{$message}}</span>
             @enderror
         </div>
         <div class="mb-3">
             <label for="txtMonto" class="form-label">Codigo:</label>
-            <input type="text" class="form-control" id="txtMonto" wire:model="codigo">
+            <input type="text" class="form-control" id="txtMonto" wire:model="codigo" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
             @error('codigo')
                 <span class="error">{{$message}}</span>
             @enderror

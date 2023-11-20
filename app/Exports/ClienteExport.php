@@ -3,15 +3,15 @@
 namespace App\Exports;
 
 use App\Models\Cliente;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
 
-class ClienteExport implements FromCollection
+class ClienteExport implements FromView
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
+    public function view(): View
     {
-        return Cliente::all();
+        return view('exports.entidades.clientes', [
+            'clientes' => Cliente::all()
+        ]);
     }
 }
