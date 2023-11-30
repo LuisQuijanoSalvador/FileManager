@@ -21,7 +21,7 @@ class Servicio extends Model
         'idTipoDocumento',
         'idArea',
         'idVendedor',
-        'idConsolidador',
+        'idProveedor',
         'codigoReserva',
         'fechaReserva',
         'idGds',

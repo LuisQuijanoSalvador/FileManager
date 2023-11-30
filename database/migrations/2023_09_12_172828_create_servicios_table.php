@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('idTipoDocumento');
             $table->integer('idArea');
             $table->integer('idVendedor');
-            $table->integer('idConsolidador')->nullable();
+            $table->integer('idProveedor')->nullable();
             $table->string('codigoReserva');
             $table->date('fechaReserva');
             $table->date('fechaIn');
