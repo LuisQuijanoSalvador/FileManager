@@ -40,6 +40,7 @@ return new class extends Migration
             $table->decimal('tipoCambio');
             $table->integer('idMoneda');
             $table->decimal('tarifaNeta');
+            $table->decimal('inafecto');
             $table->decimal('igv');
             $table->decimal('otrosImpuestos')->nullable();
             $table->decimal('xm')->nullable();

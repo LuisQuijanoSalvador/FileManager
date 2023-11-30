@@ -37,6 +37,7 @@ class Boleto extends Model
         'tipoCambio',
         'idMoneda',
         'tarifaNeta',
+        'inafecto',
         'igv',
         'otrosImpuestos',
         'xm',
