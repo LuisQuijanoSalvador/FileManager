@@ -9,7 +9,7 @@ class Servicio extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'numeroBoleto',
+        'numeroServicio',
         'numeroFile',
         'idCliente',
         'idSolicitante',
