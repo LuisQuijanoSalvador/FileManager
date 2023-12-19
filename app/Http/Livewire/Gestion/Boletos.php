@@ -46,7 +46,8 @@ class Boletos extends Component
             $idTipoFacturacion,$idTipoDocumento=6,$idArea,$idVendedor,$idConsolidador=2,$codigoReserva,
             $fechaReserva,$idGds=2,$idTipoTicket=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",$idAerolinea=7,
             $origen="BSP",$pasajero,
-            $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$igv=0,
+            $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$inafecto=0,
+            $igv=0,
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
             $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,
@@ -254,6 +255,7 @@ class Boletos extends Component
         $boleto->tipoCambio = $this->tipoCambio;
         $boleto->idMoneda = $this->idMoneda;
         $boleto->tarifaNeta = $this->tarifaNeta;
+        $boleto->inafecto = $this->inafecto;
         $boleto->igv = $this->igv;
         $boleto->otrosImpuestos = $this->otrosImpuestos;
         $boleto->xm = $this->xm;
@@ -275,10 +277,13 @@ class Boletos extends Component
         $boleto->observaciones = $this->observaciones;
         $boleto->estado = $this->estado;
         $boleto->usuarioCreacion = auth()->user()->id;
+
+        $boleto->save();
+        $this->grabarRutas($boleto->id);
+        $this->grabarPagos($boleto->id);
+        // dd($boleto);
         try {
-            $boleto->save();
-            $this->grabarRutas($boleto->id);
-            $this->grabarPagos($boleto->id);
+            
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }

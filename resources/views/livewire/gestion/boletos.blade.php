@@ -492,6 +492,18 @@
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
                                             </td>
+                                            
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="txtInafecto" class="">Inafecto:</label>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="uTextBoxInLine" id="txtInafecto" wire:model.lazy.defer="inafecto">
+                                                @error('inafecto')
+                                                    <span class="error">{{$message}}</span>
+                                                @enderror
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>
