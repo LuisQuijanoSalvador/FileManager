@@ -86,7 +86,7 @@ class Areas extends Component
 
     public function actualizar($id){
         $area = Area::find($id);
-        $area->descipcion = $this->descripcion;
+        $area->descripcion = $this->descripcion;
         $area->codigo = $this->codigo;
         $area->estado = $this->estado;
         $area->usuarioModificacion = auth()->user()->id;
