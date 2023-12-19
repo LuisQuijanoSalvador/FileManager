@@ -74,7 +74,7 @@ class Funciones
         // dd($jsonData);
         $respuesta = $client->request('POST', 'https://int.sendaefact.pe/webservice/emitir_dcto_cobranza', [
         'headers' => [
-                        'Authorization' => 'Bearer HfcH40sn5PFtDsN0eGaLTOBXb46Zf5C3I8sym7NESx1ZlAvNnIkpAlzb11Nd',
+                        'Authorization' => 'Bearer token de seguridad',
                         'Content-Type' => 'application/json',
                     ],
         'body' => $jsonData,
