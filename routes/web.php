@@ -46,6 +46,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('integrador', function(){ return view('gestion.integrador');})->name('integradorBoletos');
     });
 
+    Route::group(['prefix'=>'facturacion'],function(){
+        Route::get('inmediata', function(){ return view('gestion.facturacion');})->name('factinmediata');
+    });
+
     Route::group(['prefix'=>'entidades'],function(){
         Route::get('usuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
         Route::get('counters', function(){ return view('entidades.counters');})->name('listaCounters');

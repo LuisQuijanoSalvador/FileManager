@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('correlativos', function (Blueprint $table) {
             $table->id();
             $table->string('tabla');
+            $table->string('serie')->nullable();
             $table->bigInteger('numero');
             $table->integer('estado');
             $table->integer('usuarioCreacion');

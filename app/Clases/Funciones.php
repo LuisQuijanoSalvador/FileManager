@@ -2,6 +2,8 @@
 namespace App\Clases;
 
 use App\Models\Correlativo;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class Funciones
 {
@@ -23,4 +25,64 @@ class Funciones
         
         return $this->numero;
     }
+
+    public function numeroServicio($tabla){
+        $this->numero = 0;
+        $servicio = Correlativo::where('tabla',$tabla)->first();
+        $this->numero = $servicio->numero;
+
+        $nuevoNumero = $this->numero + 1;
+        $servicio->numero =$nuevoNumero;
+        $servicio->usuarioModificacion = auth()->user()->id;
+        $servicio->save();
+        
+        return $this->numero;
+    }
+
+    public function numeroComprobante($tabla){
+        $this->numero = 0;
+        $comprobante = Correlativo::where('tabla',$tabla)->first();
+        $this->numero = $comprobante->numero;
+
+        $nuevoNumero = $this->numero + 1;
+        $comprobante->numero =$nuevoNumero;
+        $comprobante->usuarioModificacion = auth()->user()->id;
+        $comprobante->save();
+        
+        return $this->numero;
+    }
+
+
+    public function enviarCPE($arrayData){
+        $client = new Client();
+        $jsonData = json_encode($arrayData, JSON_PRETTY_PRINT);
+        // dd($jsonData);
+        $respuesta = $client->request('POST', 'https://int.sendaefact.pe/webservice/emitir_comprobante', [
+        'headers' => [
+                        'Authorization' => 'Bearer jdnqviUqmItb2TtzGc68ungW7WffOVSlyjd9003xTeGVniPqK4EGKoE4SG2v',
+                        'Content-Type' => 'application/json',
+                    ],
+        'body' => $jsonData,
+                ]);
+        $dataRespuesta = json_decode($respuesta->getBody(), true);
+        return $dataRespuesta;
+    }
+
+    public function enviarDC($arrayData){
+        $client = new Client();
+        $jsonData = json_encode($arrayData, JSON_PRETTY_PRINT);
+        // dd($jsonData);
+        $respuesta = $client->request('POST', 'https://int.sendaefact.pe/webservice/emitir_dcto_cobranza', [
+        'headers' => [
+                        'Authorization' => 'Bearer HfcH40sn5PFtDsN0eGaLTOBXb46Zf5C3I8sym7NESx1ZlAvNnIkpAlzb11Nd',
+                        'Content-Type' => 'application/json',
+                    ],
+        'body' => $jsonData,
+                ]);
+        $dataRespuesta = json_decode($respuesta->getBody(), true);
+        return $dataRespuesta;
+    }
+
+
+    
 }

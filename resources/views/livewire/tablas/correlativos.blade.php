@@ -23,6 +23,12 @@
                         <i class="fas fa-sort float-right py-1 px-1"></i>
                     @endif
                 </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('serie')">
+                    Serie 
+                    @if ($sort == 'serie')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
                 <th scope="col" class="py-1 cursor-pointer" wire:click="order('numero')">
                     Numero 
                     @if ($sort == 'numero')
@@ -46,6 +52,7 @@
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <td class="py-1">{{$correlativo->id}}</td>
                 <td class="py-1">{{$correlativo->tabla}}</td>
+                <td class="py-1">{{$correlativo->serie}}</td>
                 <td class="py-1">{{$correlativo->numero}}</td>
                 <td class="py-1">{{$correlativo->tEstado->descripcion}}</td>
                 <td class="py-1">
@@ -71,6 +78,13 @@
             <label for="txtTabla" class="form-label">Tabla:</label>
             <input type="text" class="form-control" id="txtTabla" wire:model.lazy="tabla" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
             @error('descripcion')
+                <span class="error">{{$message}}</span>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="txtSerie" class="form-label">Serie:</label>
+            <input type="text" class="form-control" id="txtSerie" wire:model.lazy="serie" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+            @error('serie')
                 <span class="error">{{$message}}</span>
             @enderror
         </div>
