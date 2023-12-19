@@ -331,6 +331,46 @@ return [
             ]
         ],
         [
+            'text'        => 'Facturación',
+            'url'         => 'admin/pages',
+            'icon'        => 'fas fa-file',
+            'submenu'=>[
+                [
+                    'text' => 'Boletos',
+                    'url'     => '#',
+                    'icon'    => 'fas fa-plane',
+                    'submenu'=>[
+                        [
+                            'text' => 'Inmediata',
+                            'route' => 'factinmediata'
+                        ], 
+                        [
+                            'text' => 'Acumulada',
+                            // 'route' => 'factinmediata'
+                            'url'     => '#'
+                        ],
+                    ]  
+                ],
+                [
+                    'text' => 'Servicios',
+                    'url'     => '#',
+                    'icon'    => 'fas fa-tag',
+                    'submenu'=>[
+                        [
+                            'text' => 'Inmediata',
+                            // 'route' => 'factinmediata'
+                            'url'     => '#'
+                        ], 
+                        [
+                            'text' => 'Acumulada',
+                            // 'route' => 'factinmediata'
+                            'url'     => '#'
+                        ],
+                    ]
+                ]
+            ]
+        ],
+        [
             'text'        => 'Entidades',
             'url'         => 'admin/pages',
             'icon'        => 'fas fa-building',

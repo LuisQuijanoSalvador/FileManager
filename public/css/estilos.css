@@ -16,6 +16,7 @@
     border: solid 1px #FFFFFF;
     text-transform: uppercase;
     border-collapse: initial;
+    font-size: 0.9em !important;
 }
 .thead-listado{
     background-color: #592a56;

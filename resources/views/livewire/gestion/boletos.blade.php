@@ -93,6 +93,35 @@
                       <div id="flush-collapseOne" class="accordion-collapse">
                         <div class="seccion1">
                             <div class="row">
+                                @if ($idRegistro!=0)
+                                    <div class="col-md-1">
+                                        <label for="txtTarifaFee" class="">Neto: </label>
+                                        <input type="number" class="uTextBox" id="txtTarifaFee" wire:model.lazy.defer="tarifaFee">
+                                        @error('tarifaFee')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="cboTipoDocumento" class="form-label">Tipo Documento:</label>
+                                        <select name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model="tipoDocFee">
+                                            @foreach ($tipoDocumentos as $tipoDocumento)
+                                                <option value={{$tipoDocumento->id}}>{{$tipoDocumento->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('tipoDocFee')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <br>
+                                        <button type="button" class="btn btn-success" >Generar Fee</button>
+                                    </div>  
+                                @endif
+                                
+                            </div>
+                            <hr width="100%"> 
+
+                            <div class="row">
                                 <div class="col-md-4">
                                     <label for="txtBoleto" class="">Boleto:</label>
                                     <input type="text" class="uTextBox" maxlength="10" id="txtBoleto" wire:model.lazy="numeroBoleto" onkeypress="return valideKey(event);">
@@ -117,6 +146,7 @@
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
+                               
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
@@ -843,4 +873,6 @@
     
     {{-- Modal para Eliminar --}}
     @include('components.modaldelete')
+
+
 </div>

@@ -57,6 +57,8 @@ class Boletos extends Component
     Public $boletoRutas;
 
     public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos;
+
+    Public $tarifaFee=0,$tipoDocFee;
     
     public function rules(){
         return[
@@ -317,7 +319,7 @@ class Boletos extends Component
     }
     
     public function limpiarControles(){
-        $this->idRegistro = '';
+        $this->idRegistro = 0;
         $this->numeroBoleto = '';
         $this->numeroFile = '';
         $this->selectedCliente = '';
@@ -599,4 +601,10 @@ class Boletos extends Component
     public function vaciarRutas($idBoleto){
         $this->boletoRutas->NULL;
     }
+
+    public function generarFee(){
+
+    }
+
+    
 }

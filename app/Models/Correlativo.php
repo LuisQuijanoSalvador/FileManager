@@ -11,6 +11,7 @@ class Correlativo extends Model
 
     protected $fillable = [
         'tabla',
+        'serie',
         'numero',
         'estado',
         'usuarioCreacion',

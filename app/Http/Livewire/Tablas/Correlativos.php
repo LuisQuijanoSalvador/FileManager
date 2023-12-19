@@ -16,7 +16,7 @@ class Correlativos extends Component
     public $sort= 'tabla';
     public $direction = 'asc';
 
-    public $idRegistro, $tabla, $numero,$estado;
+    public $idRegistro, $tabla, $serie, $numero,$estado;
 
     public function rules(){
         return[
@@ -60,6 +60,7 @@ class Correlativos extends Component
 
         $correlativos = new Correlativo();
         $correlativos->tabla  = $this->tabla;
+        $correlativos->serie  = $this->serie;
         $correlativos->numero = $this->numero;
         $correlativos->estado = $this->estado;
         $correlativos->usuarioCreacion = auth()->user()->id;
@@ -71,6 +72,7 @@ class Correlativos extends Component
     public function limpiarControles(){
         $this->idRegistro = 0;
         $this->tabla = "";
+        $this->serie = "";
         $this->numero = "";
         $this->estado = "";
     }
@@ -80,6 +82,7 @@ class Correlativos extends Component
         $this->limpiarControles();
         $this->idRegistro = $correlativo->id;
         $this->tabla = $correlativo->tabla;
+        $this->serie = $correlativo->serie;
         $this->numero = $correlativo->numero;
         $this->estado = $correlativo->estado;
     }
@@ -87,6 +90,7 @@ class Correlativos extends Component
     public function actualizar($id){
         $correlativo = Correlativo::find($id);
         $correlativo->tabla = $this->tabla;
+        $correlativo->serie = $this->serie;
         $correlativo->numero = $this->numero;
         $correlativo->estado = $this->estado;
         $correlativo->usuarioModificacion = auth()->user()->id;
