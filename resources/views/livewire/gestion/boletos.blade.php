@@ -81,6 +81,41 @@
 
     {{-- Modal para Insertar y Actualizar --}}
     @include('components.modalheaderxl')
+    @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+    <form>
+        <div class="row">
+            @if ($idRegistro!=0 and !$idFee)
+                <div class="col-md-1">
+                    <label for="txtTarifaFee" class="">Neto: </label>
+                    <input type="number" class="uTextBox" id="txtTarifaFee" wire:model.lazy.defer="tarifaFee">
+                    @error('tarifaFee')
+                        <span class="error">{{$message}}</span>
+                    @enderror
+                </div>
+                <div class="col-md-3">
+                    <label for="cboTipoDocumento" class="form-label">Tipo Documento:</label>
+                    <select name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model="tipoDocFee">
+                        @foreach ($tipoDocumentos as $tipoDocumento)
+                            <option value={{$tipoDocumento->id}}>{{$tipoDocumento->descripcion}}</option>
+                        @endforeach
+                    </select>
+                    @error('tipoDocFee')
+                        <span class="error">{{$message}}</span>
+                    @enderror
+                </div>
+                <div class="col-md-2">
+                    <br>
+                    <button type="button" class="btn btn-success" wire:click='generarFee'>Generar Fee</button>
+                </div>  
+            @endif
+            
+        </div>
+    </form>
+    <hr width="100%"> 
     <div class="contenedor">
         <form>
             <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -92,35 +127,6 @@
                       </h2>
                       <div id="flush-collapseOne" class="accordion-collapse">
                         <div class="seccion1">
-                            <div class="row">
-                                @if ($idRegistro!=0)
-                                    <div class="col-md-1">
-                                        <label for="txtTarifaFee" class="">Neto: </label>
-                                        <input type="number" class="uTextBox" id="txtTarifaFee" wire:model.lazy.defer="tarifaFee">
-                                        @error('tarifaFee')
-                                            <span class="error">{{$message}}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="cboTipoDocumento" class="form-label">Tipo Documento:</label>
-                                        <select name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model="tipoDocFee">
-                                            @foreach ($tipoDocumentos as $tipoDocumento)
-                                                <option value={{$tipoDocumento->id}}>{{$tipoDocumento->descripcion}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('tipoDocFee')
-                                            <span class="error">{{$message}}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-2">
-                                        <br>
-                                        <button type="button" class="btn btn-success" >Generar Fee</button>
-                                    </div>  
-                                @endif
-                                
-                            </div>
-                            <hr width="100%"> 
-
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="txtBoleto" class="">Boleto:</label>

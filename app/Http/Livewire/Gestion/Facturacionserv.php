@@ -13,23 +13,21 @@ use App\Models\documentoDetalle;
 use App\Models\Cliente;
 use App\Models\TipoCambio;
 use App\Clases\modelonumero;
+use App\Models\Servicio;
 
-class Facturacion extends Component
+class Facturacionserv extends Component
 {
     use WithPagination;
 
     public $search = "";
-    public $sort= 'numeroBoleto';
+    public $sort= 'numeroFile';
     public $direction = 'asc';
-    
-    public $idRegistro,$idMoneda=2,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra;
-    protected $boletos=[];
+
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra;
+    protected $servicios=[];
 
     public $selectedRows = [];
 
-    public $startDate;// = Carbon::parse($fechaActual->subDays(7))->format("Y-m-d");
-    public $endDate;// = Carbon::parse($fechaActual2)->format("Y-m-d");
-    
     public function mount(){
         $fechaActual = Carbon::now();
         
@@ -42,23 +40,17 @@ class Facturacion extends Component
             $this->tipoCambio = 0.00;
         }
     }
-    
+
     public function render()
     {
-        
-        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+        $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
                             ->whereNull('idDocumento')
                             ->where('idTipoFacturacion',1)
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
         
-        return view('livewire.gestion.facturacion',compact('monedas'));
-    }
-
-    public function filtrarFechas(){
-        $this->boletos = Boleto::whereBetween('fechaEmision', [$this->startDate, $this->endDate])->get();
-        // dd($this->boletos);
+        return view('livewire.gestion.facturacionserv',compact('monedas'));
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -80,49 +72,49 @@ class Facturacion extends Component
             session()->flash('error', 'Debe seleccionar un boleto.');
             return false;
         } else {
-            $boleto = Boleto::find($idsSeleccionados);
+            $servicio = Servicio::find($idsSeleccionados);
 
-            $this->crearDocumento($boleto);
+            $this->crearDocumento($servicio);
         }  
     }
 
-    public function crearDocumento($dataBoleto){
+    public function crearDocumento($dataServicio){
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
         $numComprobante = $funciones->numeroComprobante('DOCUMENTO DE COBRANZA');
-        $cliente = Cliente::find($dataBoleto->idCliente);
+        $cliente = Cliente::find($dataServicio->idCliente);
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
-        if ($dataBoleto->tMoneda->codigo == 'USD') {
+        if ($dataServicio->tMoneda->codigo == 'USD') {
             $this->monedaLetra = 'DOLARES AMERICANOS';
-        } elseif($dataBoleto->tMoneda->codigo == 'PEN'){
+        } elseif($dataServicio->tMoneda->codigo == 'PEN'){
             $this->monedaLetra = 'SOLES';
         }
         
-        $totalLetras = $numLetras->numtoletras($dataBoleto->total,$this->monedaLetra);
+        $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
-        $documento->idCliente = $dataBoleto->idCliente;
-        $documento->razonSocial = $dataBoleto->tCliente->razonSocial;
-        $documento->direccionFiscal = $dataBoleto->tCliente->direccionFiscal;
-        $documento->numeroDocumentoIdentidad = $dataBoleto->tCliente->numeroDocumentoIdentidad;
-        $documento->idTipoDocumento = $dataBoleto->idTipoDocumento;
-        $documento->tipoDocumento = $dataBoleto->tTipoDocumento->codigo;
+        $documento->idCliente = $dataServicio->idCliente;
+        $documento->razonSocial = $dataServicio->tCliente->razonSocial;
+        $documento->direccionFiscal = $dataServicio->tCliente->direccionFiscal;
+        $documento->numeroDocumentoIdentidad = $dataServicio->tCliente->numeroDocumentoIdentidad;
+        $documento->idTipoDocumento = $dataServicio->idTipoDocumento;
+        $documento->tipoDocumento = $dataServicio->tTipoDocumento->codigo;
         $documento->serie = '0001';
         $documento->numero = $numComprobante;
-        $documento->idMoneda = $dataBoleto->idMoneda;
-        $documento->moneda = $dataBoleto->tMoneda->codigo;
+        $documento->idMoneda = $dataServicio->idMoneda;
+        $documento->moneda = $dataServicio->tMoneda->codigo;
         $documento->fechaEmision = $this->fechaEmision;
         $documento->fechaVencimiento = Carbon::parse($fechaVencimiento)->format("Y-m-d");
         $documento->detraccion = $this->detraccion;
-        $documento->afecto = $dataBoleto->tarifaNeta;
-        $documento->inafecto = $dataBoleto->inafecto;
+        $documento->afecto = $dataServicio->tarifaNeta;
+        $documento->inafecto = $dataServicio->inafecto;
         $documento->exonerado = 0;
-        $documento->igv = $dataBoleto->igv;
-        $documento->otrosImpuestos = $dataBoleto->otrosImpuestos;
-        $documento->total = $dataBoleto->total;
+        $documento->igv = $dataServicio->igv;
+        $documento->otrosImpuestos = $dataServicio->otrosImpuestos;
+        $documento->total = $dataServicio->total;
         $documento->totalLetras = $totalLetras;
         $documento->glosa = $this->glosa;
-        $documento->numeroFile = $dataBoleto->numeroFile;
+        $documento->numeroFile = $dataServicio->numeroFile;
         $documento->tipoServicio = 1;
         $documento->documentoReferencia = "";
         $documento->idMotivoNC = 0;
@@ -132,16 +124,16 @@ class Facturacion extends Component
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
         $documento->save();
-
+        
         $idsSeleccionados = $this->selectedRows;
-        $boleto = Boleto::find($idsSeleccionados);
-        $boleto->idDocumento = $documento->id;
-        $boleto->save();
+        $servicio = Servicio::find($idsSeleccionados);
+        $servicio->idDocumento = $documento->id;
+        $servicio->save();
 
-        $this->enviaDC($documento);
+        $this->enviaCPE($documento);
     }
 
-    public function enviaDC($comprobante){
+    public function enviaCPE($comprobante){
 
         // Datos a enviar en formato JSON
         $dataToSend = [
@@ -244,7 +236,7 @@ class Facturacion extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => "POR LA COMPRA DE BOLETO AEREO",
+                    "descripcion" => "POR LA EMISION DE BOLETO AEREO",
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
@@ -286,9 +278,11 @@ class Facturacion extends Component
                 ]
             ]
         ];
+        DD($dataToSend);
+
         $funciones = new Funciones();
 
-        $file = $funciones->enviarDC($dataToSend);
+        $file = $funciones->enviarCPE($dataToSend);
 
         if ($file['type'] == 'success') {
             $doc = Documento::find($comprobante->id);

@@ -176,7 +176,7 @@ class Servicios extends Component
         //$area = Area::find($this->idArea);
         $servicio = new Servicio();
         $funciones = new Funciones();
-        $servicio->numeroServicio = $this->numeroServicio;
+        
 
         $numServ = $funciones->numeroServicio('SERVICIOS');
         $servicio->numeroServicio = $numServ;
@@ -220,7 +220,7 @@ class Servicios extends Component
         $servicio->estado = $this->estado;
         $servicio->usuarioCreacion = auth()->user()->id;
         try {
-            $boleto->save();
+            $servicio->save();
             $this->grabarPagos($servicio->id);
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
