@@ -30,6 +30,7 @@ use App\Models\BoletoPago;
 use App\Models\TarjetaCredito;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use App\Models\Servicio;
 
 class Boletos extends Component
 {
