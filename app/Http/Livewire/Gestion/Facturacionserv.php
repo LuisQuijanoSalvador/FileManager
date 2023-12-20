@@ -278,7 +278,7 @@ class Facturacionserv extends Component
                 ]
             ]
         ];
-        DD($dataToSend);
+        // DD($dataToSend);
 
         $funciones = new Funciones();
 
