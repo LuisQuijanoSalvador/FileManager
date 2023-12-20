@@ -31,6 +31,7 @@ use App\Models\TarjetaCredito;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use App\Models\Servicio;
+use App\Models\ServicioPago;
 
 class Boletos extends Component
 {
@@ -51,7 +52,7 @@ class Boletos extends Component
             $igv=0,
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
-            $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,
+            $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$idFee,$estado=1,
             $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
     
     public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
@@ -60,7 +61,7 @@ class Boletos extends Component
 
     public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos;
 
-    Public $tarifaFee=0,$tipoDocFee;
+    Public $tarifaFee=0,$tipoDocFee=1;
     
     public function rules(){
         return[
@@ -427,6 +428,7 @@ class Boletos extends Component
         $this->cod3 = $boleto->cod3;
         $this->cod4 = $boleto->cod4;
         $this->observaciones = $boleto->observaciones;
+        $this->idFee = $boleto->idFee;
         $this->estado = $boleto->estado;
         $this->usuarioCreacion = $boleto->usuarioCreacion;
         $this->fechaCreacion = Carbon::parse($boleto->created_at)->format("Y-m-d");
@@ -609,8 +611,79 @@ class Boletos extends Component
     }
 
     public function generarFee(){
+        $boleto = Boleto::find($this->idRegistro);
 
+        $servicio = new Servicio();
+        $funciones = new Funciones();
+
+        $numServ = $funciones->numeroServicio('SERVICIOS');
+        $servicio->numeroServicio = $numServ;
+        $servicio->numeroFile = $boleto->numeroFile;
+        $servicio->idCliente = $boleto->idCliente;
+        $servicio->idSolicitante = $boleto->idSolicitante;
+        $servicio->fechaEmision = $boleto->fechaEmision;
+        $servicio->idCounter = $boleto->idCounter;
+        $servicio->idTipoFacturacion = $boleto->idTipoFacturacion;
+        $servicio->idTipoDocumento = $this->tipoDocFee;
+        $servicio->idArea = $boleto->idArea;
+        $servicio->idVendedor = $boleto->idVendedor;
+        $servicio->idProveedor = $boleto->idProveedor;
+        $servicio->codigoReserva = $boleto->codigoReserva;
+        $servicio->fechaReserva = $boleto->fechaReserva;
+        $servicio->fechaIn = $boleto->fechaEmision;
+        $servicio->fechaOut = $boleto->fechaEmision;
+        $servicio->idGds = $boleto->idGds;
+        $servicio->idTipoServicio = 3;
+        $servicio->tipoRuta = $boleto->tipoRuta;
+        $servicio->tipoTarifa = $boleto->tipoTarifa;
+        $servicio->origen = $boleto->origen;
+        $servicio->pasajero = $boleto->pasajero;
+        $servicio->idTipoPasajero = $boleto->idTipoPasajero;
+        $servicio->tipoCambio = $boleto->tipoCambio;
+        $servicio->idMoneda = $boleto->idMoneda;
+        $servicio->tarifaNeta = $this->tarifaFee;
+        $servicio->inafecto = 0;
+        $servicio->igv = $this->tarifaFee * 0.18;
+        $servicio->otrosImpuestos = $boleto->otrosImpuestos;
+        $servicio->xm = 0;
+        $servicio->total = $servicio->tarifaNeta + $servicio->igv;
+        $servicio->idTipoPagoConsolidador = 8;
+        $servicio->totalOrigen = 0;
+        $servicio->porcentajeComision = 0;
+        $servicio->montoComision = 0;
+        $servicio->descuentoCorporativo = 0;
+        $servicio->codigoDescCorp = $boleto->codigoDescCorp;
+        $servicio->tarifaNormal = $boleto->tarifaNormal;
+        $servicio->tarifaAlta = $boleto->tarifaAlta;
+        $servicio->tarifaBaja = $boleto->tarifaBaja;
+        $servicio->centroCosto = $boleto->centroCosto;
+        $servicio->cod1 = $boleto->cod1;
+        $servicio->cod2 = $boleto->cod2;
+        $servicio->cod3 = $boleto->cod3;
+        $servicio->cod4 = $boleto->cod4;
+        $servicio->observaciones = $boleto->observaciones;
+        $servicio->estado = 1;
+        $servicio->usuarioCreacion = auth()->user()->id;
+        
+            $servicio->save();
+            $this->grabarPagosFee($servicio);
+
+            $boleto->idFee = $servicio->id;
+            $boleto->save();
+        
+        session()->flash('success', 'Fee Generado exitosamente.');
     }
 
-    
+    public function grabarPagosFee($servicio){
+        $servicioPago = new ServicioPago();
+        $servicioPago->idServicio = $servicio->id;
+        $servicioPago->idMedioPago = 8;
+        $servicioPago->idTarjetaCredito = 1;
+        $servicioPago->numeroTarjeta = '';
+        $servicioPago->monto = $servicio->total;
+        $servicioPago->fechaVencimientoTC = '';
+        $servicioPago->idEstado = 1;
+        $servicioPago->usuarioCreacion = auth()->user()->id;
+        $servicioPago->save();
+    }
 }

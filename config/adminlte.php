@@ -358,8 +358,7 @@ return [
                     'submenu'=>[
                         [
                             'text' => 'Inmediata',
-                            // 'route' => 'factinmediata'
-                            'url'     => '#'
+                            'route' => 'factinmediataserv'
                         ], 
                         [
                             'text' => 'Acumulada',

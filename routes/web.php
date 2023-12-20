@@ -48,6 +48,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix'=>'facturacion'],function(){
         Route::get('inmediata', function(){ return view('gestion.facturacion');})->name('factinmediata');
+
+        Route::get('inmediataservicios', function(){ return view('gestion.facturacionserv');})->name('factinmediataserv');
     });
 
     Route::group(['prefix'=>'entidades'],function(){

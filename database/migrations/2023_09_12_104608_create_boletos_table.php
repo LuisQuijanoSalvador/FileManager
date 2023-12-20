@@ -60,6 +60,7 @@ return new class extends Migration
             $table->string('cod3')->nullable();
             $table->string('cod4')->nullable();
             $table->string('observaciones')->nullable();
+            $table->bigInteger('idFee')->nullable();
             $table->integer('estado');
             $table->integer('usuarioCreacion');
             $table->integer('usuarioModificacion')->nullable();

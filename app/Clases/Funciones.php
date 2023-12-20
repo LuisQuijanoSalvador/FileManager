@@ -59,7 +59,7 @@ class Funciones
         // dd($jsonData);
         $respuesta = $client->request('POST', 'https://int.sendaefact.pe/webservice/emitir_comprobante', [
         'headers' => [
-                        'Authorization' => 'Bearer jdnqviUqmItb2TtzGc68ungW7WffOVSlyjd9003xTeGVniPqK4EGKoE4SG2v',
+                        'Authorization' => 'Bearer HfcH40sn5PFtDsN0eGaLTOBXb46Zf5C3I8sym7NESx1ZlAvNnIkpAlzb11Nd',
                         'Content-Type' => 'application/json',
                     ],
         'body' => $jsonData,
