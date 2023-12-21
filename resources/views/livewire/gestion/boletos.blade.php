@@ -112,7 +112,12 @@
                     <button type="button" class="btn btn-success" wire:click='generarFee'>Generar Fee</button>
                 </div>  
             @endif
-            
+            @if ($idRegistro!=0)
+                <div class="col-md-1">
+                    <br>
+                    <button type="button" class="btn btn-success" wire:click='clonarBoleto'>Clonar</button>
+                </div>
+            @endif
         </div>
     </form>
     <hr width="100%"> 
@@ -604,7 +609,7 @@
                                 
                                 <div class="col-md-1">
                                     <label for="txtCiudadSalida" class="">Salida:</label>
-                                    <input type="text" class="uTextBox" maxlength="3" id="txtCiudadSalida" wire:model.lazy.defer="ciudadSalida" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" required>
+                                    <input type="text" class="uTextBox" maxlength="3" id="txtCiudadSalida" wire:model.lazy.defer="ciudadSalida" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('ciudadSalida')
                                         <span class="error">{{$message}}</span>
                                     @enderror

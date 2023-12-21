@@ -39,7 +39,17 @@
                 </div>
             </div>    
         </div>
-        <div class="col-md-2"></div>
+        <div class="col-md-2">
+            <label for="cboCounter" class="form-label">Area:</label>
+            <select name="idArea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboArea" wire:model="idArea">
+                @foreach ($areas as $area)
+                    <option value={{$area->id}}>{{$area->descripcion}}</option>
+                @endforeach
+            </select>
+            @error('idArea')
+                <span class="error">{{$message}}</span>
+            @enderror
+        </div>
         <div class="col-md-3">
             <br>
             <button id="btnIntegrar" type="button" class="btn btn-primary rounded" wire:click='obtenerBoleto'>Integrar</button>
