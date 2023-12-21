@@ -94,18 +94,18 @@ class Boletos extends Component
             'idTipoPagoConsolidador' => 'required',
             'estado' => 'required',
 
-            'ciudadSalida' => 'required',
-            'ciudadLlegada' => 'required',
-            'idAerolineaRuta' => 'required',
-            'vuelo' => 'required',
-            'clase' => 'required',
-            'fechaSalida' => 'required',
-            'horaSalida' => 'required',
-            'fechaLlegada' => 'required',
-            'horaLlegada' => 'required',
+            // 'ciudadSalida' => 'required',
+            // 'ciudadLlegada' => 'required',
+            // 'idAerolineaRuta' => 'required',
+            // 'vuelo' => 'required',
+            // 'clase' => 'required',
+            // 'fechaSalida' => 'required',
+            // 'horaSalida' => 'required',
+            // 'fechaLlegada' => 'required',
+            // 'horaLlegada' => 'required',
 
-            'idMedioPago' => 'required',
-            'monto' => 'required',
+            // 'idMedioPago' => 'required',
+            // 'monto' => 'required',
         ];
     }
 
@@ -295,6 +295,7 @@ class Boletos extends Component
     }
 
     public function grabarRutas($idBoleto){
+        //TODO: Corregir para grbar desde el array 
         $boletoRuta = new BoletoRuta();
         $boletoRuta->idBoleto = $idBoleto;
         $boletoRuta->idAerolinea = $this->idAerolineaRuta;
@@ -512,7 +513,7 @@ class Boletos extends Component
         if ($this->ciudadSalida !== null && $this->ciudadLlegada  !== null && $this->idAerolineaRuta  !== null 
             && $this->vuelo  !== null && $this->clase  !== null && $this->fechaSalida  !== null 
             && $this->horaSalida  !== null && $this->fechaLlegada  !== null && $this->horaLlegada  !== null) {
-            
+                
             $aer = Aerolinea::find($this->idAerolineaRuta);
             $this->boletoRutas->add(array(
                 'ciudadSalida' =>  $this->ciudadSalida,
@@ -527,6 +528,7 @@ class Boletos extends Component
                 'horaLlegada' =>  $this->horaLlegada,
                 'farebasis' =>  $this->farebasis
             ));
+            
             $this->getRutaDestino($this->boletoRutas);
             $this->resetRutas();
         }  
@@ -685,5 +687,10 @@ class Boletos extends Component
         $servicioPago->idEstado = 1;
         $servicioPago->usuarioCreacion = auth()->user()->id;
         $servicioPago->save();
+    }
+
+    public function clonarBoleto(){
+        $boleto = Boleto::find($this->idRegistro);
+
     }
 }
