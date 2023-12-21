@@ -13,6 +13,7 @@ use App\Models\documentoDetalle;
 use App\Models\Cliente;
 use App\Models\TipoCambio;
 use App\Clases\modelonumero;
+use App\Models\Solicitante;
 
 class Facturacion extends Component
 {
@@ -98,6 +99,8 @@ class Facturacion extends Component
         } elseif($dataBoleto->tMoneda->codigo == 'PEN'){
             $this->monedaLetra = 'SOLES';
         }
+        $solicitante = Solicitante::find($dataBoleto->idSolicitante);
+        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . '\n' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . '\n' . 'TKT: ' . $dataBoleto->numeroBoleto;
         
         $totalLetras = $numLetras->numtoletras($dataBoleto->total,$this->monedaLetra);
         
@@ -170,8 +173,8 @@ class Facturacion extends Component
                 "razonsocial"=> $comprobante->razonSocial,
                 "direccion"=> $comprobante->direccionFiscal,
                 "cliente"=> $comprobante->razonSocial,
-                "email_cliente"=> "",
-                "email_cc"=> "facturaselectronicas@astravel.com.pe",
+                "email_cliente"=> "facturaselectronicas@astravel.com.pe",
+                "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
                 "rec_tele"=> null,
                 "rec_ubigeo"=> "",
@@ -194,7 +197,7 @@ class Facturacion extends Component
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                "glosa"=> $comprobante->glosa,
+                "glosa"=> "",
                 "glosa_refe"=> "",
                 "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
@@ -244,7 +247,7 @@ class Facturacion extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => "POR LA COMPRA DE BOLETO AEREO",
+                    "descripcion" => $comprobante->glosa,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",

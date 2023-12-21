@@ -558,7 +558,7 @@ class Integrador extends Component
         $boletoPago->idMedioPago = $this->idMedioPago;
         $boletoPago->idTarjetaCredito = $this->idTarjetaCredito;
         $boletoPago->numeroTarjeta = ' ';
-        $boletoPago->monto = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;;
+        $boletoPago->monto = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
         $boletoPago->fechaVencimientoTC = ' ';
         $boletoPago->idEstado = 1;
         $boletoPago->usuarioCreacion = auth()->user()->id;

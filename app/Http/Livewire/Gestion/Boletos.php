@@ -279,12 +279,15 @@ class Boletos extends Component
         $boleto->observaciones = $this->observaciones;
         $boleto->estado = $this->estado;
         $boleto->usuarioCreacion = auth()->user()->id;
-
         $boleto->save();
-        $this->grabarRutas($boleto->id);
-        $this->grabarPagos($boleto->id);
-        // dd($boleto);
+        if(count($this->boletoRutas)!="0"){
+            $this->grabarRutas($boleto->id);
+        }
+        if(count($this->boletoPagos)!="0"){
+            $this->grabarPagos($boleto->id);
+        }
         try {
+            // $boleto->save();
             
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
