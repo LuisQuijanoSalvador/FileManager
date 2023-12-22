@@ -48,7 +48,7 @@ class Servicios extends Component
             $origen="BSP",$pasajero,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$inafecto=0,$igv=0,
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,$destino,
-            $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,
+            $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador,
             $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
 
     public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos;
