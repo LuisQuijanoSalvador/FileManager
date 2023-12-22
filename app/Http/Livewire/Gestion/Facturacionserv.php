@@ -83,7 +83,7 @@ class Facturacionserv extends Component
         $funciones = new Funciones();
         $numLetras = new modelonumero();
 
-        switch ($dataBoleto->idTipoDocumento) {
+        switch ($dataServicio->idTipoDocumento) {
             case 6:
                 $numComprobante = $funciones->numeroComprobante('DOCUMENTO DE COBRANZA');
                 $numSerie = '0001';
