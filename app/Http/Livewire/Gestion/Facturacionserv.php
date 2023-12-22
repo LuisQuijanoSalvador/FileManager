@@ -107,7 +107,7 @@ class Facturacionserv extends Component
         }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
-        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . '\n' . 'POR LA EMISION DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . '\n' . 'TKT: ' . $dataBoleto->numeroBoleto;
+        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . \n . 'POR LA EMISION DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataServicio->pasajero;
         
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
