@@ -214,7 +214,7 @@ class Facturacionserv extends Component
                 "ant_monto"=> "0.00",
                 "op_exportacion"=> "0.00",
                 "op_exonerada"=> 0.00,
-                "op_inafecta"=> 0,
+                "op_inafecta"=> $comprobante->inafecto,
                 "op_gravada"=> $comprobante->afecto,
                 "tot_valorventa"=> $comprobante->afecto,
                 "tot_precioventa"=> $comprobante->total,
