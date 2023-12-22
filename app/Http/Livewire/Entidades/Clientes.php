@@ -154,7 +154,7 @@ class Clientes extends Component
     }
 
     public function limpiarControles(){
-        $this->idRegistro = '';
+        $this->idRegistro = 0;
         $this->razonSocial = '';
         $this->nombreComercial = '';
         $this->direccionFiscal = '';

@@ -31,10 +31,13 @@ class TipoCambios extends Component
         'montoSunat.required' => 'El campo Cambio Sunat no puede estar en blanco.',
     ];
 
-    public function render()
-    {
+    public function mount(){
         $fecha = Carbon::now();
         $this->fechaCambio = $fecha->format('Y-m-d');
+    }
+
+    public function render()
+    {
         $tipoCambios = TipoCambio::where('fechaCambio', 'like', "%$this->search%")
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(6);
