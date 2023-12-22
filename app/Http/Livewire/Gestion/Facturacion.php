@@ -95,12 +95,15 @@ class Facturacion extends Component
         switch ($dataBoleto->idTipoDocumento) {
             case 6:
                 $numComprobante = $funciones->numeroComprobante('DOCUMENTO DE COBRANZA');
+                $numSerie = '0001';
                 break;
             case 1:
                 $numComprobante = $funciones->numeroComprobante('FACTURA');
+                $numSerie = 'F001';
                 break;
             case 2:
                 $numComprobante = $funciones->numeroComprobante('BOLETA DE VENTA');
+                $numSerie = 'B001';
                 break;
         }
         
@@ -122,7 +125,7 @@ class Facturacion extends Component
         $documento->numeroDocumentoIdentidad = $dataBoleto->tCliente->numeroDocumentoIdentidad;
         $documento->idTipoDocumento = $dataBoleto->idTipoDocumento;
         $documento->tipoDocumento = $dataBoleto->tTipoDocumento->codigo;
-        $documento->serie = '0001';
+        $documento->serie = $numSerie;
         $documento->numero = $numComprobante;
         $documento->idMoneda = $dataBoleto->idMoneda;
         $documento->moneda = $dataBoleto->tMoneda->codigo;
@@ -152,8 +155,12 @@ class Facturacion extends Component
         $boleto = Boleto::find($idsSeleccionados);
         $boleto->idDocumento = $documento->id;
         $boleto->save();
-
-        $this->enviaDC($documento);
+        if($dataBoleto->idTipoDocumento == 6){
+            $this->enviaDC($documento);
+        }else{
+            $this->enviaCPE($documento);
+        }
+        
     }
 
     public function enviaDC($comprobante){
@@ -331,7 +338,7 @@ class Facturacion extends Component
                 "fecha"=> $comprobante->fechaEmision,
                 "fvenci"=> $comprobante->fechaVencimiento,
                 "tipodocu"=> $comprobante->tipoDocumento,
-                "nro_serie_efact"=> "0001",
+                "nro_serie_efact"=> $comprobante->serie,
                 "tipo_moneda"=> $comprobante->moneda,
                 "numero"=> str_pad($comprobante->numero,8,"0",STR_PAD_LEFT),
                 "tipodocurefe"=> "",
