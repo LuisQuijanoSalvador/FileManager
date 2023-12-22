@@ -25,7 +25,7 @@ class Integrador extends Component
     $fechaReserva,$idGds=2,$idTipoTicket=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",$idAerolinea=7,
     $origen="BSP",$pasajero,
     $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$igv=0,
-    $otrosImpuestos=0,$yr=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
+    $otrosImpuestos=0,$yr=0,$hw=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
     $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
     $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,
     $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
@@ -296,134 +296,303 @@ class Integrador extends Component
         }
     }
     public function parsearKiu($boleto){
-        $area = Area::find(1);
-        $boleto = new Boleto();
-        $funciones = new Funciones();
-        $boleto->numeroBoleto = '3104677145';
-
-        $file = $funciones->generaFile('FILES');
-        $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
-        $boleto->idCliente = 3;
-        $boleto->idSolicitante = 1;
-        $boleto->fechaEmision = '2023-09-19';
-        $boleto->idCounter = 2;
-        $boleto->idTipoFacturacion = 1;
-        $boleto->idTipoDocumento = 6;
-        $boleto->idArea = 1;
-        $boleto->idVendedor = 1;
-        $boleto->idConsolidador = 1;
-        $boleto->codigoReserva = 'CVWPZG';
-        $boleto->fechaReserva = '2023-09-19';
-        $boleto->idGds = 2;
-        $boleto->idTipoTicket = 1;
-        $boleto->tipoRuta = "NACIONAL";
-        $boleto->tipoTarifa = 'NORMAL';
-        $boleto->idAerolinea = 3;
-        $boleto->origen = 'BSP';
-        $boleto->pasajero = 'VASQUEZ CLARA DEL CA';
-        $boleto->idTipoPasajero = 1;
-        $boleto->ruta = 'IQT/PCL/IQT';
-        $boleto->destino = 'PCL';
-        $boleto->tipoCambio = 3.900;
-        $boleto->idMoneda = 1;
-        $boleto->tarifaNeta = 178.00;
-        $boleto->igv = 32.04;
-        $boleto->otrosImpuestos = 13.52;
-        $boleto->xm = 0;
-        $boleto->total = 223.56;
-        $boleto->totalOrigen = 223.56;
-        $boleto->porcentajeComision = 0;
-        $boleto->montoComision = 0;
-        $boleto->descuentoCorporativo = 0;
-        $boleto->codigoDescCorp = ' ';
-        $boleto->tarifaNormal = 0;
-        $boleto->tarifaAlta = 0;
-        $boleto->tarifaBaja = 0;
-        $boleto->idTipoPagoConsolidador = 9;
-        $boleto->centroCosto = ' ';
-        $boleto->cod1 = ' ';
-        $boleto->cod2 = ' ';
-        $boleto->cod3 = ' ';
-        $boleto->cod4 = ' ';
-        $boleto->observaciones = ' ';
-        $boleto->estado = 1;
-        $boleto->usuarioCreacion = auth()->user()->id;
-        try {
-            $boleto->save();
-            $this->grabarRutasKiu1($boleto->id);
-            $this->grabarRutasKiu2($boleto->id);
-            $this->grabarPagosKiu($boleto->id);
-            return redirect()->route('listaBoletos');
-        } catch (\Throwable $th) {
-            session()->flash('error', 'Ocurrió un error intentando grabar.');
+        $contador = 0;
+        if (count($boleto) < 5) {
+            session()->flash('error', 'Formato incorrecto del boleto.');
+            return;
         }
+        foreach ($boleto as $linea) {
+            $contador = $contador + 1;
+            //Obtener Pasajero
+            $posPasajero = strpos($linea,"NAME/NOMBRE:");
+            if($posPasajero !== false){
+                $this->pasajero = substr($linea,$posPasajero+13,25);
+                $this->pasajero = trim($this->pasajero);
+                $this->pasajero = str_replace("/"," ",$this->pasajero);
+            }
+
+            //Obtener Aerolínea y Numero de Boleto
+            $posBoleto = strpos($linea,"TICKET NBR:");
+            if($posBoleto !== false){
+                $codigoAerolinea = substr($linea,$posBoleto+12,3);
+                $oAerolinea = Aerolinea::where('codigoIata',$codigoAerolinea)->first();
+                $this->idAerolinea = $oAerolinea->id;
+
+                $this->numeroBoleto = substr(trim($linea),-10);
+                $oBoleto = Boleto::where('numeroBoleto',$this->numeroBoleto)->first();
+                if($oBoleto){
+                    session()->flash('error', 'El boleto ya está integrado.');
+                    return;
+                }
+            }
+            
+            //Obtener Código de Reserva
+            $posPnr = strpos($linea,"BOOKING REF./CODIGO DE RESERVA:");
+            if ($posPnr !== false) {
+                $this->codigoReserva = substr(trim($linea),-6);
+            }
+
+            //Obtener Fecha de Emision
+            $posFechaEmision = strpos($linea,"ISSUE DATE/FECHA DE EMISION:");
+            if ($posFechaEmision !== false) {
+                $fechaOriginal = substr($linea,$posFechaEmision+29,11);
+                
+                $fechaFormat = Carbon::createFromFormat('d M Y',$fechaOriginal);
+                $this->fechaEmision = $fechaFormat->format('Y-m-d');
+                
+                $tc = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
+                if($tc){
+                    $this->tipoCambio = $tc->montoCambio;
+                }else{
+                    $this->tipoCambio = 0.00;
+                }
+            }
+            
+            //Obtener Cliente
+            $posCliente = strpos($linea,"RUC           :");
+            if ($posCliente !== false) {
+                $posRuc = strpos($linea,"RUC");
+                if ($posRuc !== false) {
+                    $ruc = substr($linea,-11);
+                    $oCliente = Cliente::where('numeroDocumentoIdentidad',$ruc)->first();
+                    if ($oCliente) {
+                        $this->idCliente = $oCliente->id;
+                        $this->idTipoFacturacion = $oCliente->tipoFacturacion;
+                        $this->idArea = $oCliente->area;
+                        $this->idVendedor = $oCliente->vendedor;
+                    }
+                }else{
+                    $doc = substr($linea,-8);
+                    $oCliente = Clinte::where('numeroDocumentoIdentidad',$doc)->first();
+                    if ($oCliente) {
+                        $this->idCliente = $oCliente->id;
+                        $this->idTipoFacturacion = $oCliente->tipoFacturacion;
+                        $this->idArea = $oCliente->area;
+                        $this->idVendedor = $oCliente->vendedor;
+                    }
+                }
+            }
+
+            //Obtener Ruta / Destino
+            $posRuta = strpos($linea,"FARE CALC./CALCULO DE TARIFA:");
+            if ($posRuta !== false) {
+                $cadena = Str::remove(range(0,9),$linea);
+                $cadena = Str::remove(".",$cadena);
+                $cadena = Str::remove("NUC",$cadena);
+                $palabras = Str::of($cadena)->explode(' ');
+                $palabras3 = $palabras->filter(function($palabra){
+                    return Str::length($palabra) == 3;
+                });
+                foreach ($palabras3 as $word) {
+                    $this->ruta = $this->ruta . $word . "/";
+                }
+                $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
+                
+                $dest = str_replace("/","",$this->ruta);
+                $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
+                $this->destino =  substr($dest, $incioCadena, 3);
+            }
+
+            //Obtener Forma de Pago
+            $posFpago = strpos($linea,"FORM OF PAYMENT/FORMA DE PAGO      :");
+            if ($posFpago !== false){
+                if(strpos($linea,"CASH")){
+                    $oTc = TarjetaCredito::where('codigo','XX')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','009')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+                if(strpos($linea,"VISA")){
+                    $oTc = TarjetaCredito::where('codigo','VI')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','006')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+                if(strpos($linea,"MASTERCARD")){
+                    $oTc = TarjetaCredito::where('codigo','MA')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','006')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+                if(strpos($linea,"MASTER CARD")){
+                    $oTc = TarjetaCredito::where('codigo','MA')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','006')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+                if(strpos($linea,"DINERS CLUB")){
+                    $oTc = TarjetaCredito::where('codigo','DC')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','006')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+                if(strpos($linea,"AMERICAN EXPRESS")){
+                    $oTc = TarjetaCredito::where('codigo','AX')->first();
+                    $this->idTarjetaCredito = $oTc->id;
+                    $oMp = MedioPago::where('codigo','006')->first();
+                    $this->idMedioPago = $oMp->id;
+                }
+            }
+
+            // Obtener Tarifas
+            
+            $posTNeta = strpos($linea,"AIR FARE/TARIFA :");
+            if ($posTNeta !== false) {
+                $neto = substr($linea,-8);
+                $this->tarifaNeta = trim($neto);
+            }
+            $posTax = strpos($linea,"TAX/IMPUESTOS   :");
+            if ($posTax !== false) {
+                $posPe = strpos($linea,"PE");
+                if ($posPe !== false) {
+                    $pe = substr($linea,$posPe-6,6);
+                    $this->igv = trim($pe);
+                }
+                $posHw = strpos($linea,"HW");
+                if ($posHw !== false) {
+                    $hw = substr($linea,$posHw-6,6);
+                    $this->hw = trim($hw);
+                }
+            }
+            
+            // dd($this->tipoRuta);
+        }
+        $this->otrosImpuestos = $this->hw;
+        
+        $this->grabarBoleto();
+        // dd($this->idAerolinea);
         
     }
 
     public function parsearNdc($boleto){
-        $area = Area::find(1);
-        $boleto = new Boleto();
-        $funciones = new Funciones();
-        $boleto->numeroBoleto = '2127585576';
-
-        $file = $funciones->generaFile('FILES');
-        $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
-        $boleto->idCliente = 1;
-        $boleto->idSolicitante = 1;
-        $boleto->fechaEmision = '2023-10-03';
-        $boleto->idCounter = 1;
-        $boleto->idTipoFacturacion = 2;
-        $boleto->idTipoDocumento = 6;
-        $boleto->idArea = 1;
-        $boleto->idVendedor = 1;
-        $boleto->idConsolidador = 1;
-        $boleto->codigoReserva = 'LOIIIB';
-        $boleto->fechaReserva = '2023-10-03';
-        $boleto->idGds = 3;
-        $boleto->idTipoTicket = 1;
-        $boleto->tipoRuta = "NACIONAL";
-        $boleto->tipoTarifa = 'NORMAL';
-        $boleto->idAerolinea = 1;
-        $boleto->origen = 'BSP';
-        $boleto->pasajero = 'LOZANO MONTALVO ROGER';
-        $boleto->idTipoPasajero = 1;
-        $boleto->ruta = 'LIM/PCL/LIM';
-        $boleto->destino = 'PCL';
-        $boleto->tipoCambio = 3.900;
-        $boleto->idMoneda = 1;
-        $boleto->tarifaNeta = 97.00;
-        $boleto->igv = 17.46;
-        $boleto->otrosImpuestos = 18.89;
-        $boleto->xm = 0;
-        $boleto->total = 133.35;
-        $boleto->totalOrigen = 133.35;
-        $boleto->porcentajeComision = 0;
-        $boleto->montoComision = 0;
-        $boleto->descuentoCorporativo = 0;
-        $boleto->codigoDescCorp = ' ';
-        $boleto->tarifaNormal = 0;
-        $boleto->tarifaAlta = 0;
-        $boleto->tarifaBaja = 0;
-        $boleto->idTipoPagoConsolidador = 6;
-        $boleto->centroCosto = ' ';
-        $boleto->cod1 = ' ';
-        $boleto->cod2 = ' ';
-        $boleto->cod3 = ' ';
-        $boleto->cod4 = ' ';
-        $boleto->observaciones = ' ';
-        $boleto->estado = 1;
-        $boleto->usuarioCreacion = auth()->user()->id;
-        try {
-            $boleto->save();
-            $this->grabarRutasNdc1($boleto->id);
-            $this->grabarRutasNdc2($boleto->id);
-            $this->grabarPagosNdc($boleto->id);
-            return redirect()->route('listaBoletos');
-        } catch (\Throwable $th) {
-            session()->flash('error', 'Ocurrió un error intentando grabar.');
+        $contador = 0;
+        $contPE = 0;
+        if (count($boleto) < 5) {
+            session()->flash('error', 'Formato incorrecto del boleto.');
+            return;
         }
-         
+        foreach ($boleto as $linea) {
+            $contador = $contador + 1;
+            
+            //Obtener Pasajero
+            $posPasajero = strpos($linea,"PASSENGER NAME:");
+            if($posPasajero !== false){
+                $this->pasajero = trim(str_replace("PASSENGER NAME:","",$linea));
+            }
+            
+            //Obtener Aerolínea y Numero de Boleto
+            $posBoleto = strpos($linea,"TICKETING NUMBER:");
+            if($posBoleto !== false){
+                $codigoAerolinea = substr($linea,$posBoleto+18,3);
+                $oAerolinea = Aerolinea::where('codigoIata',$codigoAerolinea)->first();
+                $this->idAerolinea = $oAerolinea->id;
+                
+                $this->numeroBoleto = substr($linea,21,10);
+                $oBoleto = Boleto::where('numeroBoleto',$this->numeroBoleto)->first();
+                if($oBoleto){
+                    session()->flash('error', 'El boleto ya está integrado.');
+                    return;
+                }
+            }
+            
+            //Obtener Código de Reserva
+            $posPnr = strpos($linea,"BOOKING REFERENCE:");
+            if ($posPnr !== false) {
+                $this->codigoReserva = substr($linea,$posPnr+19,6);
+            }
+
+            //Obtener Fecha de Emision
+            $posFechaEmision = strpos($linea,"DATE OF ISSUE:");
+            if ($posFechaEmision !== false) {
+                $this->fechaEmision = substr($linea,$posFechaEmision+15,10);
+
+                $tc = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
+                if($tc){
+                    $this->tipoCambio = $tc->montoCambio;
+                }else{
+                    $this->tipoCambio = 0.00;
+                }
+            }
+            
+            //Obtener Cliente
+            $posCliente = strpos($linea,"DOCUMENT NUMBER:");
+            if ($posCliente !== false) {
+                $ruc = substr($linea,$posCliente+17,11);
+                $oCliente = Cliente::where('numeroDocumentoIdentidad',$ruc)->first();
+                if ($oCliente) {
+                    $this->idCliente = $oCliente->id;
+                    $this->idTipoFacturacion = $oCliente->tipoFacturacion;
+                    $this->idArea = $oCliente->area;
+                    $this->idVendedor = $oCliente->vendedor;
+                }
+            }
+
+            // //Obtener Ruta / Destino
+            // $posRuta = strpos($linea,"FARE CALC:");
+            // if ($posRuta !== false) {
+            //     $cadena = Str::remove(range(0,9),$linea);
+            //     $cadena = Str::remove(".",$cadena);
+            //     $cadena = Str::remove("NUC",$cadena);
+            //     $palabras = Str::of($cadena)->explode(' ');
+            //     $palabras3 = $palabras->filter(function($palabra){
+            //         return Str::length($palabra) == 3;
+            //     });
+            //     foreach ($palabras3 as $word) {
+            //         $this->ruta = $this->ruta . $word . "/";
+            //     }
+            //     $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
+
+            //     $dest = str_replace("/","",$this->ruta);
+            //     $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
+            //     $this->destino =  substr($dest, $incioCadena, 3);
+            // }
+
+            //Obtener Forma de Pago
+            $posFpago = strpos($linea,"PAYMENT METHOD:");
+            if ($posFpago !== false){
+                if(strpos($linea,"TC")){
+                    $this->idTarjetaCredito = 2;
+                    $this->idMedioPago = 6;
+                }else{
+                    $this->idTarjetaCredito = 1;
+                    $this->idMedioPago = 8;
+                }
+            }
+
+            // Obtener Tarifas
+            // $posDy = strpos($linea,"DY");
+            // if ($posDy !== false) {
+            //     $this->tipoRuta = "INTERNACIONAL";
+            // }else{
+            //     $this->tipoRuta = "NACIONAL";
+            // }
+            $posTNeta = strpos($linea,"FARE:");
+            if ($posTNeta !== false) {
+                $neto = substr($linea,$posTNeta+6,7);
+                $this->tarifaNeta = $neto;
+            }
+            $posPe = strpos($linea,"PE:");
+            if ($posPe !== false) {
+                $contPE = $contPE + 1;
+                if($contPE == 2){
+                    $pe = substr($linea,$posPe+4,6);
+                    $this->igv = trim($pe);
+                }
+            }
+            $posHw = strpos($linea,"HW:");
+            if ($posHw !== false) {
+                $nhw = substr($linea,$posHw+4,6);
+                $this->hw = trim($nhw);
+            }
+            
+            // // dd($this->tipoRuta);
+        }
+        $this->otrosImpuestos = $this->hw;
+        
+        $this->grabarBoleto();
+        // dd($this->idAerolinea);
     }
+
     public function grabarRutasNdc1($idBoleto){
         $boletoRuta = new BoletoRuta();
         $boletoRuta->idBoleto = $idBoleto;

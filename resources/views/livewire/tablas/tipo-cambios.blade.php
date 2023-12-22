@@ -67,7 +67,7 @@
         @endif
         <div class="mb-3">
             <label for="txtFecha" class="form-label">Fecha:</label>
-            <input type="date" class="form-control" id="txtFecha" wire:model="fechaCambio">
+            <input type="date" class="form-control" id="txtFecha" wire:model.lazy="fechaCambio">
             @error('fechaCambio')
                 <span class="error">{{$message}}</span>
             @enderror
