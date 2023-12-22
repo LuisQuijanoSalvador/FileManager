@@ -164,7 +164,7 @@ class Facturacionserv extends Component
                 "cod_domifiscal"=> "0000",
                 "tiop_codi"=> "0101",
                 "fecha"=> $comprobante->fechaEmision,
-                "fvenci"=> $comprobante->fechaVencimiento,
+                "fvenc"=> $comprobante->fechaVencimiento,
                 "tipodocu"=> $comprobante->tipoDocumento,
                 "nro_serie_efact"=> $comprobante->serie,
                 "tipo_moneda"=> $comprobante->moneda,
