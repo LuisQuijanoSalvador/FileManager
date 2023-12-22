@@ -82,7 +82,21 @@ class Facturacionserv extends Component
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
-        $numComprobante = $funciones->numeroComprobante('DOCUMENTO DE COBRANZA');
+
+        switch ($dataBoleto->idTipoDocumento) {
+            case 6:
+                $numComprobante = $funciones->numeroComprobante('DOCUMENTO DE COBRANZA');
+                $numSerie = '0001';
+                break;
+            case 1:
+                $numComprobante = $funciones->numeroComprobante('FACTURA');
+                $numSerie = 'F001';
+                break;
+            case 2:
+                $numComprobante = $funciones->numeroComprobante('BOLETA DE VENTA');
+                $numSerie = 'B001';
+                break;
+        }
         $cliente = Cliente::find($dataServicio->idCliente);
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
         if ($dataServicio->tMoneda->codigo == 'USD') {
@@ -99,7 +113,7 @@ class Facturacionserv extends Component
         $documento->numeroDocumentoIdentidad = $dataServicio->tCliente->numeroDocumentoIdentidad;
         $documento->idTipoDocumento = $dataServicio->idTipoDocumento;
         $documento->tipoDocumento = $dataServicio->tTipoDocumento->codigo;
-        $documento->serie = '0001';
+        $documento->serie = $numSerie;
         $documento->numero = $numComprobante;
         $documento->idMoneda = $dataServicio->idMoneda;
         $documento->moneda = $dataServicio->tMoneda->codigo;
