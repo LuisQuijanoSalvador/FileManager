@@ -30,6 +30,7 @@ use App\Models\BoletoPago;
 use App\Models\TarjetaCredito;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use App\Models\ServicioPago;
 
 class Servicios extends Component
 {
@@ -171,7 +172,7 @@ class Servicios extends Component
     }
 
     public function grabar(){
-        $this->validate();
+        // $this->validate();
         //$area = Area::find($this->idArea);
         $servicio = new Servicio();
         $funciones = new Funciones();
@@ -192,6 +193,13 @@ class Servicios extends Component
         $servicio->fechaReserva = $this->fechaReserva;
         $servicio->idTipoServicio = $this->idTipoServicio;
         $servicio->tipoRuta = $this->tipoRuta;
+        $servicio->idGds = 1;
+        $servicio->fechaIn = $this->fechaEmision;
+        $servicio->fechaOut = $this->fechaEmision;
+        $servicio->idTipoPasajero = 1;
+        $servicio->codigoReserva = '';
+        $servicio->inafecto = $this->inafecto;
+        $servicio->idTipoPagoConsolidador = $this->idTipoPagoConsolidador;
         $servicio->tipoTarifa = $this->tipoTarifa;
         $servicio->origen = $this->origen;
         $servicio->pasajero = $this->pasajero;
