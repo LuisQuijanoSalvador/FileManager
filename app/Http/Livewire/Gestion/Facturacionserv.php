@@ -105,6 +105,9 @@ class Facturacionserv extends Component
             $this->monedaLetra = 'SOLES';
         }
         
+        $solicitante = Solicitante::find($dataServicio->idSolicitante);
+        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . '\n' . 'POR LA EMISION DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . '\n' . 'TKT: ' . $dataBoleto->numeroBoleto;
+        
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
         $documento->idCliente = $dataServicio->idCliente;
@@ -162,7 +165,7 @@ class Facturacionserv extends Component
                 "fecha"=> $comprobante->fechaEmision,
                 "fvenci"=> $comprobante->fechaVencimiento,
                 "tipodocu"=> $comprobante->tipoDocumento,
-                "nro_serie_efact"=> "0001",
+                "nro_serie_efact"=> $comprobante->serie,
                 "tipo_moneda"=> $comprobante->moneda,
                 "numero"=> str_pad($comprobante->numero,8,"0",STR_PAD_LEFT),
                 "tipodocurefe"=> "",
@@ -200,7 +203,7 @@ class Facturacionserv extends Component
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                "glosa"=> $comprobante->glosa,
+                "glosa"=> "",
                 "glosa_refe"=> "",
                 "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
@@ -250,7 +253,7 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => "POR LA EMISION DE BOLETO AEREO",
+                    "descripcion" => $comprobante->glosa,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
