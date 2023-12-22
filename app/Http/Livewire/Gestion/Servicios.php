@@ -99,7 +99,6 @@ class Servicios extends Component
         'igv.required' => 'Este campo es requerido',
         'total.required' => 'Este campo es requerido',
         'totalOrigen.required' => 'Este campo es requerido',
-        'idTipoPagoConsolidador.required' => 'Este campo es requerido',
         'estado.required' => 'Este campo es requerido',
 
         'idMedioPago.required' => 'Requerido',
