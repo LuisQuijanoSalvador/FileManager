@@ -218,9 +218,10 @@ class Servicios extends Component
         $servicio->observaciones = $this->observaciones;
         $servicio->estado = $this->estado;
         $servicio->usuarioCreacion = auth()->user()->id;
+        $servicio->save();
+        $this->grabarPagos($servicio->id);
         try {
-            $servicio->save();
-            $this->grabarPagos($servicio->id);
+            
         } catch (\Throwable $th) {
             session()->flash('error', 'Ocurrió un error intentando grabar.');
         }
