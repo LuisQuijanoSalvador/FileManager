@@ -43,7 +43,7 @@ class Servicios extends Component
     public $selectedCliente = NULL;
     public $selectedSolicitante = 0;
 
-    public $idRegistro,$numeroServicio,$numeroFile,$fechaEmision,$idCounter,
+    public $idRegistro=0,$numeroServicio,$numeroFile,$fechaEmision,$idCounter,
             $idTipoFacturacion,$idTipoDocumento=6,$idArea,$idVendedor,$idProveedor=0,
             $fechaReserva,$fechaIn,$fechaOut,$idTipoServicio=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",
             $origen="BSP",$pasajero,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$inafecto=0,$igv=0,
@@ -252,7 +252,7 @@ class Servicios extends Component
     }
 
     public function limpiarControles(){
-        $this->idRegistro = '';
+        $this->idRegistro = 0;
         $this->numeroServicio = '';
         $this->numeroFile = '';
         $this->fechaEmision = '';
@@ -306,9 +306,11 @@ class Servicios extends Component
     public function editar($id){
         $servicio = Servicio::find($id);
         $this->limpiarControles();
-        $this->idRegistro = $servicio->idRegistro;
+        $this->idRegistro = $servicio->id;
         $this->numeroServicio = $servicio->numeroServicio;
         $this->numeroFile = $servicio->numeroFile;
+        $this->selectedCliente = $servicio->idCliente;
+        $this->selectedSolicitante = $servicio->idSolicitante;
         $this->fechaEmision = $servicio->fechaEmision;
         $this->idCounter = $servicio->idCounter;
         $this->idTipoFacturacion = $servicio->idTipoFacturacion;
@@ -326,6 +328,7 @@ class Servicios extends Component
         $this->tipoCambio = $servicio->tipoCambio;
         $this->idMoneda = $servicio->idMoneda;
         $this->tarifaNeta = $servicio->tarifaNeta;
+        $this->inafecto = $servicio->inafecto;
         $this->igv = $servicio->igv;
         $this->otrosImpuestos = $servicio->otrosImpuestos;
         $this->xm = $servicio->xm;
@@ -355,6 +358,8 @@ class Servicios extends Component
         $servicio = Servicio::find($id);
         $servicio->numeroServicio = $this->numeroServicio;
         $servicio->numeroFile = $this->numeroFile;
+        $servicio->idCliente = $this->selectedCliente;
+        $servicio->idSolicitante = $this->selectedSolicitante;
         $servicio->fechaEmision = $this->fechaEmision;
         $servicio->idCounter = $this->idCounter;
         $servicio->idTipoFacturacion = $this->idTipoFacturacion;
