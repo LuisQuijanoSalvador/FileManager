@@ -323,7 +323,7 @@ class Facturacionserv extends Component
         // Datos a enviar en formato JSON
         $dataToSend = [
             "cabecera" => [
-                "ruc_emisor" => "26666666666" ,
+                "ruc_emisor" => "20604309027" ,
                 "razonsocial_emisor"=> "AS TRAVEL PERU S.A.C",
                 "direccion_emisor"=> "CAL.CALLE MARQUES DE MONTESCLAROS NRO. 165 DPTO. 104 URB. LA VIRREYNA LIMA - LIMA - SANTIAGO DE SURCO",
                 "telefono_emisor"=> "(01) 972197067",
