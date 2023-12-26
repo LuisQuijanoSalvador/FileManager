@@ -107,7 +107,7 @@ class Facturacionserv extends Component
         }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
-        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . '\n' . ' | POR LA EMISION DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataServicio->pasajero;
+        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | POR LA ADQUISICION DEl SIGUIENTE SERVICIO: ' . $dataServicio->tTipoServicio->descripcion;
         
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
@@ -381,16 +381,16 @@ class Facturacionserv extends Component
                 "ant_monto"=> "0.00",
                 "op_exportacion"=> "0.00",
                 "op_exonerada"=> 0.00,
-                "op_inafecta"=> 0,
+                "op_inafecta"=> $comprobante->inafecto,
                 "op_gravada"=> $comprobante->afecto,
-                "tot_valorventa"=> $comprobante->afecto,
-                "tot_precioventa"=> $comprobante->afecto + $comprobante->igv,
+                "tot_valorventa"=> $comprobante->afecto + $comprobante->inafecto,
+                "tot_precioventa"=> $comprobante->total,
                 "isc"=> "0.00",
                 "igv"=> $comprobante->igv,
                 "porc_igv"=> "18.00",
                 "igv_gratuita"=> "0.00",
-                "importe_total"=> $comprobante->afecto + $comprobante->igv,//$comprobante->total,
-                "total_pagar"=> $comprobante->afecto + $comprobante->igv,//$comprobante->total,
+                "importe_total"=> $comprobante->total,
+                "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
                 "total_otros_tributos"=> "0.00",
                 "total_otros_cargos"=> 0,
@@ -399,7 +399,7 @@ class Facturacionserv extends Component
                 "porc_dsctoglobal"=> "0.00",
                 "total_descuento"=> 0,
                 "descto_global"=> "0.00",
-                "total_gratuitas"=> $comprobante->inafecto,
+                "total_gratuitas"=> 0,
                 "importe_letras"=> $comprobante->totalLetras,
                 "total_icbper"=> "0.00",
                 "usuario"=> "luis.quijano@hardnetconsulting.com",
@@ -466,12 +466,12 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => $comprobante->glosa,
+                    "descripcion" => "INAFECTO",
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
-                    "tipoprecioventa" => "02",
-                    "tipo_afect_igv" => "21",
-                    "codigo_tributo" => "9996",
+                    "tipoprecioventa" => "01",
+                    "tipo_afect_igv" => "30",
+                    "codigo_tributo" => "9998",
                     "is_anticipo" => 0,
                     "valorunitbruto" => $comprobante->inafecto,
                     "valorunit" => $comprobante->inafecto,
@@ -479,8 +479,8 @@ class Facturacionserv extends Component
                     "valorventa" => $comprobante->inafecto,
                     "preciounitbruto" => $comprobante->inafecto,//$comprobante->total,
                     "preciounit" => $comprobante->inafecto,//$comprobante->total,
-                    "precioventa" => 0.00,//$comprobante->total,
-                    "precioventabruto" => 0.00,//$comprobante->total,
+                    "precioventa" => $comprobante->inafecto,//$comprobante->total,
+                    "precioventabruto" => $comprobante->inafecto,//$comprobante->total,
                     "igv" => 0,
                     "porc_igv" => "18.00",
                     "isc" => "0.00",

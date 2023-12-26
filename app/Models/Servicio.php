@@ -108,6 +108,10 @@ class Servicio extends Model
         return $this->hasOne(TipoTicket::class,'id','idTipoTicket');
     }
 
+    public function tTipoServicio(){
+        return $this->hasOne(TipoServicio::class,'id','idTipoServicio');
+    }
+
     public function tAerolinea(){
         return $this->hasOne(Aerolinea::class,'id','idAerolinea');
     }
