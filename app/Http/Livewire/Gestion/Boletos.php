@@ -48,8 +48,7 @@ class Boletos extends Component
             $idTipoFacturacion,$idTipoDocumento=6,$idArea,$idVendedor,$idConsolidador=2,$codigoReserva,
             $fechaReserva,$idGds=2,$idTipoTicket=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",$idAerolinea=7,
             $origen="BSP",$pasajero,
-            $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$inafecto=0,
-            $igv=0,
+            $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=1,$tarifaNeta=0,$igv=0,
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
             $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$idFee,$estado=1,
@@ -179,6 +178,28 @@ class Boletos extends Component
             $this->tipoCambio = 0.00;
         }
         $this->fechaReserva = $fechaEmision;
+    }
+
+    public function updatedtarifaNeta($tarifaNeta){
+        if($this->tarifaNeta >= 0){
+            $this->igv = $this->tarifaNeta * 0.18;
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+        }
+    }
+
+    public function updatedotrosImpuestos($otrosImpuestos){
+        if($this->otrosImpuestos >= 0){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+        } 
+    }
+
+    public function updatedxm($xm){
+        if($this->xm){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+        }
     }
 
     public function render()
