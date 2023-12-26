@@ -498,7 +498,7 @@
                                                 <label for="txtTarifaNeta" class="">Tarifa Neta:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model.lazy.defer="tarifaNeta">
+                                                <input type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model="tarifaNeta">
                                                 @error('tarifaNeta')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -509,7 +509,7 @@
                                                 <label for="txtIgv" class="">IGV:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtIgv" wire:model.lazy.defer="igv">
+                                                <input type="number" class="uTextBoxInLine" id="txtIgv" wire:model="igv" disabled>
                                                 @error('igv')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -520,7 +520,7 @@
                                                 <label for="txtOtrosImpuestos" class="">Otros Imp.:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtOtrosImpuestos" wire:model.lazy.defer="otrosImpuestos">
+                                                <input type="number" class="uTextBoxInLine" id="txtOtrosImpuestos" wire:model="otrosImpuestos">
                                                 @error('otrosImpuestos')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -548,7 +548,7 @@
                                                 <label for="txtXm" class="">XM:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine2" id="txtXm" wire:model.lazy.defer="xm">
+                                                <input type="number" class="uTextBoxInLine2" id="txtXm" wire:model="xm">
                                                 @error('xm')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
