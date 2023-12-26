@@ -24,7 +24,7 @@ class Facturacionserv extends Component
     public $sort= 'numeroFile';
     public $direction = 'asc';
 
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra;
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",$monedaLetra;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -107,7 +107,13 @@ class Facturacionserv extends Component
         }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
-        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | POR LA ADQUISICION DEL SIGUIENTE SERVICIO: ' . $dataServicio->tTipoServicio->descripcion;
+        if(strlen($this->glosa) < 5){
+            $this->glosa = "";
+            $this->descripcion = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | POR LA ADQUISICION DEL SIGUIENTE SERVICIO: ' . $dataServicio->tTipoServicio->descripcion;
+        }else{
+            $this->descripcion = $dataServicio->tTipoServicio->descripcion;
+        }
+        
         
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
@@ -319,6 +325,10 @@ class Facturacionserv extends Component
     } 
 
     public function enviaCPEMixto($comprobante){
+        $mensaje_detra = "";
+        if($this->detraccion == 1){
+            $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
+        }
 
         // Datos a enviar en formato JSON
         $dataToSend = [
@@ -371,7 +381,7 @@ class Facturacionserv extends Component
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                "glosa"=> "",
+                "glosa"=> $this->glosa,
                 "glosa_refe"=> "",
                 "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
@@ -413,7 +423,7 @@ class Facturacionserv extends Component
                 "detraccion_mediopago"=> "",
                 "almacen_id"=> null,
                 "icoterms"=> "",
-                "glosa_detraccion"=> ""
+                "glosa_detraccion"=> $mensaje_detra
             ],
             "items" => [
                 [
@@ -421,7 +431,7 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => $comprobante->glosa,
+                    "descripcion" => $this->descripcion,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
@@ -466,7 +476,7 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => "INAFECTO",
+                    "descripcion" => $this->descripcion,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
