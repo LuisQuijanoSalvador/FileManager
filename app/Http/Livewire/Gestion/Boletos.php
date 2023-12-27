@@ -45,20 +45,20 @@ class Boletos extends Component
     public $selectedSolicitante = 0;
 
     public $idRegistro,$numeroBoleto,$numeroFile,$fechaEmision,$idCounter,
-            $idTipoFacturacion,$idTipoDocumento=6,$idArea,$idVendedor,$idConsolidador=2,$codigoReserva,
+            $idTipoFacturacion,$idTipoDocumento=6,$idArea=1,$idVendedor,$idConsolidador=2,$codigoReserva,
             $fechaReserva,$idGds=2,$idTipoTicket=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",$idAerolinea=7,
             $origen="BSP",$pasajero,
             $idTipoPasajero=1,$ruta,$destino,$idDocumento,$tipoCambio,$idMoneda=1,$tarifaNeta=0,$igv=0,
-            $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
+            $inafecto=0,$otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
-            $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$idFee,$estado=1,
-            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
+            $idTipoPagoConsolidador=6,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$idFee,$estado=1,
+            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion,$checkFile;
     
-    public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
+    public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta=7,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
             $horaLlegada,$farebasis;
     Public $boletoRutas;
 
-    public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos;
+    public $idMedioPago=6,$idTarjetaCredito=1,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos;
 
     Public $tarifaFee=0,$tipoDocFee=1;
     
@@ -183,15 +183,22 @@ class Boletos extends Component
     public function updatedtarifaNeta($tarifaNeta){
         if($this->tarifaNeta >= 0){
             $this->igv = $this->tarifaNeta * 0.18;
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
         }
     }
 
     public function updatedotrosImpuestos($otrosImpuestos){
         if($this->otrosImpuestos >= 0){
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+        } 
+    }
+
+    public function updatedinafecto($inafecto){
+        if($this->inafecto >= 0){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
         } 
     }
 
@@ -251,9 +258,13 @@ class Boletos extends Component
         $boleto = new Boleto();
         $funciones = new Funciones();
         $boleto->numeroBoleto = $this->numeroBoleto;
-
-        $file = $funciones->generaFile('FILES');
-        $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
+        if($this->checkFile){
+            $boleto->numeroFile = $this->numeroFile;
+        }else{
+            $file = $funciones->generaFile('FILES');
+            $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
+        }
+        
         $boleto->idCliente = $this->selectedCliente;
         $boleto->idSolicitante = $this->selectedSolicitante;
         $boleto->fechaEmision = $this->fechaEmision;
@@ -320,31 +331,33 @@ class Boletos extends Component
 
     public function grabarRutas($idBoleto){
         //TODO: Corregir para grbar desde el array 
+        $idAer = $this->boletoRutas[0]["idAerolinea"];
         $boletoRuta = new BoletoRuta();
         $boletoRuta->idBoleto = $idBoleto;
-        $boletoRuta->idAerolinea = $this->idAerolineaRuta;
-        $boletoRuta->ciudadSalida = $this->ciudadSalida;
-        $boletoRuta->ciudadLlegada = $this->ciudadLlegada;
-        $boletoRuta->vuelo = $this->vuelo;
-        $boletoRuta->clase = $this->clase;
-        $boletoRuta->fechaSalida = $this->fechaSalida;
-        $boletoRuta->horaSalida = $this->horaSalida;
-        $boletoRuta->fechaLlegada = $this->fechaLlegada;
-        $boletoRuta->horaLlegada = $this->horaLlegada;
-        $boletoRuta->farebasis = $this->farebasis;
+        $boletoRuta->idAerolinea = $idAer;
+        $boletoRuta->ciudadSalida = $this->boletoRutas->pluck("ciudadSalida");
+        $boletoRuta->ciudadLlegada = $this->boletoRutas->pluck("ciudadLlegada");
+        $boletoRuta->vuelo = $this->boletoRutas->pluck("vuelo");
+        $boletoRuta->clase = $this->boletoRutas->pluck("clase");
+        $boletoRuta->fechaSalida = $this->boletoRutas[0]["fechaSalida"];
+        $boletoRuta->horaSalida = $this->boletoRutas[0]["horaSalida"];
+        $boletoRuta->fechaLlegada = $this->boletoRutas[0]["fechaLlegada"];
+        $boletoRuta->horaLlegada = $this->boletoRutas->pluck("horaLlegada");
+        $boletoRuta->farebasis = $this->boletoRutas->pluck("farebasis");
         $boletoRuta->idEstado = 1;
         $boletoRuta->usuarioCreacion = auth()->user()->id;
+        // dd($boletoRuta);
         $boletoRuta->save();
     }
 
     public function grabarPagos($idBoleto){
         $boletoPago = new BoletoPago();
         $boletoPago->idBoleto = $idBoleto;
-        $boletoPago->idMedioPago = $this->idMedioPago;
-        $boletoPago->idTarjetaCredito = $this->idTarjetaCredito;
-        $boletoPago->numeroTarjeta = $this->numeroTarjeta;
-        $boletoPago->monto = $this->monto;
-        $boletoPago->fechaVencimientoTC = $this->fechaVencimientoTC;
+        $boletoPago->idMedioPago = $this->boletoPagos[0]["idMedioPago"];
+        $boletoPago->idTarjetaCredito = $this->boletoPagos[0]["idTarjetaCredito"];
+        $boletoPago->numeroTarjeta = $this->boletoPagos[0]["numeroTarjeta"];
+        $boletoPago->monto = $this->boletoPagos[0]["monto"];
+        $boletoPago->fechaVencimientoTC = $this->boletoPagos[0]["fechaVencimientoTC"];
         $boletoPago->idEstado = 1;
         $boletoPago->usuarioCreacion = auth()->user()->id;
         $boletoPago->save();
@@ -542,7 +555,7 @@ class Boletos extends Component
             $this->boletoRutas->add(array(
                 'ciudadSalida' =>  $this->ciudadSalida,
                 'ciudadLlegada' =>  $this->ciudadLlegada,
-                'idAerolinea' =>  $this->idAerolineaRuta,
+                'idAerolinea' =>  (int)$this->idAerolineaRuta,
                 'aerolinea' => $aer->razonSocial,
                 'vuelo' =>  $this->vuelo,
                 'clase' =>  $this->clase,

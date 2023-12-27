@@ -141,9 +141,15 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="txtFile" class="form-label">File:</label>
-                                    <input type="text" class="uTextBox" maxlength="10" id="txtFile" wire:model.lazy="numeroFile" disabled style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <input type="checkbox" class=" mt-16" name="chkFile" id="chkFile" wire:model="checkFile">
+                                        </div>
+                                        <div class="col-md-11">
+                                            <label for="txtFile" class="form-label">File:</label>
+                                            <input type="text" class="uTextBox" maxlength="10" id="txtFile" wire:model.lazy="numeroFile" @if (!$checkFile) disabled @endif style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="cboCliente" class="form-label">Cliente:</label>
@@ -510,7 +516,7 @@
                                                 <label for="txtInafecto" class="">Inafecto:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtInafecto" wire:model.lazy.defer="inafecto">
+                                                <input type="number" class="uTextBoxInLine" id="txtInafecto" wire:model="inafecto">
                                                 @error('inafecto')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror

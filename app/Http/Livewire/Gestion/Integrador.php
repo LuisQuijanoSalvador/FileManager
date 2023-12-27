@@ -28,7 +28,7 @@ class Integrador extends Component
     $otrosImpuestos=0,$yr=0,$hw=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
     $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
     $idTipoPagoConsolidador,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,
-    $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
+    $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion,$checkFile;
 
     public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
             $horaLlegada,$farebasis;
@@ -234,9 +234,13 @@ class Integrador extends Component
         $boleto = new Boleto();
         $funciones = new Funciones();
         $boleto->numeroBoleto = $this->numeroBoleto;
-
-        $file = $funciones->generaFile('FILES');
-        $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
+        if($this->checkFile){
+            $boleto->numeroFile = $this->numeroFile;
+        }else{
+            $file = $funciones->generaFile('FILES');
+            $boleto->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
+        }
+        
         $boleto->idCliente = $this->idCliente;
         $boleto->idSolicitante = 0;
         $boleto->fechaEmision = $this->fechaEmision;

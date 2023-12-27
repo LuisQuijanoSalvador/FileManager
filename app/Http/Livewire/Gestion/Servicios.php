@@ -44,12 +44,12 @@ class Servicios extends Component
     public $selectedSolicitante = 0;
 
     public $idRegistro=0,$numeroServicio,$numeroFile,$fechaEmision,$idCounter,
-            $idTipoFacturacion,$idTipoDocumento=6,$idArea,$idVendedor,$idProveedor=0,
+            $idTipoFacturacion,$idTipoDocumento=1,$idArea,$idVendedor,$idProveedor=0,
             $fechaReserva,$fechaIn,$fechaOut,$idTipoServicio=1,$tipoRuta="NACIONAL",$tipoTarifa="NORMAL",
-            $origen="BSP",$pasajero,$idDocumento,$tipoCambio,$idMoneda=2,$tarifaNeta=0,$inafecto=0,$igv=0,
+            $origen="BSP",$pasajero,$idDocumento,$tipoCambio,$idMoneda=1,$tarifaNeta=0,$inafecto=0,$igv=0,
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,$destino,
-            $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador,
+            $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador=6,
             $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
 
     public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos;
@@ -133,6 +133,35 @@ class Servicios extends Component
         $this->fechaIn = $fechaEmision;
         $this->fechaOut = $fechaEmision;
     }
+
+    public function updatedtarifaNeta($tarifaNeta){
+        if($this->tarifaNeta >= 0){
+            $this->igv = $this->tarifaNeta * 0.18;
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+        }
+    }
+
+    public function updatedotrosImpuestos($otrosImpuestos){
+        if($this->otrosImpuestos >= 0){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+        } 
+    }
+
+    public function updatedinafecto($inafecto){
+        if($this->inafecto >= 0){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+        } 
+    }
+
+    public function updatedxm($xm){
+        if($this->xm){
+            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
+            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+        }
+    }
     
     public function render()
     {
@@ -172,7 +201,7 @@ class Servicios extends Component
     }
 
     public function grabar(){
-        // $this->validate();
+        $this->validate();
         //$area = Area::find($this->idArea);
         $servicio = new Servicio();
         $funciones = new Funciones();
@@ -239,15 +268,17 @@ class Servicios extends Component
     }
 
     public function grabarPagos($idServicio){
+        // dd($this->servicioPagos);
         $servicioPago = new ServicioPago();
         $servicioPago->idServicio = $idServicio;
-        $servicioPago->idMedioPago = $this->idMedioPago;
-        $servicioPago->idTarjetaCredito = $this->idTarjetaCredito;
-        $servicioPago->numeroTarjeta = $this->numeroTarjeta;
-        $servicioPago->monto = $this->monto;
-        $servicioPago->fechaVencimientoTC = $this->fechaVencimientoTC;
+        $servicioPago->idMedioPago = $this->servicioPagos->pluck("idMedioPago");
+        $servicioPago->idTarjetaCredito = $this->servicioPagos->pluck("idTarjetaCredito");
+        $servicioPago->numeroTarjeta = $this->servicioPagos->pluck("numeroTarjeta");
+        $servicioPago->monto = $this->servicioPagos->pluck("monto");
+        $servicioPago->fechaVencimientoTC = $this->servicioPagos->pluck("fechaVencimientoTC");
         $servicioPago->idEstado = 1;
         $servicioPago->usuarioCreacion = auth()->user()->id;
+        // dd($servicioPago);
         $servicioPago->save();
     }
 
@@ -427,6 +458,7 @@ class Servicios extends Component
                 'monto' => $this->monto,
                 'fechaVencimientoTC' => $this->fechaVencimientoTC
             ));
+            
             $this->resetPagos();
         }
     }
