@@ -683,7 +683,7 @@ class Boletos extends Component
         $servicio->tarifaNeta = $this->tarifaFee;
         $servicio->inafecto = 0;
         $servicio->igv = $this->tarifaFee * 0.18;
-        $servicio->otrosImpuestos = $boleto->otrosImpuestos;
+        $servicio->otrosImpuestos = 0;
         $servicio->xm = 0;
         $servicio->total = $servicio->tarifaNeta + $servicio->igv;
         $servicio->idTipoPagoConsolidador = 8;

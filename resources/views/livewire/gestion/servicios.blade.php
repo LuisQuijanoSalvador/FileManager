@@ -640,22 +640,41 @@
                                         @if($servicioPagos)
                                             @foreach ($servicioPagos as $servicioPago)
                                 
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td class="py-1">{{$servicioPago['medioPago']}}</td>
-                                                <td class="py-1">{{$servicioPago['tarjetaCredito']}}</td>
-                                                <td class="py-1">{{$servicioPago['numeroTarjeta']}}</td>
-                                                <td class="py-1">{{$servicioPago['monto']}}</td>
-                                                <td class="py-1">{{$servicioPago['fechaVencimientoTC']}}</td>
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$servicioPago['medioPago']}}</td>
+                                                    <td class="py-1">{{$servicioPago['tarjetaCredito']}}</td>
+                                                    <td class="py-1">{{$servicioPago['numeroTarjeta']}}</td>
+                                                    <td class="py-1">{{$servicioPago['monto']}}</td>
+                                                    <td class="py-1">{{$servicioPago['fechaVencimientoTC']}}</td>
 
-                                                <td class="py-1">
-                                                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                                                        <button type="button" style="margin-top: 0px" wire:click="quitarPago({{$loop->index}})">
-                                                            <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click="quitarPago({{$loop->index}})">
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             @endforeach
+                                        {{-- @else
+                                            @foreach ($this->servPag as $servicioP)
+                                    
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$servicioP->tMedioPago->descripcion}}</td>
+                                                    <td class="py-1">{{$servicioP->tTarjetaCredito->descripcion}}</td>
+                                                    <td class="py-1">{{$servicioP->numeroTarjeta}}</td>
+                                                    <td class="py-1">{{$servicioP->monto}}</td>
+                                                    <td class="py-1">{{$servicioP->fechaVencimientoTC}}</td>
+
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click="quitarPago({{$loop->index}})">
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach --}}
                                         @endif
                                     </tbody>
                                 </table>

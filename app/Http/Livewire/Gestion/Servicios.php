@@ -52,7 +52,7 @@ class Servicios extends Component
             $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador=6,
             $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
 
-    public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos;
+    public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos,$servPag;
 
     public function rules(){
         return[
@@ -335,12 +335,15 @@ class Servicios extends Component
     }
 
     public function editar($id){
+        
         $servicio = Servicio::find($id);
+        // dd($servicio);
         $this->limpiarControles();
         $this->idRegistro = $servicio->id;
         $this->numeroServicio = $servicio->numeroServicio;
         $this->numeroFile = $servicio->numeroFile;
         $this->selectedCliente = $servicio->idCliente;
+        $this->updatedselectedCliente($servicio->idCliente);
         $this->selectedSolicitante = $servicio->idSolicitante;
         $this->fechaEmision = $servicio->fechaEmision;
         $this->idCounter = $servicio->idCounter;
@@ -350,6 +353,8 @@ class Servicios extends Component
         $this->idVendedor = $servicio->idVendedor;
         $this->idProveedor = $servicio->idProveedor;
         $this->fechaReserva = $servicio->fechaReserva;
+        $this->fechaIn = $servicio->fechaIn;
+        $this->fechaOut = $servicio->fechaOut;
         $this->idTipoServicio = $servicio->idTipoServicio;
         $this->tipoRuta = $servicio->tipoRuta;
         $this->tipoTarifa = $servicio->tipoTarifa;
@@ -383,6 +388,9 @@ class Servicios extends Component
         $this->fechaCreacion = Carbon::parse($servicio->created_at)->format("Y-m-d");
         $this->usuarioModificacion = $servicio->usuarioModificacion;
         $this->fechaModificacion = Carbon::parse($servicio->updated_at)->format("Y-m-d");
+
+        // $servPag = ServicioPago::where('idServicio',$id)->first();
+        // dd($servPag);
     }
 
     public function actualizar($id){
