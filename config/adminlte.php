@@ -366,7 +366,11 @@ return [
                             'url'     => '#'
                         ],
                     ]
-                ]
+                    ],
+                    [
+                        'text' => 'Documentos',
+                        'route' => 'listaDocumentos'
+                    ]
             ]
         ],
         [

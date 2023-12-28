@@ -83,7 +83,15 @@
     {{$servicios->links()}}
 
     @include('components.modalheaderxl')
-
+    @if ($idRegistro!=0)
+        <div class="row">
+            <div class="col-md-1">
+                <br>
+                <button type="button" class="btn btn-success" wire:click='clonarServicio'>Clonar</button>
+            </div>
+        </div>
+    @endif
+    <hr width="100%">
     <form>
         <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item">

@@ -10,7 +10,7 @@ class ServicioPago extends Model
     use HasFactory;
 
     protected $fillable = [
-        'idBoleto',
+        'idServicio',
         'idMedioPago',
         'idTarjetaCredito',
         'numeroTarjeta',

@@ -36,8 +36,8 @@ class Servicios extends Component
 {
     use WithPagination;
     public $search = "";
-    public $sort= 'numeroServicio';
-    public $direction = 'asc';
+    public $sort= 'id';
+    public $direction = 'desc';
     public $clientes;
     public $solicitantes;
     public $selectedCliente = NULL;
@@ -205,7 +205,6 @@ class Servicios extends Component
         //$area = Area::find($this->idArea);
         $servicio = new Servicio();
         $funciones = new Funciones();
-        
 
         $numServ = $funciones->numeroServicio('SERVICIOS');
         $servicio->numeroServicio = $numServ;
@@ -481,5 +480,78 @@ class Servicios extends Component
 
     public function quitarPago($indice){
         unset($this->servicioPagos[$indice]);
+    }
+
+    public function clonarServicio(){
+        $servicioOriginal = Servicio::find($this->idRegistro);
+        $servicioPagoOriginal = ServicioPago::where('idServicio',$this->idRegistro)->first();
+        $funciones = new Funciones();
+
+        $numServ = $funciones->numeroServicio('SERVICIOS');
+        
+        $servicioClon = new Servicio();
+        $servicioClon->numeroServicio = $numServ;
+
+        $servicioClon->numeroFile = $servicioOriginal->numeroFile;
+        $servicioClon->idCliente = $servicioOriginal->idCliente;
+        $servicioClon->idSolicitante = $servicioOriginal->idSolicitante;
+        $servicioClon->fechaEmision = $servicioOriginal->fechaEmision;
+        $servicioClon->idCounter = $servicioOriginal->idCounter;
+        $servicioClon->idTipoFacturacion = $servicioOriginal->idTipoFacturacion;
+        $servicioClon->idTipoDocumento = $servicioOriginal->idTipoDocumento;
+        $servicioClon->idArea = $servicioOriginal->idArea;
+        $servicioClon->idVendedor = $servicioOriginal->idVendedor;
+        $servicioClon->idProveedor = $servicioOriginal->idProveedor;
+        $servicioClon->fechaReserva = $servicioOriginal->fechaReserva;
+        $servicioClon->idTipoServicio = $servicioOriginal->idTipoServicio;
+        $servicioClon->tipoRuta = $servicioOriginal->tipoRuta;
+        $servicioClon->idGds = $servicioOriginal->idGds;
+        $servicioClon->fechaIn = $servicioOriginal->fechaIn;
+        $servicioClon->fechaOut = $servicioOriginal->fechaOut;
+        $servicioClon->idTipoPasajero = $servicioOriginal->idTipoPasajero;
+        $servicioClon->codigoReserva = $servicioOriginal->codigoReserva;
+        $servicioClon->inafecto = $servicioOriginal->inafecto;
+        $servicioClon->idTipoPagoConsolidador = $servicioOriginal->idTipoPagoConsolidador;
+        $servicioClon->tipoTarifa = $servicioOriginal->tipoTarifa;
+        $servicioClon->origen = $servicioOriginal->origen;
+        $servicioClon->pasajero = $servicioOriginal->pasajero;
+        $servicioClon->tipoCambio = $servicioOriginal->tipoCambio;
+        $servicioClon->idMoneda = $servicioOriginal->idMoneda;
+        $servicioClon->tarifaNeta = $servicioOriginal->tarifaNeta;
+        $servicioClon->igv = $servicioOriginal->igv;
+        $servicioClon->otrosImpuestos = $servicioOriginal->otrosImpuestos;
+        $servicioClon->xm = $servicioOriginal->xm;
+        $servicioClon->total = $servicioOriginal->total;
+        $servicioClon->totalOrigen = $servicioOriginal->totalOrigen;
+        $servicioClon->porcentajeComision = $servicioOriginal->porcentajeComision;
+        $servicioClon->montoComision = $servicioOriginal->montoComision;
+        $servicioClon->descuentoCorporativo = $servicioOriginal->descuentoCorporativo;
+        $servicioClon->codigoDescCorp = $servicioOriginal->codigoDescCorp;
+        $servicioClon->tarifaNormal = $servicioOriginal->tarifaNormal;
+        $servicioClon->tarifaAlta = $servicioOriginal->tarifaAlta;
+        $servicioClon->tarifaBaja = $servicioOriginal->tarifaBaja;
+        $servicioClon->centroCosto = $servicioOriginal->centroCosto;
+        $servicioClon->cod1 = $servicioOriginal->cod1;
+        $servicioClon->cod2 = $servicioOriginal->cod2;
+        $servicioClon->cod3 = $servicioOriginal->cod3;
+        $servicioClon->cod4 = $servicioOriginal->cod4;
+        $servicioClon->observaciones = $servicioOriginal->observaciones;
+        $servicioClon->estado = $servicioOriginal->estado;
+        $servicioClon->usuarioCreacion = $servicioOriginal->usuarioCreacion;
+        $servicioClon->save();
+        
+        if($servicioPagoOriginal){
+            $servicioPagoClon = new ServicioPago();
+            $servicioPagoClon->idServicio = $servicioClon->id;
+            $servicioPagoClon->idMedioPago = $servicioPagoOriginal->idMedioPago;
+            $servicioPagoClon->idTarjetaCredito = $servicioPagoOriginal->idTarjetaCredito;
+            $servicioPagoClon->numeroTarjeta = $servicioPagoOriginal->numeroTarjeta;
+            $servicioPagoClon->monto = $servicioPagoOriginal->monto;
+            $servicioPagoClon->fechaVencimientoTC = $servicioPagoOriginal->fechaVencimientoTC;
+            $servicioPagoClon->idEstado = $servicioPagoOriginal->idEstado;
+            $servicioPagoClon->usuarioCreacion = $servicioPagoOriginal->usuarioCreacion;
+            $servicioPagoClon->save();
+        }
+        return redirect()->route('listaServicios');
     }
 }
