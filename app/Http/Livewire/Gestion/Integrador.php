@@ -570,23 +570,44 @@ class Integrador extends Component
             // }else{
             //     $this->tipoRuta = "NACIONAL";
             // }
-            $posTNeta = strpos($linea,"FARE:");
+            $posTNeta = strpos($linea,"FARE: USD");
             if ($posTNeta !== false) {
-                $neto = substr($linea,$posTNeta+6,7);
-                $this->tarifaNeta = $neto;
-            }
-            $posPe = strpos($linea,"PE:");
-            if ($posPe !== false) {
-                $contPE = $contPE + 1;
-                if($contPE == 2){
-                    $pe = substr($linea,$posPe+4,6);
-                    $this->igv = trim($pe);
+                $neto = substr($linea,$posTNeta+9,7);
+                $this->tarifaNeta = trim($neto);
+            }else{
+                $posTNeta = strpos($linea,"FARE: ");
+                if ($posTNeta !== false) {
+                    $neto = substr($linea,$posTNeta+6,7);
+                    $this->tarifaNeta = trim($neto);
                 }
             }
-            $posHw = strpos($linea,"HW:");
+            
+            $posPe = strpos($linea,"PE: USD");
+            if ($posPe !== false) {
+                $pe = substr($linea,$posPe+7,6);
+                $this->igv = trim($pe);
+            }else{
+                $posPe = strpos($linea,"PE: ");
+                if ($posPe !== false) {
+                    $contPE = $contPE + 1;
+                    if($contPE == 2){
+                        $pe = substr($linea,$posPe+4,6);
+                        $this->igv = trim($pe);
+                    } 
+                } 
+            }
+
+            $posHw = strpos($linea,"HW: USD");
             if ($posHw !== false) {
-                $nhw = substr($linea,$posHw+4,6);
+                $nhw = substr($linea,$posHw+7,6);
                 $this->hw = trim($nhw);
+            }else{
+                $posHw = strpos($linea,"HW:");
+                if ($posHw !== false){
+                    $nhw = substr($linea,$posHw+4,6);
+                    $this->hw = trim($nhw);
+                }
+                
             }
             
             // // dd($this->tipoRuta);

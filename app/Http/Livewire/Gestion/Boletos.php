@@ -182,30 +182,30 @@ class Boletos extends Component
 
     public function updatedtarifaNeta($tarifaNeta){
         if($this->tarifaNeta >= 0){
-            $this->igv = $this->tarifaNeta * 0.18;
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+            $this->igv = round($this->tarifaNeta * 0.18,2);
+            $this->total = round(($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto),2);
+            $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm,2);
         }
     }
 
     public function updatedotrosImpuestos($otrosImpuestos){
         if($this->otrosImpuestos >= 0){
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+            $this->total = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto,2);
+            $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm,2);
         } 
     }
 
     public function updatedinafecto($inafecto){
         if($this->inafecto >= 0){
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm;
+            $this->total = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto,2);
+            $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm,2);
         } 
     }
 
     public function updatedxm($xm){
         if($this->xm){
-            $this->total = $this->tarifaNeta + $this->igv + $this->otrosImpuestos;
-            $this->totalOrigen = $this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm;
+            $this->total = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos,2);
+            $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm,2);
         }
     }
 
