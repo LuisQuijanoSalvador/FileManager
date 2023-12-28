@@ -54,9 +54,60 @@ class Servicios extends Component
 
     public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos,$servPag;
 
+    public function limpiarControles(){
+        $this->idRegistro = 0;
+        $this->numeroServicio = '';
+        $this->numeroFile = '';
+        $this->fechaEmision = '';
+        $this->idCounter = 1;
+        $this->idTipoFacturacion = 1;
+        $this->idTipoDocumento = 1;
+        $this->idArea = 1;
+        $this->idVendedor = 1;
+        $this->idProveedor = 1;
+        $this->fechaReserva = '';
+        $this->idTipoServicio = 1;
+        $this->tipoRuta = '';
+        $this->tipoTarifa = '';
+        $this->origen = '';
+        $this->pasajero = '';
+        $this->idDocumento = '';
+        $this->tipoCambio = '';
+        $this->idMoneda = '';
+        $this->tarifaNeta = '';
+        $this->igv = '';
+        $this->otrosImpuestos = '';
+        $this->xm = '';
+        $this->total = '';
+        $this->totalOrigen = '';
+        $this->porcentajeComision = '';
+        $this->montoComision = '';
+        $this->descuentoCorporativo = '';
+        $this->codigoDescCorp = '';
+        $this->tarifaNormal = '';
+        $this->tarifaAlta = '';
+        $this->tarifaBaja = '';
+        $this->centroCosto = '';
+        $this->cod1 = '';
+        $this->cod2 = '';
+        $this->cod3 = '';
+        $this->cod4 = '';
+        $this->observaciones = '';
+        $this->estado = '';
+        $this->usuarioCreacion = '';
+        $this->fechaCreacion = '';
+        $this->usuarioModificacion = '';
+        $this->fechaModificacion = '';
+        $this->idMedioPago = '';
+        $this->idTarjetaCredito = '';
+        $this->numeroTarjeta = '';
+        $this->monto = '';
+        $this->fechaVencimientoTC = '';
+        $this->servicioPagos = '';
+    }
+
     public function rules(){
         return[
-            'numeroServicio' => 'required',
             'selectedCliente' => 'required',
             'fechaEmision' => 'required',
             'idCounter' => 'required',
@@ -76,8 +127,8 @@ class Servicios extends Component
             'totalOrigen' => 'required',
             'estado' => 'required',
 
-            'idMedioPago' => 'required',
-            'monto' => 'required',
+            // 'idMedioPago' => 'required',
+            // 'monto' => 'required',
         ];
     }
 
@@ -270,67 +321,15 @@ class Servicios extends Component
         // dd($this->servicioPagos);
         $servicioPago = new ServicioPago();
         $servicioPago->idServicio = $idServicio;
-        $servicioPago->idMedioPago = $this->servicioPagos->pluck("idMedioPago");
-        $servicioPago->idTarjetaCredito = $this->servicioPagos->pluck("idTarjetaCredito");
-        $servicioPago->numeroTarjeta = $this->servicioPagos->pluck("numeroTarjeta");
-        $servicioPago->monto = $this->servicioPagos->pluck("monto");
-        $servicioPago->fechaVencimientoTC = $this->servicioPagos->pluck("fechaVencimientoTC");
+        $servicioPago->idMedioPago = $this->servicioPagos[0]["idMedioPago"];
+        $servicioPago->idTarjetaCredito = $this->servicioPagos[0]["idTarjetaCredito"];
+        $servicioPago->numeroTarjeta = $this->servicioPagos[0]["numeroTarjeta"];
+        $servicioPago->monto = $this->servicioPagos[0]["monto"];
+        $servicioPago->fechaVencimientoTC = $this->servicioPagos[0]["fechaVencimientoTC"];
         $servicioPago->idEstado = 1;
         $servicioPago->usuarioCreacion = auth()->user()->id;
         // dd($servicioPago);
         $servicioPago->save();
-    }
-
-    public function limpiarControles(){
-        $this->idRegistro = 0;
-        $this->numeroServicio = '';
-        $this->numeroFile = '';
-        $this->fechaEmision = '';
-        $this->idCounter = '';
-        $this->idTipoFacturacion = '';
-        $this->idTipoDocumento = '';
-        $this->idArea = '';
-        $this->idVendedor = '';
-        $this->idProveedor = '';
-        $this->fechaReserva = '';
-        $this->idTipoServicio = '';
-        $this->tipoRuta = '';
-        $this->tipoTarifa = '';
-        $this->origen = '';
-        $this->pasajero = '';
-        $this->idDocumento = '';
-        $this->tipoCambio = '';
-        $this->idMoneda = '';
-        $this->tarifaNeta = '';
-        $this->igv = '';
-        $this->otrosImpuestos = '';
-        $this->xm = '';
-        $this->total = '';
-        $this->totalOrigen = '';
-        $this->porcentajeComision = '';
-        $this->montoComision = '';
-        $this->descuentoCorporativo = '';
-        $this->codigoDescCorp = '';
-        $this->tarifaNormal = '';
-        $this->tarifaAlta = '';
-        $this->tarifaBaja = '';
-        $this->centroCosto = '';
-        $this->cod1 = '';
-        $this->cod2 = '';
-        $this->cod3 = '';
-        $this->cod4 = '';
-        $this->observaciones = '';
-        $this->estado = '';
-        $this->usuarioCreacion = '';
-        $this->fechaCreacion = '';
-        $this->usuarioModificacion = '';
-        $this->fechaModificacion = '';
-        $this->idMedioPago = '';
-        $this->idTarjetaCredito = '';
-        $this->numeroTarjeta = '';
-        $this->monto = '';
-        $this->fechaVencimientoTC = '';
-        $this->servicioPagos = '';
     }
 
     public function editar($id){
