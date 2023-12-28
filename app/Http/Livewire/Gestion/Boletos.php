@@ -37,8 +37,8 @@ class Boletos extends Component
 {
     use WithPagination;
     public $search = "";
-    public $sort= 'numeroBoleto';
-    public $direction = 'asc';
+    public $sort= 'id';
+    public $direction = 'desc';
     public $clientes;
     public $solicitantes;
     public $selectedCliente = NULL;
@@ -331,19 +331,23 @@ class Boletos extends Component
 
     public function grabarRutas($idBoleto){
         //TODO: Corregir para grbar desde el array 
-        $idAer = $this->boletoRutas[0]["idAerolinea"];
+        // foreach ($this->boletoRutas as $indice => $descripcion) {
+        //     $boletoRuta = new BoletoRuta();
+        //     $boletoRuta->idBoleto = $idBoleto;
+        //     $boletoRuta->idAerolinea = $this->boletoRutas[0]["idAerolinea"];
+        // }
         $boletoRuta = new BoletoRuta();
         $boletoRuta->idBoleto = $idBoleto;
-        $boletoRuta->idAerolinea = $idAer;
-        $boletoRuta->ciudadSalida = $this->boletoRutas->pluck("ciudadSalida");
-        $boletoRuta->ciudadLlegada = $this->boletoRutas->pluck("ciudadLlegada");
-        $boletoRuta->vuelo = $this->boletoRutas->pluck("vuelo");
-        $boletoRuta->clase = $this->boletoRutas->pluck("clase");
+        $boletoRuta->idAerolinea = $this->boletoRutas[0]["idAerolinea"];
+        $boletoRuta->ciudadSalida = $this->boletoRutas[0]["ciudadSalida"];
+        $boletoRuta->ciudadLlegada = $this->boletoRutas[0]["ciudadLlegada"];
+        $boletoRuta->vuelo = $this->boletoRutas[0]["vuelo"];
+        $boletoRuta->clase = $this->boletoRutas[0]["clase"];
         $boletoRuta->fechaSalida = $this->boletoRutas[0]["fechaSalida"];
         $boletoRuta->horaSalida = $this->boletoRutas[0]["horaSalida"];
         $boletoRuta->fechaLlegada = $this->boletoRutas[0]["fechaLlegada"];
-        $boletoRuta->horaLlegada = $this->boletoRutas->pluck("horaLlegada");
-        $boletoRuta->farebasis = $this->boletoRutas->pluck("farebasis");
+        $boletoRuta->horaLlegada = $this->boletoRutas[0]["horaLlegada"];
+        $boletoRuta->farebasis = $this->boletoRutas[0]["farebasis"];
         $boletoRuta->idEstado = 1;
         $boletoRuta->usuarioCreacion = auth()->user()->id;
         // dd($boletoRuta);
@@ -423,6 +427,7 @@ class Boletos extends Component
         $this->numeroBoleto = $boleto->numeroBoleto;
         $this->numeroFile = $boleto->numeroFile;
         $this->selectedCliente = $boleto->idCliente;
+        $this->updatedselectedCliente($boleto->idCliente);
         $this->selectedSolicitante = $boleto->idSolicitante;
         $this->fechaEmision = $boleto->fechaEmision;
         $this->idCounter = $boleto->idCounter;
@@ -727,7 +732,91 @@ class Boletos extends Component
     }
 
     public function clonarBoleto(){
-        $boleto = Boleto::find($this->idRegistro);
+        $boletoOriginal = Boleto::find($this->idRegistro);
+        $boletoRutaOriginal = BoletoRuta::where('idBoleto',$this->idRegistro)->first();
+        $boletoPagoOriginal = BoletoPago::where('idBoleto',$this->idRegistro)->first();
+        
+        $boletoClon = new Boleto();
+        $boletoClon->numeroBoleto = "0000000000";
+        $boletoClon->numeroFile = $boletoOriginal->numeroFile;
+        $boletoClon->idCliente = $boletoOriginal->idCliente;
+        $boletoClon->idSolicitante = $boletoOriginal->idSolicitante;
+        $boletoClon->fechaEmision = $boletoOriginal->fechaEmision;
+        $boletoClon->idCounter = $boletoOriginal->idCounter;
+        $boletoClon->idTipoFacturacion = $boletoOriginal->idTipoFacturacion;
+        $boletoClon->idTipoDocumento = $boletoOriginal->idTipoDocumento;
+        $boletoClon->idArea = $boletoOriginal->idArea;
+        $boletoClon->idVendedor = $boletoOriginal->idVendedor;
+        $boletoClon->idConsolidador = $boletoOriginal->idConsolidador;
+        $boletoClon->codigoReserva = $boletoOriginal->codigoReserva;
+        $boletoClon->fechaReserva = $boletoOriginal->fechaReserva;
+        $boletoClon->idGds = $boletoOriginal->idGds;
+        $boletoClon->idTipoTicket = $boletoOriginal->idTipoTicket;
+        $boletoClon->tipoRuta = $boletoOriginal->tipoRuta;
+        $boletoClon->tipoTarifa = $boletoOriginal->tipoTarifa;
+        $boletoClon->idAerolinea = $boletoOriginal->idAerolinea;
+        $boletoClon->origen = $boletoOriginal->origen;
+        $boletoClon->pasajero = $boletoOriginal->pasajero;
+        $boletoClon->idTipoPasajero = $boletoOriginal->idTipoPasajero;
+        $boletoClon->ruta = $boletoOriginal->ruta;
+        $boletoClon->destino = $boletoOriginal->destino;
+        $boletoClon->tipoCambio = $boletoOriginal->tipoCambio;
+        $boletoClon->idMoneda = $boletoOriginal->idMoneda;
+        $boletoClon->tarifaNeta = $boletoOriginal->tarifaNeta;
+        $boletoClon->inafecto = $boletoOriginal->inafecto;
+        $boletoClon->igv = $boletoOriginal->igv;
+        $boletoClon->otrosImpuestos = $boletoOriginal->otrosImpuestos;
+        $boletoClon->xm = $boletoOriginal->xm;
+        $boletoClon->total = $boletoOriginal->total;
+        $boletoClon->totalOrigen = $boletoOriginal->totalOrigen;
+        $boletoClon->porcentajeComision = $boletoOriginal->porcentajeComision;
+        $boletoClon->montoComision = $boletoOriginal->montoComision;
+        $boletoClon->descuentoCorporativo = $boletoOriginal->descuentoCorporativo;
+        $boletoClon->codigoDescCorp = $boletoOriginal->codigoDescCorp;
+        $boletoClon->tarifaNormal = $boletoOriginal->tarifaNormal;
+        $boletoClon->tarifaAlta = $boletoOriginal->tarifaAlta;
+        $boletoClon->tarifaBaja = $boletoOriginal->tarifaBaja;
+        $boletoClon->idTipoPagoConsolidador = $boletoOriginal->idTipoPagoConsolidador;
+        $boletoClon->centroCosto = $boletoOriginal->centroCosto;
+        $boletoClon->cod1 = $boletoOriginal->cod1;
+        $boletoClon->cod2 = $boletoOriginal->cod2;
+        $boletoClon->cod3 = $boletoOriginal->cod3;
+        $boletoClon->cod4 = $boletoOriginal->cod4;
+        $boletoClon->observaciones = $boletoOriginal->observaciones;
+        $boletoClon->estado = $boletoOriginal->estado;
+        $boletoClon->usuarioCreacion = $boletoOriginal->usuarioCreacion;
+        $boletoClon->save();
 
+        if($boletoRutaOriginal){
+            $boletoRutaClon = new BoletoRuta();
+            $boletoRutaClon->idBoleto = $boletoClon->id;
+            $boletoRutaClon->idAerolinea = $boletoRutaOriginal->idAerolinea;
+            $boletoRutaClon->ciudadSalida = $boletoRutaOriginal->ciudadSalida;
+            $boletoRutaClon->ciudadLlegada = $boletoRutaOriginal->ciudadLlegada;
+            $boletoRutaClon->vuelo = $boletoRutaOriginal->vuelo;
+            $boletoRutaClon->clase = $boletoRutaOriginal->clase;
+            $boletoRutaClon->fechaSalida = $boletoRutaOriginal->fechaSalida;
+            $boletoRutaClon->horaSalida = $boletoRutaOriginal->horaSalida;
+            $boletoRutaClon->fechaLlegada = $boletoRutaOriginal->fechaLlegada;
+            $boletoRutaClon->horaLlegada = $boletoRutaOriginal->horaLlegada;
+            $boletoRutaClon->farebasis = $boletoRutaOriginal->farebasis;
+            $boletoRutaClon->idEstado = $boletoRutaOriginal->idEstado;
+            $boletoRutaClon->usuarioCreacion = $boletoRutaOriginal->usuarioCreacion;
+            $boletoRutaClon->save();
+        }
+        
+        if($boletoPagoOriginal){
+            $boletoPagoClon = new BoletoPago();
+            $boletoPagoClon->idBoleto = $boletoClon->id;
+            $boletoPagoClon->idMedioPago = $boletoPagoOriginal->idMedioPago;
+            $boletoPagoClon->idTarjetaCredito = $boletoPagoOriginal->idTarjetaCredito;
+            $boletoPagoClon->numeroTarjeta = $boletoPagoOriginal->numeroTarjeta;
+            $boletoPagoClon->monto = $boletoPagoOriginal->monto;
+            $boletoPagoClon->fechaVencimientoTC = $boletoPagoOriginal->fechaVencimientoTC;
+            $boletoPagoClon->idEstado = $boletoPagoOriginal->idEstado;
+            $boletoPagoClon->usuarioCreacion = $boletoPagoOriginal->usuarioCreacion;
+            $boletoPagoClon->save();
+        }
+        return redirect()->route('listaBoletos');
     }
 }
