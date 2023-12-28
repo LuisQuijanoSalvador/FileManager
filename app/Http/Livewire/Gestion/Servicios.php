@@ -158,8 +158,8 @@ class Servicios extends Component
 
     public function updatedxm($xm){
         if($this->xm){
-            $this->total = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos,2);
-            $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos - $this->xm,2);
+            $this->total = round($this->tarifaNeta + $this->inafecto + $this->igv + $this->otrosImpuestos,2);
+            $this->totalOrigen = round($this->total - $this->xm,2);
         }
     }
     
