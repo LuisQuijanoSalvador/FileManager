@@ -77,6 +77,7 @@ class Servicios extends Component
         $this->tipoCambio = 0;
         $this->idMoneda = 1;
         $this->tarifaNeta = 0;
+        $this->inafecto = 0;
         $this->igv = 0;
         $this->otrosImpuestos = 0;
         $this->xm = 0;
@@ -427,6 +428,7 @@ class Servicios extends Component
         $servicio->tipoCambio = $this->tipoCambio;
         $servicio->idMoneda = $this->idMoneda;
         $servicio->tarifaNeta = $this->tarifaNeta;
+        $servicio->inafecto = $this->inafecto;
         $servicio->igv = $this->igv;
         $servicio->otrosImpuestos = $this->otrosImpuestos;
         $servicio->xm = $this->xm;

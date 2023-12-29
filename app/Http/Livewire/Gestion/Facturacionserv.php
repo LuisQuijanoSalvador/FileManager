@@ -159,7 +159,7 @@ class Facturacionserv extends Component
         }else{
             $this->enviaCPE($documento);
         }
-        
+        $this->glosa="";
     }
 
     public function enviaCPE($comprobante){
