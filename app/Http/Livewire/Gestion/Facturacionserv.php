@@ -164,6 +164,11 @@ class Facturacionserv extends Component
 
     public function enviaCPE($comprobante){
 
+        $mensaje_detra = "";
+        if($this->detraccion == 1){
+            $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
+        }
+
         // Datos a enviar en formato JSON
         $dataToSend = [
             "cabecera" => [
