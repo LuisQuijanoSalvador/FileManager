@@ -182,7 +182,12 @@ class Boletos extends Component
 
     public function updatedtarifaNeta($tarifaNeta){
         if($this->tarifaNeta >= 0){
-            $this->igv = round($this->tarifaNeta * 0.18,2);
+            if($this->idTipoTicket == 3 or $this->idTipoTicket == 4){
+                $this->igv = 0.00;
+            }else{
+                $this->igv = round($this->tarifaNeta * 0.18,2);
+            }
+            
             $this->total = round(($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto),2);
             $this->totalOrigen = round($this->tarifaNeta + $this->igv + $this->otrosImpuestos + $this->inafecto - $this->xm,2);
         }
