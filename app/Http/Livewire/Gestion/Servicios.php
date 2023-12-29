@@ -41,7 +41,7 @@ class Servicios extends Component
     public $clientes;
     public $solicitantes;
     public $selectedCliente = NULL;
-    public $selectedSolicitante = 0;
+    public $selectedSolicitante = NULL;
 
     public $idRegistro=0,$numeroServicio,$numeroFile,$fechaEmision,$idCounter,
             $idTipoFacturacion,$idTipoDocumento=1,$idArea,$idVendedor,$idProveedor=0,
@@ -52,12 +52,14 @@ class Servicios extends Component
             $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador=6,
             $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
 
-    public $idMedioPago,$idTarjetaCredito,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos,$servPag;
+    public $idMedioPago=6,$idTarjetaCredito=1,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos,$servPag;
 
     public function limpiarControles(){
         $this->idRegistro = 0;
         $this->numeroServicio = '';
-        $this->numeroFile = '';
+        $this->selectedCliente = NULL;
+        $this->selectedSolicitante = NULL;
+        $this->numeroFile = NULL;
         $this->fechaEmision = '';
         $this->idCounter = 1;
         $this->idTipoFacturacion = 1;
@@ -67,43 +69,43 @@ class Servicios extends Component
         $this->idProveedor = 1;
         $this->fechaReserva = '';
         $this->idTipoServicio = 1;
-        $this->tipoRuta = '';
-        $this->tipoTarifa = '';
+        $this->tipoRuta ="NACIONAL";
+        $this->tipoTarifa = "NORMAL";
         $this->origen = '';
         $this->pasajero = '';
-        $this->idDocumento = '';
-        $this->tipoCambio = '';
-        $this->idMoneda = '';
-        $this->tarifaNeta = '';
-        $this->igv = '';
-        $this->otrosImpuestos = '';
-        $this->xm = '';
-        $this->total = '';
-        $this->totalOrigen = '';
-        $this->porcentajeComision = '';
-        $this->montoComision = '';
-        $this->descuentoCorporativo = '';
+        $this->idDocumento = NULL;
+        $this->tipoCambio = 0;
+        $this->idMoneda = 1;
+        $this->tarifaNeta = 0;
+        $this->igv = 0;
+        $this->otrosImpuestos = 0;
+        $this->xm = 0;
+        $this->total = 0;
+        $this->totalOrigen = 0;
+        $this->porcentajeComision = 0;
+        $this->montoComision = 0;
+        $this->descuentoCorporativo = 0;
         $this->codigoDescCorp = '';
-        $this->tarifaNormal = '';
-        $this->tarifaAlta = '';
-        $this->tarifaBaja = '';
+        $this->tarifaNormal = 0;
+        $this->tarifaAlta = 0;
+        $this->tarifaBaja = 0;
         $this->centroCosto = '';
         $this->cod1 = '';
         $this->cod2 = '';
         $this->cod3 = '';
         $this->cod4 = '';
         $this->observaciones = '';
-        $this->estado = '';
-        $this->usuarioCreacion = '';
+        $this->estado = 1;
+        $this->usuarioCreacion = NULL;
         $this->fechaCreacion = '';
-        $this->usuarioModificacion = '';
+        $this->usuarioModificacion = NULL;
         $this->fechaModificacion = '';
-        $this->idMedioPago = '';
-        $this->idTarjetaCredito = '';
+        $this->idMedioPago = 6;
+        $this->idTarjetaCredito = 1;
         $this->numeroTarjeta = '';
         $this->monto = '';
         $this->fechaVencimientoTC = '';
-        $this->servicioPagos = '';
+        $this->servicioPagos = new Collection();
     }
 
     public function rules(){
@@ -135,6 +137,7 @@ class Servicios extends Component
     protected $messages = [
         'numeroServicio.required' => 'Este campo es requerido',
         'selectedCliente.required' => 'Este campo es requerido',
+        'selectedSolicitante.required' => 'Este campo es requerido',
         'fechaEmision.required' => 'Este campo es requerido',
         'idCounter.required' => 'Este campo es requerido',
         'idTipoFacturacion.required' => 'Este campo es requerido',
@@ -154,7 +157,7 @@ class Servicios extends Component
         'estado.required' => 'Este campo es requerido',
 
         'idMedioPago.required' => 'Requerido',
-        'monto.required' => 'Requerido',
+        'monto.required' => 'Debe ingresar datos del Pago',
     ];
 
     public function mount(){
@@ -253,13 +256,23 @@ class Servicios extends Component
 
     public function grabar(){
         $this->validate();
-        //$area = Area::find($this->idArea);
+        $area = Area::find($this->idArea);
         $servicio = new Servicio();
         $funciones = new Funciones();
 
+        // dd($this->servicioPagos);
+        if(count($this->servicioPagos) == 0){
+            session()->flash('ErrorPagos', 'Debe Ingresar los datos del pago.');
+            return;
+        }
         $numServ = $funciones->numeroServicio('SERVICIOS');
         $servicio->numeroServicio = $numServ;
-        $servicio->numeroFile = $this->numeroFile;
+        if($this->numeroFile){
+            $servicio->numeroFile = $this->numeroFile;
+        }else{
+            $file = $funciones->generaFile('FILES');
+            $servicio->numeroFile = $area->codigo . str_pad($file,7,"0",STR_PAD_LEFT);
+        }
         $servicio->idCliente = $this->selectedCliente;
         $servicio->idSolicitante = $this->selectedSolicitante;
         $servicio->fechaEmision = $this->fechaEmision;

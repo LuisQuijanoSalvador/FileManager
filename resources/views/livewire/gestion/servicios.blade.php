@@ -83,6 +83,17 @@
     {{$servicios->links()}}
 
     @include('components.modalheaderxl')
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('ErrorPagos'))
+        <div class="alert alert-danger">
+            {{ session('ErrorPagos') }}
+        </div>
+    @endif
+    
     @if ($idRegistro!=0)
         <div class="row">
             <div class="col-md-1">
@@ -575,7 +586,6 @@
                                 @error('idMedioPago')
                                     <span class="error">{{$message}}</span>
                                 @enderror
-                                {{$idMedioPago}}
                             </div>
                             <div class="col-md-2">
                                 <label for="cboTarjeta" class="form-label">Tarjeta:</label>
@@ -619,6 +629,12 @@
                     </div>
                     <hr>
                     <div class="seccion2">
+                        @if(session('ErrorPagos'))
+                            <div class="alert alert-danger">
+                                {{ session('ErrorPagos') }}
+                            </div>
+                        @endif
+                        
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="tabla-listado">
@@ -689,6 +705,11 @@
                             </div>
                         </div>
                     </div>
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                 </div>
             </div>
 
