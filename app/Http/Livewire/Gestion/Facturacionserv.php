@@ -15,6 +15,7 @@ use App\Models\TipoCambio;
 use App\Clases\modelonumero;
 use App\Models\Servicio;
 use App\Models\Solicitante;
+use App\Models\TipoDocumentoIdentidad;
 
 class Facturacionserv extends Component
 {
@@ -24,7 +25,8 @@ class Facturacionserv extends Component
     public $sort= 'numeroFile';
     public $direction = 'asc';
 
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",$monedaLetra;
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$monedaLetra;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -70,7 +72,7 @@ class Facturacionserv extends Component
         // $this->selectedRows contendrá los IDs de las filas seleccionadas
         $idsSeleccionados = $this->selectedRows;
         if (empty($idsSeleccionados)) {
-            session()->flash('error', 'Debe seleccionar un boleto.');
+            session()->flash('error', 'Debe seleccionar un servicio.');
             return false;
         } else {
             $servicio = Servicio::find($idsSeleccionados);
@@ -114,7 +116,10 @@ class Facturacionserv extends Component
             $this->descripcion = $dataServicio->tTipoServicio->descripcion;
         }
         
-        
+        $this->tipoDocumentoIdentidad = $dataServicio->tCliente->tipoDocumentoIdentidad;
+        $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
+        $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
+
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
         $documento->idCliente = $dataServicio->idCliente;
@@ -190,7 +195,7 @@ class Facturacionserv extends Component
                 "motivo_07_08"=> "",
                 "descripcion_07_08"=> "",
                 "fecharefe"=> "1900-01-01T00=>00=>00",
-                "tipodoi"=> 6,
+                "tipodoi"=> $this->codigoDocumentoIdentidad,
                 "numerodoi"=> $comprobante->numeroDocumentoIdentidad,
                 "desc_tipodocu"=> "RUC",
                 "razonsocial"=> $comprobante->razonSocial,
