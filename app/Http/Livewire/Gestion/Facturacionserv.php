@@ -26,7 +26,7 @@ class Facturacionserv extends Component
     public $direction = 'asc';
 
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
-            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$monedaLetra;
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -119,6 +119,7 @@ class Facturacionserv extends Component
         $this->tipoDocumentoIdentidad = $dataServicio->tCliente->tipoDocumentoIdentidad;
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
+        $this->descDocumentoIdentidad = $tipoDocId->descripcion;
 
         $totalLetras = $numLetras->numtoletras($dataServicio->total,$this->monedaLetra);
         
@@ -197,7 +198,7 @@ class Facturacionserv extends Component
                 "fecharefe"=> "1900-01-01T00=>00=>00",
                 "tipodoi"=> $this->codigoDocumentoIdentidad,
                 "numerodoi"=> $comprobante->numeroDocumentoIdentidad,
-                "desc_tipodocu"=> "RUC",
+                "desc_tipodocu"=> $this->descDocumentoIdentidad,
                 "razonsocial"=> $comprobante->razonSocial,
                 "direccion"=> $comprobante->direccionFiscal,
                 "cliente"=> $comprobante->razonSocial,
