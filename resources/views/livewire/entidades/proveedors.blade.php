@@ -89,7 +89,7 @@
                   Datos
                 </button>
               </h2>
-              <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div id="flush-collapseOne" class="accordion-collapse show" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     <form class="row g-3">
                         <div class="col-md-6">
@@ -185,7 +185,7 @@
                   Cobranza
                 </button>
               </h2>
-              <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div id="flush-collapseThree" class="accordion-collapse show" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     <form class="row g-3">
                         <div class="col-md-6">
@@ -231,7 +231,7 @@
                     Gestión
                   </button>
                 </h2>
-                <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                <div id="flush-collapseFour" class="accordion-collapse show" data-bs-parent="#accordionFlushExample">
                   <div class="accordion-body">
                     <form class="row g-3">
 

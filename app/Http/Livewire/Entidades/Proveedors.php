@@ -34,7 +34,7 @@ class Proveedors extends Component
             'tipoProveedor'             =>   'required',
             'tipoDocumentoIdentidad'    =>   'required',
             'numeroDocumentoIdentidad'  =>   'required',
-            'correo'                    =>   'email',
+            'correo'                    =>   'nullable|email',
             'tipoDocumento'             =>   'required',
             'estado'                    =>   'required',
         ];

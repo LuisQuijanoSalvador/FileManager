@@ -52,7 +52,7 @@
                         <i class="fas fa-sort float-right py-1 px-1"></i>
                     @endif
                 </th>
-                <th scope="col" class="py-1 thAccion">
+                <th scope="col" class="py-1 ">
                     Acción
                 </th>
             </tr>
@@ -69,8 +69,7 @@
                 <td class="py-1">{{$documento->tEstado->descripcion}}</td>
                 <td class="py-1">
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$documento->id}}")'>Editar</button>
-                        <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$documento->id}}")'>Eliminar</button>
+                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$documento->id}}")'>Ver</button>
                     </div>
                 </td>
             </tr>
