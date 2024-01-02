@@ -27,9 +27,57 @@ class Facturacionac extends Component
     protected $boletos=[];
 
     public $selectedRows = [];
-    
+
+    public function mount(){
+        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+                                ->whereNull('idDocumento')
+                                ->where('idTipoFacturacion',2)
+                                ->orderBy($this->sort, $this->direction)
+                                ->paginate(10);
+
+        $fechaActual = Carbon::now();
+        
+        $this->fechaEmision = Carbon::parse($fechaActual)->format("Y-m-d");
+
+        $tipoCambio = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
+        if($tipoCambio){
+            $this->tipoCambio = $tipoCambio->montoCambio;
+        }else{
+            $this->tipoCambio = 0.00;
+        }
+    }
+
     public function render()
     {
-        return view('livewire.gestion.facturacionac');
+        
+        $monedas = moneda::all()->sortBy('codigo');
+
+        return view('livewire.gestion.facturacionac',compact('monedas'));
     }
+
+    public function updatedfechaEmision($fechaEmision){
+        $tipoCambio = TipoCambio::where('fechaCambio',$fechaEmision)->first();
+        if($tipoCambio){
+            $this->tipoCambio = $tipoCambio->montoCambio;
+        }else{
+            $this->tipoCambio = 0.00;
+        }
+        //dd($this->tipoCambio);
+    }
+
+    public function emitirComprobante()
+    {
+        // 
+        // $this->selectedRows contendrá los IDs de las filas seleccionadas
+        $idsSeleccionados = $this->selectedRows;
+        if (empty($idsSeleccionados)) {
+            session()->flash('error', 'Debe seleccionar un boleto.');
+            return false;
+        } else {
+            $boleto = Boleto::find($idsSeleccionados);
+
+            $this->crearDocumento($boleto);
+        }  
+    }
+
 }

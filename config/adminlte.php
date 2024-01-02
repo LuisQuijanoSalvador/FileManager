@@ -346,8 +346,7 @@ return [
                         ], 
                         [
                             'text' => 'Acumulada',
-                            // 'route' => 'factinmediata' 
-                            'url'     => '#'
+                            'route' => 'factboletosac'
                         ],
                     ]  
                 ],
