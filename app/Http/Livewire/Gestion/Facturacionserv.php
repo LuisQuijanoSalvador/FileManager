@@ -750,7 +750,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarCPE($dataToSend);
+        $file = $funciones->enviarDC($dataToSend);
 
         if ($file['type'] == 'success') {
             $doc = Documento::find($comprobante->id);
@@ -916,7 +916,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarCPE($dataToSend);
+        $file = $funciones->enviarDC($dataToSend);
 
         if ($file['type'] == 'success') {
             $doc = Documento::find($comprobante->id);
