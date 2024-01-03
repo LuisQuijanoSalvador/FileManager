@@ -26,7 +26,7 @@ class Facturacionac extends Component
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0,$respSenda;
+            $totalTotal = 0,$respSenda,$descripcion="";
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -152,6 +152,7 @@ class Facturacionac extends Component
         if($solicitante){
             if(strlen($this->glosa) < 5){
                 $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
+                $this->descripcion = "";
             }
         }
         
