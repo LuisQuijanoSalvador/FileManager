@@ -14,6 +14,7 @@ use App\Models\Cliente;
 use App\Models\TipoCambio;
 use App\Clases\modelonumero;
 use App\Models\Solicitante;
+use App\Models\TipoDocumentoIdentidad;
 
 class Facturacion extends Component
 {
