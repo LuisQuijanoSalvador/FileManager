@@ -74,7 +74,13 @@
         <div class="div-filtro row">
             <div class="row">
                 <div class="col-md-3">
-                    <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto">
+                    <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model.lazy.defer="idCliente">
+                        <option value="">-- Seleccione un cliente --</option>
+                        @foreach ($clientes as $cliente)
+                            <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+                        @endforeach
+                    </select>
+                    {{-- <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto"> --}}
                     @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -82,33 +88,31 @@
                     @endif
                 </div>
                 <div class="col-md-9">
-                    {{-- <div>
-                        <div class="row">
-                            <div class="col-md-5">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p style="text-align:right">F. inicio:</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="date" wire:model="startDate" id="startDate">
-                                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p style="text-align:right">F. inicio:</p>
                                 </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p style="text-align:right">F. Final:</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <input type="date" wire:model="endDate" id="endDate">
-                                    </div>
+                                <div class="col-md-6">
+                                    <input type="date" wire:model.lazy.defer="startDate" id="startDate">
                                 </div>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-primary" wire:click="filtrarFechas" >Filtrar</button>
                             </div>
                         </div>
-                    </div> --}}
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p style="text-align:right">F. Final:</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="date" wire:model.lazy.defer="endDate" id="endDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-primary" wire:click="filtrar" >Filtrar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             

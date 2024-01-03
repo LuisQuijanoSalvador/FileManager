@@ -23,7 +23,8 @@ class Facturacionac extends Component
     public $sort= 'numeroBoleto';
     public $direction = 'asc';
     
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra;
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra,$idCliente,
+            $startDate,$endDate;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -51,8 +52,9 @@ class Facturacionac extends Component
     {
         
         $monedas = moneda::all()->sortBy('codigo');
+        $clientes = Cliente::all()->sortBy('razonSocial');
 
-        return view('livewire.gestion.facturacionac',compact('monedas'));
+        return view('livewire.gestion.facturacionac',compact('monedas','clientes'));
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -64,6 +66,25 @@ class Facturacionac extends Component
         }
         //dd($this->tipoCambio);
     }
+
+    public function filtrar(){
+        if ($this->idCliente and $this->startDate and $this->endDate) {
+
+            $this->boletos = Boleto::where('idCliente', $this->idCliente)
+                                ->whereNull('idDocumento')
+                                ->where('idTipoFacturacion',2)
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->paginate(10);
+        }else{
+            $this->boletos = Boleto::where('idTipoFacturacion',2)
+                                ->whereNull('idDocumento')
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->paginate(10);
+            }
+    }
+        
 
     public function emitirComprobante()
     {
