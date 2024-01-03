@@ -5,6 +5,11 @@
             {{ session('error') }}
         </div>
     @endif
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <hr>
     <div class="row align-items-center">
         <div class="col-md-2 mt-2">
@@ -81,11 +86,7 @@
                         @endforeach
                     </select>
                     {{-- <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto"> --}}
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+                    
                 </div>
                 <div class="col-md-9">
                     <div class="row">
@@ -168,7 +169,7 @@
                 @foreach ($this->boletos as $boleto)
     
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="py-1"><input type="radio" name="chkSelect" id="" wire:model="selectedRows" value="{{ $boleto->id }}"></td>
+                    <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model.lazy.defer="selectedRows" value="{{ $boleto->id }}"></td>
                     <td class="py-1">{{$boleto->id}}</td>
                     <td class="py-1">{{$boleto->numeroBoleto}}</td>
                     <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
