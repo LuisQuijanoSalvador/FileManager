@@ -24,7 +24,7 @@ class Facturacion extends Component
     public $sort= 'numeroBoleto';
     public $direction = 'asc';
     
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra,
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad;
     protected $boletos=[];
 
@@ -86,6 +86,7 @@ class Facturacion extends Component
             $boleto = Boleto::find($idsSeleccionados);
 
             $this->crearDocumento($boleto);
+            $glosa="";
         }  
     }
 
@@ -319,15 +320,17 @@ class Facturacion extends Component
         $funciones = new Funciones();
 
         $file = $funciones->enviarDC($dataToSend);
+        $doc = Documento::find($comprobante->id);
+        $doc->respuestaSunat = $file;
+        $doc->save();
+        // if ($file['type'] == 'success') {
+        //     $doc = Documento::find($comprobante->id);
+        //     $doc->respuestaSunat = $file['type'];
+        //     $doc->save();
 
-        if ($file['type'] == 'success') {
-            $doc = Documento::find($comprobante->id);
-            $doc->respuestaSunat = $file['type'];
-            $doc->save();
-
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        }
+        // } else {
+        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        // }
         
     } 
 
