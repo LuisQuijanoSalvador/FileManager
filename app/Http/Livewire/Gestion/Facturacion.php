@@ -23,7 +23,8 @@ class Facturacion extends Component
     public $sort= 'numeroBoleto';
     public $direction = 'asc';
     
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra;
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa,$monedaLetra,
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -114,8 +115,14 @@ class Facturacion extends Component
         } elseif($dataBoleto->tMoneda->codigo == 'PEN'){
             $this->monedaLetra = 'SOLES';
         }
+
+        $this->tipoDocumentoIdentidad = $dataServicio->tCliente->tipoDocumentoIdentidad;
+        $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
+        $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
+        $this->descDocumentoIdentidad = $tipoDocId->descripcion;
+
         $solicitante = Solicitante::find($dataBoleto->idSolicitante);
-        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . '\n' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . '\n' . 'TKT: ' . $dataBoleto->numeroBoleto;
+        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'TKT: ' . $dataBoleto->numeroBoleto;
         
         $totalLetras = $numLetras->numtoletras($dataBoleto->total,$this->monedaLetra);
         
@@ -186,9 +193,9 @@ class Facturacion extends Component
                 "motivo_07_08"=> "",
                 "descripcion_07_08"=> "",
                 "fecharefe"=> "1900-01-01T00=>00=>00",
-                "tipodoi"=> 6,
+                "tipodoi"=> $this->codigoDocumentoIdentidad,
                 "numerodoi"=> $comprobante->numeroDocumentoIdentidad,
-                "desc_tipodocu"=> "RUC",
+                "desc_tipodocu"=> $this->descDocumentoIdentidad,
                 "razonsocial"=> $comprobante->razonSocial,
                 "direccion"=> $comprobante->direccionFiscal,
                 "cliente"=> $comprobante->razonSocial,

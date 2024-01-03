@@ -610,9 +610,11 @@ class Facturacionserv extends Component
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                "glosa"=> $comprobante->numeroFile,
+                // "glosa"=> $comprobante->numeroFile,
+                "glosa"=> "",
                 "glosa_refe"=> "",
-                "glosa_pie_pagina"=> $this->glosa,
+                // "glosa_pie_pagina"=> $this->glosa,
+                "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
                 "numero_gr"=> "",
                 "ant_numero"=> "",
@@ -652,7 +654,8 @@ class Facturacionserv extends Component
                 "detraccion_mediopago"=> "",
                 "almacen_id"=> null,
                 "icoterms"=> "",
-                "glosa_detraccion"=> $mensaje_detra
+                // "glosa_detraccion"=> $mensaje_detra
+                "glosa_detraccion"=> ""
             ],
             "items" => [
                 [
@@ -660,7 +663,7 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => $this->descripcion,
+                    "descripcion" => $comprobante->glosa,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
@@ -821,9 +824,11 @@ class Facturacionserv extends Component
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                "glosa"=> $comprobante->numeroFile,
+                // "glosa"=> $comprobante->numeroFile,
+                "glosa"=> "",
                 "glosa_refe"=> "",
-                "glosa_pie_pagina"=> $this->glosa,
+                // "glosa_pie_pagina"=> $this->glosa,
+                "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
                 "numero_gr"=> "",
                 "ant_numero"=> "",
@@ -863,7 +868,8 @@ class Facturacionserv extends Component
                 "detraccion_mediopago"=> "",
                 "almacen_id"=> null,
                 "icoterms"=> "",
-                "glosa_detraccion"=> $mensaje_detra
+                // "glosa_detraccion"=> $mensaje_detra
+                "glosa_detraccion"=> ""
             ],
             "items" => [
                 [
@@ -871,7 +877,7 @@ class Facturacionserv extends Component
                     "codigo" => "P00001",
                     "codigo_sunat" => "95101501",
                     "codigo_gs1" => "",
-                    "descripcion" => $this->descripcion,
+                    "descripcion" => $comprobante->glosa,
                     "cantidad" => "1.0000000000",
                     "unid" => "NIU",
                     "tipoprecioventa" => "01",
