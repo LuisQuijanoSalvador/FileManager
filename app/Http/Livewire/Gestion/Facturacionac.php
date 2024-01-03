@@ -422,7 +422,7 @@ class Facturacionac extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarDC($dataToSend);
+        $this->respSenda = $funciones->enviarDC($dataToSend);
 
         // if ($file['type'] == 'success') {
         //     $doc = Documento::find($comprobante->id);
