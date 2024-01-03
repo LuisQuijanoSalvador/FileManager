@@ -116,7 +116,7 @@ class Facturacion extends Component
             $this->monedaLetra = 'SOLES';
         }
 
-        $this->tipoDocumentoIdentidad = $dataServicio->tCliente->tipoDocumentoIdentidad;
+        $this->tipoDocumentoIdentidad = $dataBoleto->tCliente->tipoDocumentoIdentidad;
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
         $this->descDocumentoIdentidad = $tipoDocId->descripcion;
