@@ -111,7 +111,7 @@ class Facturacionserv extends Component
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
         if(strlen($this->glosa) < 5){
             $this->glosa = "";
-            $this->descripcion = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | POR LA ADQUISICION DEL SIGUIENTE SERVICIO: ' . $dataServicio->tTipoServicio->descripcion;
+            $this->descripcion = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | ' . $dataServicio->tTipoServicio->descripcion;
         }else{
             $this->descripcion = $dataServicio->tTipoServicio->descripcion;
         }
@@ -160,11 +160,20 @@ class Facturacionserv extends Component
         $servicio->idDocumento = $documento->id;
 
         $servicio->save();
-        if($documento->inafecto > 0){
-            $this->enviaCPEMixto($documento);
+        if($documento->idTipoDocumento == 6){
+            if($documento->inafecto > 0){
+                $this->enviaDCMixto($documento);
+            }else{
+                $this->enviaDC($documento);
+            }
         }else{
-            $this->enviaCPE($documento);
+            if($documento->inafecto > 0){
+                $this->enviaCPEMixto($documento);
+            }else{
+                $this->enviaCPE($documento);
+            }
         }
+        
         $this->glosa="";
     }
 
@@ -321,11 +330,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        if($comprobante->idTipoDocumento == 6){
-            $file = $funciones->enviarDC($dataToSend);
-        }else{
-            $file = $funciones->enviarCPE($dataToSend);
-        }
+        $file = $funciones->enviarCPE($dataToSend);
 
         if ($file['type'] == 'success') {
             $doc = Documento::find($comprobante->id);
@@ -535,11 +540,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        if($comprobante->idTipoDocumento == 6){
-            $file = $funciones->enviarDC($dataToSend);
-        }else{
-            $file = $funciones->enviarCPE($dataToSend);
-        }
+        $file = $funciones->enviarCPE($dataToSend);
 
         if ($file['type'] == 'success') {
             $doc = Documento::find($comprobante->id);
@@ -551,4 +552,380 @@ class Facturacionserv extends Component
         }
         
     } 
+
+    public function enviaDCMixto($comprobante){
+        $mensaje_detra = "";
+        if($this->detraccion == 1){
+            $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
+        }
+
+        // Datos a enviar en formato JSON
+        $dataToSend = [
+            "cabecera" => [
+                "ruc_emisor" => "20604309027" ,
+                "razonsocial_emisor"=> "AS TRAVEL PERU S.A.C",
+                "direccion_emisor"=> "CAL.CALLE MARQUES DE MONTESCLAROS NRO. 165 DPTO. 104 URB. LA VIRREYNA LIMA - LIMA - SANTIAGO DE SURCO",
+                "telefono_emisor"=> "(01) 972197067",
+                "email_emisor"=> "facturaselectronicas@astravel.com.pe",
+                "cod_domifiscal"=> "0000",
+                "tiop_codi"=> "0101",
+                "fecha"=> $comprobante->fechaEmision,
+                "fvenci"=> $comprobante->fechaVencimiento,
+                "tipodocu"=> $comprobante->tipoDocumento,
+                "nro_serie_efact"=> $comprobante->serie,
+                "tipo_moneda"=> $comprobante->moneda,
+                "numero"=> str_pad($comprobante->numero,8,"0",STR_PAD_LEFT),
+                "tipodocurefe"=> "",
+                "numerorefe"=> "",
+                "motivo_07_08"=> "",
+                "descripcion_07_08"=> "",
+                "fecharefe"=> "1900-01-01T00=>00=>00",
+                "tipodoi"=> 6,
+                "numerodoi"=> $comprobante->numeroDocumentoIdentidad,
+                "desc_tipodocu"=> "RUC",
+                "razonsocial"=> $comprobante->razonSocial,
+                "direccion"=> $comprobante->direccionFiscal,
+                "cliente"=> $comprobante->razonSocial,
+                "email_cliente"=> "facturaselectronicas@astravel.com.pe",
+                "email_cc"=> "",
+                "codigo_cliente"=> $comprobante->idCliente,
+                "rec_tele"=> null,
+                "rec_ubigeo"=> "",
+                "rec_pais"=> "",
+                "rec_depa"=> "",
+                "rec_provi"=> "",
+                "rec_distri"=> "",
+                "rec_urb"=> "",
+                "vendedor"=> "AS TRAVEL",
+                "metodo_pago"=> "CONTADO",
+                "codigo_metodopago"=> "CON",
+                "desc_metodopago"=> "",
+                "totalpagado_efectivo"=> "0.00",
+                "vuelto"=> "0.00",
+                "file_nro"=> $comprobante->numeroFile,
+                "centro_costo"=> "",
+                "nro_pedido"=> "",
+                "local"=> "",
+                "caja"=> "",
+                "cajero"=> "",
+                "nro_transaccion"=> "",
+                "orden_compra"=> "",
+                "glosa"=> $comprobante->numeroFile,
+                "glosa_refe"=> "",
+                "glosa_pie_pagina"=> $this->glosa,
+                "mensaje"=> "",
+                "numero_gr"=> "",
+                "ant_numero"=> "",
+                "docurela_numero"=> "",
+                "ant_monto"=> "0.00",
+                "op_exportacion"=> "0.00",
+                "op_exonerada"=> 0.00,
+                "op_inafecta"=> $comprobante->inafecto,
+                "op_gravada"=> $comprobante->afecto,
+                "tot_valorventa"=> $comprobante->afecto + $comprobante->inafecto,
+                "tot_precioventa"=> $comprobante->total,
+                "isc"=> "0.00",
+                "igv"=> $comprobante->igv,
+                "porc_igv"=> "18.00",
+                "igv_gratuita"=> "0.00",
+                "importe_total"=> $comprobante->total,
+                "total_pagar"=> $comprobante->total,
+                "redondeo"=> "0.00",
+                "total_otros_tributos"=> "0.00",
+                "total_otros_cargos"=> 0,
+                "cargodesc_motivo"=> "",
+                "cargodesc_base"=> "0.00",
+                "porc_dsctoglobal"=> "0.00",
+                "total_descuento"=> 0,
+                "descto_global"=> "0.00",
+                "total_gratuitas"=> 0,
+                "importe_letras"=> $comprobante->totalLetras,
+                "total_icbper"=> "0.00",
+                "usuario"=> "luis.quijano@hardnetconsulting.com",
+                "tipocambio"=> $comprobante->tipoCambio,
+                "codigo_sucu"=> "",
+                "detraccion_bs"=> "",
+                "detraccion_nrocta"=> "",
+                "detraccion_porc"=> "",
+                "detraccion_monto"=> "",
+                "detraccion_moneda"=> "",
+                "detraccion_mediopago"=> "",
+                "almacen_id"=> null,
+                "icoterms"=> "",
+                "glosa_detraccion"=> $mensaje_detra
+            ],
+            "items" => [
+                [
+                    "tipodocu" => $comprobante->tipoDocumento,
+                    "codigo" => "P00001",
+                    "codigo_sunat" => "95101501",
+                    "codigo_gs1" => "",
+                    "descripcion" => $this->descripcion,
+                    "cantidad" => "1.0000000000",
+                    "unid" => "NIU",
+                    "tipoprecioventa" => "01",
+                    "tipo_afect_igv" => "10",
+                    "codigo_tributo" => "1000",
+                    "is_anticipo" => 0,
+                    "valorunitbruto" => $comprobante->afecto,
+                    "valorunit" => $comprobante->afecto,
+                    "valorventabruto" => $comprobante->afecto,
+                    "valorventa" => $comprobante->afecto,
+                    "preciounitbruto" => $comprobante->afecto + $comprobante->igv,//$comprobante->total,
+                    "preciounit" => $comprobante->afecto + $comprobante->igv,//$comprobante->total,
+                    "precioventa" => $comprobante->afecto + $comprobante->igv,//$comprobante->total,
+                    "precioventabruto" => $comprobante->afecto + $comprobante->igv,//$comprobante->total,
+                    "igv" => $comprobante->igv,
+                    "porc_igv" => "18.00",
+                    "isc" => "0.00",
+                    "porc_isc" => "0.00",
+                    "dscto_unit" => "0.00",
+                    "porc_dscto_unit" => "0.00",
+                    "cod_cargodesc" => "",
+                    "base_cargodesc" => "0.00",
+                    "otrostributos_porc" => "0.00",
+                    "otrostributos_monto" => "0.00",
+                    "otrostributos_base" => "0.00",
+                    "placavehiculo" => "",
+                    "tot_impuesto" => "0.00",
+                    "tipo_operacion" => "OP_GRAV",
+                    "opt_tipodoi"  => "",
+                    "opt_numerodoi"  => "",
+                    "opt_pasaportepais"  => "",
+                    "opt_huesped"  => "",
+                    "opt_huespedpais"  => "",
+                    "opt_fingresopais"  => "",
+                    "opt_fcheckin"  => "",
+                    "opt_fcheckout"  => "",
+                    "opt_fconsumo" => "",
+                    "opt_diaspermanencia" => "" 
+                ],
+                [
+                    "tipodocu" => $comprobante->tipoDocumento,
+                    "codigo" => "P00001",
+                    "codigo_sunat" => "95101501",
+                    "codigo_gs1" => "",
+                    "descripcion" => $this->descripcion,
+                    "cantidad" => "1.0000000000",
+                    "unid" => "NIU",
+                    "tipoprecioventa" => "01",
+                    "tipo_afect_igv" => "30",
+                    "codigo_tributo" => "9998",
+                    "is_anticipo" => 0,
+                    "valorunitbruto" => $comprobante->inafecto,
+                    "valorunit" => $comprobante->inafecto,
+                    "valorventabruto" => $comprobante->inafecto,
+                    "valorventa" => $comprobante->inafecto,
+                    "preciounitbruto" => $comprobante->inafecto,//$comprobante->total,
+                    "preciounit" => $comprobante->inafecto,//$comprobante->total,
+                    "precioventa" => $comprobante->inafecto,//$comprobante->total,
+                    "precioventabruto" => $comprobante->inafecto,//$comprobante->total,
+                    "igv" => 0,
+                    "porc_igv" => "18.00",
+                    "isc" => "0.00",
+                    "porc_isc" => "0.00",
+                    "dscto_unit" => "0.00",
+                    "porc_dscto_unit" => "0.00",
+                    "cod_cargodesc" => "",
+                    "base_cargodesc" => "0.00",
+                    "otrostributos_porc" => "0.00",
+                    "otrostributos_monto" => "0.00",
+                    "otrostributos_base" => "0.00",
+                    "placavehiculo" => "",
+                    "tot_impuesto" => "0.00",
+                    "tipo_operacion" => "OP_INA",
+                    "opt_tipodoi"  => "",
+                    "opt_numerodoi"  => "",
+                    "opt_pasaportepais"  => "",
+                    "opt_huesped"  => "",
+                    "opt_huespedpais"  => "",
+                    "opt_fingresopais"  => "",
+                    "opt_fcheckin"  => "",
+                    "opt_fcheckout"  => "",
+                    "opt_fconsumo" => "",
+                    "opt_diaspermanencia" => "" 
+                ]
+            ]
+        ];
+        // DD($dataToSend);
+
+        $funciones = new Funciones();
+        $file = $funciones->enviarCPE($dataToSend);
+
+        if ($file['type'] == 'success') {
+            $doc = Documento::find($comprobante->id);
+            $doc->respuestaSunat = $file['type'];
+            $doc->save();
+
+        } else {
+            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        }
+        
+    }
+
+    public function enviaDC($comprobante){
+
+        $mensaje_detra = "";
+        if($this->detraccion == 1){
+            $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
+        }
+
+        // Datos a enviar en formato JSON
+        $dataToSend = [
+            "cabecera" => [
+                "ruc_emisor" => "20604309027" ,
+                "razonsocial_emisor"=> "AS TRAVEL PERU S.A.C",
+                "direccion_emisor"=> "CAL.CALLE MARQUES DE MONTESCLAROS NRO. 165 DPTO. 104 URB. LA VIRREYNA LIMA - LIMA - SANTIAGO DE SURCO",
+                "telefono_emisor"=> "(01) 972197067",
+                "email_emisor"=> "facturaselectronicas@astravel.com.pe",
+                "cod_domifiscal"=> "0000",
+                "tiop_codi"=> "0101",
+                "fecha"=> $comprobante->fechaEmision,
+                "fvenci"=> $comprobante->fechaVencimiento,
+                "tipodocu"=> $comprobante->tipoDocumento,
+                "nro_serie_efact"=> $comprobante->serie,
+                "tipo_moneda"=> $comprobante->moneda,
+                "numero"=> str_pad($comprobante->numero,8,"0",STR_PAD_LEFT),
+                "tipodocurefe"=> "",
+                "numerorefe"=> "",
+                "motivo_07_08"=> "",
+                "descripcion_07_08"=> "",
+                "fecharefe"=> "1900-01-01T00=>00=>00",
+                "tipodoi"=> $this->codigoDocumentoIdentidad,
+                "numerodoi"=> $comprobante->numeroDocumentoIdentidad,
+                "desc_tipodocu"=> $this->descDocumentoIdentidad,
+                "razonsocial"=> $comprobante->razonSocial,
+                "direccion"=> $comprobante->direccionFiscal,
+                "cliente"=> $comprobante->razonSocial,
+                "email_cliente"=> "facturaselectronicas@astravel.com.pe",
+                "email_cc"=> "",
+                "codigo_cliente"=> $comprobante->idCliente,
+                "rec_tele"=> null,
+                "rec_ubigeo"=> "",
+                "rec_pais"=> "",
+                "rec_depa"=> "",
+                "rec_provi"=> "",
+                "rec_distri"=> "",
+                "rec_urb"=> "",
+                "vendedor"=> "AS TRAVEL",
+                "metodo_pago"=> "CONTADO",
+                "codigo_metodopago"=> "CON",
+                "desc_metodopago"=> "",
+                "totalpagado_efectivo"=> "0.00",
+                "vuelto"=> "0.00",
+                "file_nro"=> $comprobante->numeroFile,
+                "centro_costo"=> "",
+                "nro_pedido"=> "",
+                "local"=> "",
+                "caja"=> "",
+                "cajero"=> "",
+                "nro_transaccion"=> "",
+                "orden_compra"=> "",
+                "glosa"=> $comprobante->numeroFile,
+                "glosa_refe"=> "",
+                "glosa_pie_pagina"=> $this->glosa,
+                "mensaje"=> "",
+                "numero_gr"=> "",
+                "ant_numero"=> "",
+                "docurela_numero"=> "",
+                "ant_monto"=> "0.00",
+                "op_exportacion"=> "0.00",
+                "op_exonerada"=> 0.00,
+                "op_inafecta"=> $comprobante->inafecto,
+                "op_gravada"=> $comprobante->afecto,
+                "tot_valorventa"=> $comprobante->afecto,
+                "tot_precioventa"=> $comprobante->total,
+                "isc"=> "0.00",
+                "igv"=> $comprobante->igv,
+                "porc_igv"=> "18.00",
+                "igv_gratuita"=> "0.00",
+                "importe_total"=> $comprobante->total,
+                "total_pagar"=> $comprobante->total,
+                "redondeo"=> "0.00",
+                "total_otros_tributos"=> "0.00",
+                "total_otros_cargos"=> 0,
+                "cargodesc_motivo"=> "",
+                "cargodesc_base"=> "0.00",
+                "porc_dsctoglobal"=> "0.00",
+                "total_descuento"=> 0,
+                "descto_global"=> "0.00",
+                "total_gratuitas"=> 0.00,
+                "importe_letras"=> $comprobante->totalLetras,
+                "total_icbper"=> "0.00",
+                "usuario"=> "luis.quijano@hardnetconsulting.com",
+                "tipocambio"=> $comprobante->tipoCambio,
+                "codigo_sucu"=> "",
+                "detraccion_bs"=> "",
+                "detraccion_nrocta"=> "",
+                "detraccion_porc"=> "",
+                "detraccion_monto"=> "",
+                "detraccion_moneda"=> "",
+                "detraccion_mediopago"=> "",
+                "almacen_id"=> null,
+                "icoterms"=> "",
+                "glosa_detraccion"=> $mensaje_detra
+            ],
+            "items" => [
+                [
+                    "tipodocu" => $comprobante->tipoDocumento,
+                    "codigo" => "P00001",
+                    "codigo_sunat" => "95101501",
+                    "codigo_gs1" => "",
+                    "descripcion" => $this->descripcion,
+                    "cantidad" => "1.0000000000",
+                    "unid" => "NIU",
+                    "tipoprecioventa" => "01",
+                    "tipo_afect_igv" => "10",
+                    "codigo_tributo" => "1000",
+                    "is_anticipo" => 0,
+                    "valorunitbruto" => $comprobante->afecto,
+                    "valorunit" => $comprobante->afecto,
+                    "valorventabruto" => $comprobante->afecto,
+                    "valorventa" => $comprobante->afecto,
+                    "preciounitbruto" => $comprobante->total,
+                    "preciounit" => $comprobante->total,
+                    "precioventa" => $comprobante->total,
+                    "precioventabruto" => $comprobante->total,
+                    "igv" => $comprobante->igv,
+                    "porc_igv" => "18.00",
+                    "isc" => "0.00",
+                    "porc_isc" => "0.00",
+                    "dscto_unit" => "0.00",
+                    "porc_dscto_unit" => "0.00",
+                    "cod_cargodesc" => "",
+                    "base_cargodesc" => "0.00",
+                    "otrostributos_porc" => "0.00",
+                    "otrostributos_monto" => "0.00",
+                    "otrostributos_base" => "0.00",
+                    "placavehiculo" => "",
+                    "tot_impuesto" => "0.00",
+                    "tipo_operacion" => "OP_GRAV",
+                    "opt_tipodoi"  => "",
+                    "opt_numerodoi"  => "",
+                    "opt_pasaportepais"  => "",
+                    "opt_huesped"  => "",
+                    "opt_huespedpais"  => "",
+                    "opt_fingresopais"  => "",
+                    "opt_fcheckin"  => "",
+                    "opt_fcheckout"  => "",
+                    "opt_fconsumo" => "",
+                    "opt_diaspermanencia" => "" 
+                ]
+            ]
+        ];
+        // DD($dataToSend);
+
+        $funciones = new Funciones();
+        $file = $funciones->enviarCPE($dataToSend);
+
+        if ($file['type'] == 'success') {
+            $doc = Documento::find($comprobante->id);
+            $doc->respuestaSunat = $file['type'];
+            $doc->save();
+
+        } else {
+            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        }
+        
+    }
 }
