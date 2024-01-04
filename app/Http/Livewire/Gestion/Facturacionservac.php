@@ -27,12 +27,12 @@ class Facturacionservac extends Component
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
             $totalTotal = 0,$respSenda,$descripcion="";
-    protected $boletos=[];
+    protected $servicios=[];
 
     public $selectedRows = [];
 
     public function mount(){
-        $this->boletos = Servicio::where('numeroFile', 'like', "%$this->search%")
+        $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
                                 ->whereNull('idDocumento')
                                 ->where('idTipoFacturacion',2)
                                 ->orderBy($this->sort, $this->direction)

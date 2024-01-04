@@ -51,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('acumuladaboletos', function(){ return view('gestion.facturacionac');})->name('factboletosac');
 
         Route::get('inmediataservicios', function(){ return view('gestion.facturacionserv');})->name('factinmediataserv');
+        Route::get('acumuladaservicios', function(){ return view('gestion.facturacionservac');})->name('factacumuladaserv');
+
         Route::get('documentos', function(){ return view('gestion.documentos');})->name('listaDocumentos');
     });
 
