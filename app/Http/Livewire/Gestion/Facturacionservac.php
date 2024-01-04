@@ -21,7 +21,7 @@ class Facturacionservac extends Component
     use WithPagination;
 
     public $search = "";
-    public $sort= 'numeroBoleto';
+    public $sort= 'numeroFile';
     public $direction = 'asc';
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
