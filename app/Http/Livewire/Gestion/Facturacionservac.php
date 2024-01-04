@@ -95,7 +95,7 @@ class Facturacionservac extends Component
             session()->flash('error', 'Debe seleccionar un boleto.');
             return false;
         } else {
-            $servicios = Servicio::select('id','numeroServicio','numeroFile','idCliente','idSolicitante','fechaEmision','fechaIn','fechaOut','idCounter','idTipoFacturacion','idTipoDocumento','idArea','idVendedor','idProveedor','codigoReserva','fechaReserva','idGds','idTipoTicket','tipoRuta','tipoTarifa','idAerolinea','origen','pasajero','idTipoPasajero','ruta','destino','idDocumento','tipoCambio','idMoneda','tarifaNeta','inafecto','detraccion','igv','otrosImpuestos','xm','total','totalOrigen','porcentajeComision','montoComision','descuentoCorporativo','codigoDescCorp','tarifaNormal','tarifaAlta','tarifaBaja','idTipoPagoConsolidador','centroCosto','cod1','cod2','cod3','cod4','observaciones','estado','usuarioCreacion','usuarioModificacion')
+            $servicios = Servicio::select('id','numeroServicio','numeroFile','idCliente','idSolicitante','fechaEmision','fechaIn','fechaOut','idCounter','idTipoFacturacion','idTipoDocumento','idArea','idVendedor','idProveedor','codigoReserva','fechaReserva','idGds','idTipoServicio','tipoRuta','tipoTarifa','idAerolinea','origen','pasajero','idTipoPasajero','ruta','destino','idDocumento','tipoCambio','idMoneda','tarifaNeta','inafecto','detraccion','igv','otrosImpuestos','xm','total','totalOrigen','porcentajeComision','montoComision','descuentoCorporativo','codigoDescCorp','tarifaNormal','tarifaAlta','tarifaBaja','idTipoPagoConsolidador','centroCosto','cod1','cod2','cod3','cod4','observaciones','estado','usuarioCreacion','usuarioModificacion')
                                 ->whereIn('id',$this->selectedRows)
                                 ->get();
 
