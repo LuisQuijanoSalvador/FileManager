@@ -26,7 +26,7 @@ class Facturacionserv extends Component
     public $direction = 'asc';
 
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
-            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra;
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -153,13 +153,7 @@ class Facturacionserv extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
-        $documento->save();
-        
-        $idsSeleccionados = $this->selectedRows;
-        $servicio = Servicio::find($idsSeleccionados);
-        $servicio->idDocumento = $documento->id;
 
-        $servicio->save();
         if($documento->idTipoDocumento == 6){
             if($documento->inafecto > 0){
                 $this->enviaDCMixto($documento);
@@ -173,6 +167,27 @@ class Facturacionserv extends Component
                 $this->enviaCPE($documento);
             }
         }
+        
+        $documento->save();
+
+        if ($this->respSenda['type'] == 'success') {
+            $doc = Documento::find($documento->id);
+            $doc->respuestaSunat = $this->respSenda['type'];
+            $doc->save();
+
+            session()->flash('success', 'El documento se ha emitido correctamente');
+
+        } else {
+            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        }
+        
+        $idsSeleccionados = $this->selectedRows;
+        $servicio = Servicio::find($idsSeleccionados);
+        $servicio->idDocumento = $documento->id;
+
+        $servicio->save();
+
+        
         
         $this->glosa="";
     }
@@ -330,16 +345,16 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarCPE($dataToSend);
+        $respSenda = $funciones->enviarCPE($dataToSend);
 
-        if ($file['type'] == 'success') {
-            $doc = Documento::find($comprobante->id);
-            $doc->respuestaSunat = $file['type'];
-            $doc->save();
+        // if ($file['type'] == 'success') {
+        //     $doc = Documento::find($comprobante->id);
+        //     $doc->respuestaSunat = $file['type'];
+        //     $doc->save();
 
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        }
+        // } else {
+        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        // }
         
     } 
 
