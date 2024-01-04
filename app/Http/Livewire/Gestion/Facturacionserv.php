@@ -324,7 +324,7 @@ class Facturacionserv extends Component
                     "cod_cargodesc" => "",
                     "base_cargodesc" => "0.00",
                     "otrostributos_porc" => "0.00",
-                    "otrostributos_monto" => "0.00",
+                    "otrostributos_monto" => $comprobante->otrosImpuestos,
                     "otrostributos_base" => "0.00",
                     "placavehiculo" => "",
                     "tot_impuesto" => "0.00",
