@@ -52,6 +52,7 @@ class Facturacion extends Component
         $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
                             ->whereNull('idDocumento')
                             ->where('idTipoFacturacion',1)
+                            ->where('estado',1)
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');

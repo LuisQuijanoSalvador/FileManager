@@ -35,6 +35,7 @@ class Facturacionac extends Component
         $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
                                 ->whereNull('idDocumento')
                                 ->where('idTipoFacturacion',2)
+                                ->where('estado',1)
                                 ->orderBy($this->sort, $this->direction)
                                 ->paginate(10);
 
@@ -75,12 +76,14 @@ class Facturacionac extends Component
             $this->boletos = Boleto::where('idCliente', $this->idCliente)
                                 ->whereNull('idDocumento')
                                 ->where('idTipoFacturacion',2)
+                                ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
                                 ->paginate(10);
         }else{
             $this->boletos = Boleto::where('idTipoFacturacion',2)
                                 ->whereNull('idDocumento')
+                                ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
                                 ->paginate(10);

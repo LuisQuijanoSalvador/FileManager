@@ -138,6 +138,12 @@
                             <i class="fas fa-sort float-right py-1 px-1"></i>
                         @endif
                     </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
+                        File 
+                        @if ($sort == 'numeroFile')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
                     <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
                         Cliente
                         @if ($sort == 'idCliente')
@@ -172,6 +178,7 @@
                     <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model.lazy.defer="selectedRows" value="{{ $boleto->id }}"></td>
                     <td class="py-1">{{$boleto->id}}</td>
                     <td class="py-1">{{$boleto->numeroBoleto}}</td>
+                    <td class="py-1">{{$boleto->numeroFile}}</td>
                     <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
                     <td class="py-1">{{$boleto->fechaEmision}}</td>
                     <td class="py-1">{{$boleto->pasajero}}</td>
