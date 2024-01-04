@@ -152,8 +152,83 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4"></div>
-                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <label for="txtDireccion" class="">Dirección: </label>
+                            <input disabled type="text" class="uTextBox" id="txtDireccion" wire:model.lazy.defer="direccionFiscal">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="txtDocIdentidad" class="">Documento Identidad: </label>
+                            <input disabled type="text" class="uTextBox" id="txtDocIdentidad" wire:model.lazy.defer="numeroDocumentoIdentidad">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p style="font-weight: bold">Glosa:</p>
+                            <textarea disabled name="txtGlosa" id="txtGlosa" cols="50" rows="6" wire:model.lazy.defer="glosa"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label for="txtAfecto" class="">Afecto:</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type="number" class="uTextBoxInLine" id="txtAfecto" wire:model="afecto">
+                                        @error('tarifaNeta')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="txtInafecto" class="">Inafecto:</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type="number" class="uTextBoxInLine" id="txtInafecto" wire:model="inafecto">
+                                        @error('inafecto')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="txtIgv" class="">IGV:</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type="number" class="uTextBoxInLine" id="txtIgv" wire:model="igv" disabled>
+                                        @error('igv')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="txtOtrosImpuestos" class="">Otros Imp.:</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type="number" class="uTextBoxInLine" id="txtOtrosImpuestos" wire:model="otrosImpuestos">
+                                        @error('otrosImpuestos')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <label for="txtTotal" class="">Total venta:</label>
+                                    </td>
+                                    <td>
+                                        <input disabled type="number" class="uTextBoxInLine" id="txtTotal" wire:model.lazy.defer="total">
+                                        @error('total')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </td>
+                                </tr>
+                                
+                            </table> 
+                        </div>
                     </div>
 
                 </div>
