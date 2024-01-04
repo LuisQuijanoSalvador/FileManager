@@ -233,7 +233,7 @@ class Facturacionservac extends Component
         // $boleto = Boleto::find($idsSeleccionados);
         // $boleto->idDocumento = $documento->id;
         // $boleto->save();
-        Boleto::whereIn('id',$this->selectedRows)
+        Servicio::whereIn('id',$this->selectedRows)
                 ->update(['idDocumento' => $documento->id]);
         
     }
