@@ -367,7 +367,8 @@ return [
                     ],
                     [
                         'text' => 'Documentos',
-                        'route' => 'listaDocumentos'
+                        'route' => 'listaDocumentos',
+                        'icon'    => 'fas fa-layer-group'
                     ]
             ]
         ],
