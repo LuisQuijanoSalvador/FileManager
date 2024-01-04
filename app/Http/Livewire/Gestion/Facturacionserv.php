@@ -345,7 +345,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $respSenda = $funciones->enviarCPE($dataToSend);
+        $this->respSenda = $funciones->enviarCPE($dataToSend);
 
         // if ($file['type'] == 'success') {
         //     $doc = Documento::find($comprobante->id);
