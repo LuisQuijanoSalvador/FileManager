@@ -72,7 +72,7 @@
                         <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='ver("{{$documento->id}}")'>Ver</button>
                     </div>
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-danger mr-2 rounded" data-bs-toggle="modal" data-bs-target="#ModalAnulacion" wire:click='encontrar("{{$documento->id}}")'>Anular</button>
+                        <button @if($documento->idEstado == 2) disabled @endif type="button" class="btn btn-danger mr-2 rounded" data-bs-toggle="modal" data-bs-target="#ModalAnulacion" wire:click='encontrar("{{$documento->id}}")'>Anular</button>
                     </div>
                 </td>
                 <td class="py-1">{{$documento->id}}</td>
