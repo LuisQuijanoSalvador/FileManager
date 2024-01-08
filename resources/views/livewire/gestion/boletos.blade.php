@@ -1,82 +1,135 @@
 <div>
     {{-- Be like water. --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="div-filtro">
-        <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto">
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+        <input type="text" class="txtFiltro rounded" id="txtFiltro" wire:model="search" placeholder="Filtrar por File">
+        <div>
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model="filtroCliente">
+                <option value="">-- Filtrar por Cliente --</option>
+                @foreach ($clientes as $cliente)
+                    <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+                @endforeach
+            </select>
+        </div>
         <div>
             <button type="button" class="btn btn-success" wire:click='exportar'>Exportar</button>
             <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal">Nuevo</button>
         </div>
         
     </div>
-    <table class="tabla-listado">
-        <thead class="thead-listado">
-            <tr>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
-                    ID 
-                    @if ($sort == 'id')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
-                    Boleto 
-                    @if ($sort == 'numeroBoleto')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
-                    Cliente
-                    @if ($sort == 'idCliente')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
-                    F. Emisión 
-                    @if ($sort == 'fechaEmision')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
-                    Pasajero 
-                    @if ($sort == 'pasajero')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
-                    Estado 
-                    @if ($sort == 'estado')
-                        <i class="fas fa-sort float-right py-1 px-1"></i>
-                    @endif
-                </th>
-                <th scope="col" class="py-1 thAccion">
-                    Acción
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($boletos as $boleto)
-
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="py-1">{{$boleto->id}}</td>
-                <td class="py-1">{{$boleto->numeroBoleto}}</td>
-                <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
-                <td class="py-1">{{$boleto->fechaEmision}}</td>
-                <td class="py-1">{{$boleto->pasajero}}</td>
-                <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
-                <td class="py-1">
-                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$boleto->id}}")'>Editar</button>
-                        <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$boleto->id}}")'>Eliminar</button>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="contenedorTabla">
+        <table class="tabla-listado">
+            <thead class="thead-listado">
+                <tr>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
+                        ID 
+                        @if ($sort == 'id')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
+                        Boleto 
+                        @if ($sort == 'numeroBoleto')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
+                        File 
+                        @if ($sort == 'numeroFile')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
+                        Cliente
+                        @if ($sort == 'idCliente')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                        F. Emisión 
+                        @if ($sort == 'fechaEmision')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
+                        Pasajero 
+                        @if ($sort == 'pasajero')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('tarifaNeta')">
+                        Afecto 
+                        @if ($sort == 'tarifaNeta')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('inafecto')">
+                        Inafecto 
+                        @if ($sort == 'inafecto')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('igv')">
+                        IGV 
+                        @if ($sort == 'igv')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('otrosImpuestos')">
+                        Otros Imp. 
+                        @if ($sort == 'otrosImpuestos')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('total')">
+                        Total 
+                        @if ($sort == 'total')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
+                        Estado 
+                        @if ($sort == 'estado')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
+                    <th scope="col" class="py-1 thAccion">
+                        Acción
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($boletos as $boleto)
+    
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="py-1">{{$boleto->id}}</td>
+                    <td class="py-1">{{$boleto->numeroBoleto}}</td>
+                    <td class="py-1">{{$boleto->numeroFile}}</td>
+                    <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
+                    <td class="py-1">{{$boleto->fechaEmision}}</td>
+                    <td class="py-1">{{$boleto->pasajero}}</td>
+                    <td class="py-1 text-right">{{$boleto->tarifaNeta}}</td>
+                    <td class="py-1 text-right">{{$boleto->inafecto}}</td>
+                    <td class="py-1 text-right">{{$boleto->igv}}</td>
+                    <td class="py-1 text-right">{{$boleto->otrosImpuestos}}</td>
+                    <td class="py-1 text-right">{{$boleto->total}}</td>
+                    <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
+                    <td class="py-1">
+                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                            <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$boleto->id}}")'>Editar</button>
+                            <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$boleto->id}}")'>Eliminar</button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    
     {{$boletos->links()}}
 
     {{-- Modal para Insertar y Actualizar --}}

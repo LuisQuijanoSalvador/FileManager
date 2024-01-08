@@ -11,17 +11,34 @@
     background-color: #be0e3c;
 }
 /*----------*/
+.contenedorTabla{
+    overflow-x: scroll;
+    width: auto;
+}
 .tabla-listado{
-    width: 100%;
+    width: max-content;
     border: solid 1px #FFFFFF;
     text-transform: uppercase;
     border-collapse: initial;
     font-size: 0.9em !important;
 }
+.tabla-listado td{
+    width: auto;
+    /* border: solid 1px #8b8b8b; */
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 .thead-listado{
+    width: auto;
     background-color: #592a56;
     color: #FFFFFF;
     text-align: center;
+}
+.thead-listado th{
+    width: auto;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .cursor-pointer{
     cursor: pointer;

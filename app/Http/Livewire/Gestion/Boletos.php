@@ -43,6 +43,7 @@ class Boletos extends Component
     public $solicitantes;
     public $selectedCliente = NULL;
     public $selectedSolicitante = 0;
+    public $filtroCliente;
 
     public $idRegistro,$numeroBoleto,$numeroFile,$fechaEmision,$idCounter,
             $idTipoFacturacion,$idTipoDocumento=6,$idArea=1,$idVendedor,$idConsolidador=2,$codigoReserva,
@@ -216,9 +217,19 @@ class Boletos extends Component
 
     public function render()
     {
-        $boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(6);
+        // $boletos = Boleto::where('numeroFile', 'like', "%$this->search%")
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(6);
+        $boletos = Boleto::query()
+            ->when($this->filtroCliente, function($query){
+                $query->where('idCliente', $this->filtroCliente);
+            })
+            ->when($this->search, function($query){
+                $query->where('numeroFile', 'like', '%'. $this->search . '%');
+            })
+            ->orderBy($this->sort, $this->direction)
+            ->paginate(6);
+
         $counters = Counter::all()->sortBy('nombre');
         $tipoFacturacions = TipoFacturacion::all()->sortBy('descripcion');
         $tipoDocumentos = TipoDocumento::all()->sortBy('descripcion');
