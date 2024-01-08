@@ -71,6 +71,9 @@
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
                         <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='ver("{{$documento->id}}")'>Ver</button>
                     </div>
+                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                        <button type="button" class="btn btn-danger mr-2 rounded" data-bs-toggle="modal" data-bs-target="#ModalAnulacion" wire:click='encontrar("{{$documento->id}}")'>Anular</button>
+                    </div>
                 </td>
                 <td class="py-1">{{$documento->id}}</td>
                 <td class="py-1">{{$documento->numero}}</td>
@@ -234,6 +237,42 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click='limpiarControles'>Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalAnulacion" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Confirmación de Anulacion</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="divConfirmacion">
+                        <div class="divDeleteText">
+                            <p class="textoConfirmacion">
+                                Se va anular el comprobante: {{$comprobante . ' ' . $serie . '-' . $numeroCompleto}}
+                            </p>
+                            <p class="textoConfirmacion">
+                                ¿Está seguro?
+                            </p>
+                        </div>
+                        <div class="divIconWarning">
+                            <img src="{{asset('img/warning.png')}}" alt="">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="txtMotivo">Motivo de baja:</label>
+                        <input type="text" name="txtMotivo" id="txtMotivo" wire:model.laze.defer="motivoBaja" style="text-transform:uppercase; width:100%;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                    </div>
+    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click='limpiarControles'>Cancelar</button>
+                    {{-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @if($idUsuario==0) wire:click='grabar' @else wire:click='actualizar("{{$idUsuario}}")' @endif>Aceptar</button> --}}
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  wire:click='anular("{{$idRegistro}}")'>Aceptar</button>
                 </div>
             </div>
         </div>

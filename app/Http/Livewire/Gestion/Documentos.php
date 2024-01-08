@@ -8,6 +8,8 @@ use App\Models\Documento;
 use App\Models\TipoDocumento;
 use App\Models\Estado;
 use App\Models\Cliente;
+use Carbon\Carbon;
+use App\Clases\Funciones;
 
 class Documentos extends Component
 {
@@ -20,7 +22,7 @@ class Documentos extends Component
     $tipoDocumento,$serie,$numero,$idMoneda,$moneda,$fechaEmision,$fechaVencimiento,$detraccion,$afecto,
     $inafecto,$exonerado,$igv,$otrosImpuestos,$total,$totalLetras,$glosa,$numeroFile,$tipoServicio,
     $documentoReferencia,$idMotivoNC,$idMotivoND,$tipoCambio,$idEstado,$respuestaSunat,$usuarioCreacion,
-    $usuarioModificacion;
+    $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda;
 
     public function render()
     {
@@ -80,6 +82,46 @@ class Documentos extends Component
         $this->respuestaSunat = $documento->respuestaSunat;
         $this->usuarioCreacion = $documento->usuarioCreacion;
         $this->usuarioModificacion = $documento->usuarioModificacion;
+    }
+
+    public function encontrar($id){
+        $documento = Documento::find($id);
+        $this->idRegistro = $documento->id;
+        $this->numero = $documento->numero;
+        $this->numeroCompleto = str_pad($documento->numero,8,"0",STR_PAD_LEFT);
+        $this->serie = $documento->serie;
+        $this->comprobante = $documento->tTipoDocumento->descripcion;
+        $tipoDoc = TipoDocumento::find($documento->idTipoDocumento);
+        $this->codigoDoc = $tipoDoc->codigo;
+
+        $fechaActual = Carbon::now();
+        $this->fechaBaja = Carbon::parse($fechaActual)->format("Y-m-d");
+    }
+
+    public function anular(){
+        $dataToSend = [
+            "ruc_emisor" => "20604309027",
+            "nro_efact" => $this->serie . $this->numeroCompleto,
+            "tipodocu" => $this->codigoDoc, 
+            "fechabaja" => $this->fechaBaja, 
+            "motivobaja" => $this->motivoBaja 
+        ];
+
+        $funciones = new Funciones();
+        $this->respSenda = $funciones->anularCPE($dataToSend);
+
+        if ($this->respSenda['type'] == 'success') {
+            $doc = Documento::find($this->idRegistro);
+            $doc->respuestaBaja = $this->respSenda;
+            $doc->idEstado = 2;
+            $doc->save();
+
+            session()->flash('success', 'El documento se ha anulado correctamente');
+
+        } else {
+            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        }
+
     }
 
     public function limpiarControles(){
