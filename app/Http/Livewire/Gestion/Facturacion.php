@@ -125,7 +125,12 @@ class Facturacion extends Component
         $this->descDocumentoIdentidad = $tipoDocId->descripcion;
 
         $solicitante = Solicitante::find($dataBoleto->idSolicitante);
-        $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'TKT: ' . $dataBoleto->numeroBoleto;
+        
+        if(strlen($this->glosa) < 5){
+            $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'TKT: ' . $dataBoleto->numeroBoleto;
+        }else{
+            $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
+        }
         
         $totalLetras = $numLetras->numtoletras($dataBoleto->total,$this->monedaLetra);
         
@@ -159,6 +164,7 @@ class Facturacion extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
+        dd($documento);
         $documento->save();
 
         $idsSeleccionados = $this->selectedRows;
