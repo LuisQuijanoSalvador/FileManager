@@ -32,6 +32,7 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use App\Models\Servicio;
 use App\Models\ServicioPago;
+use App\Models\Documento;
 
 class Boletos extends Component
 {
@@ -53,7 +54,7 @@ class Boletos extends Component
             $inafecto=0,$otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,
             $idTipoPagoConsolidador=6,$centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$idFee,$estado=1,
-            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion,$checkFile;
+            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion,$checkFile,$numDoc;
     
     public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta=7,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
             $horaLlegada,$farebasis;
@@ -161,6 +162,10 @@ class Boletos extends Component
         $this->boletoPagos = new Collection();
     }
 
+    public function updatingSearch(){
+        $this->resetPage();
+    }
+
     public function updatedselectedCliente($cliente_id){
         $this->solicitantes = Solicitante::where('cliente', $cliente_id)->get();
         $cliente = Cliente::find($cliente_id);
@@ -225,7 +230,7 @@ class Boletos extends Component
                 $query->where('idCliente', $this->filtroCliente);
             })
             ->when($this->search, function($query){
-                $query->where('numeroFile', 'like', '%'. $this->search . '%');
+                $query->where('numeroBoleto', 'like', '%'. $this->search . '%');
             })
             ->orderBy($this->sort, $this->direction)
             ->paginate(6);
@@ -493,6 +498,12 @@ class Boletos extends Component
         $this->fechaCreacion = Carbon::parse($boleto->created_at)->format("Y-m-d");
         $this->usuarioModificacion = $boleto->usuarioModificacion;
         $this->fechaModificacion = Carbon::parse($boleto->updated_at)->format("Y-m-d");
+        
+        if($this->idDocumento){
+            $oDocumento = Documento::find($this->idDocumento);
+            $this->numDoc = $oDocumento->serie . '-' . str_pad($oDocumento->numero,8,"0",STR_PAD_LEFT);
+        }
+        
     }
 
     public function actualizar($id){

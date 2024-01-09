@@ -6,7 +6,7 @@
         </div>
     @endif
     <div class="div-filtro">
-        <input type="text" class="txtFiltro rounded" id="txtFiltro" wire:model="search" placeholder="Filtrar por File">
+        <input type="text" class="txtFiltro rounded" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto">
         <div>
             <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model="filtroCliente">
                 <option value="">-- Filtrar por Cliente --</option>
@@ -61,6 +61,12 @@
                             <i class="fas fa-sort float-right py-1 px-1"></i>
                         @endif
                     </th>
+                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('idDocumento')">
+                        Documento 
+                        @if ($sort == 'idDocumento')
+                            <i class="fas fa-sort float-right py-1 px-1"></i>
+                        @endif
+                    </th>
                     <th scope="col" class="py-1 cursor-pointer" wire:click="order('tarifaNeta')">
                         Afecto 
                         @if ($sort == 'tarifaNeta')
@@ -112,6 +118,7 @@
                     <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
                     <td class="py-1">{{$boleto->fechaEmision}}</td>
                     <td class="py-1">{{$boleto->pasajero}}</td>
+                    <td class="py-1">@if($boleto->tDocumento){{$boleto->tDocumento->serie . '-' . str_pad($boleto->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td>
                     <td class="py-1 text-right">{{$boleto->tarifaNeta}}</td>
                     <td class="py-1 text-right">{{$boleto->inafecto}}</td>
                     <td class="py-1 text-right">{{$boleto->igv}}</td>
@@ -188,7 +195,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="txtBoleto" class="">Boleto:</label>
-                                    <input type="text" class="uTextBox" maxlength="10" id="txtBoleto" wire:model.lazy="numeroBoleto" onkeypress="return valideKey(event);">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" maxlength="10" id="txtBoleto" wire:model.lazy="numeroBoleto" onkeypress="return valideKey(event);">
                                     @error('numeroBoleto')
                                         <span class="error">{{$message}}</span>
                                     @enderror
@@ -196,7 +203,7 @@
                                 <div class="col-md-4">
                                     <div class="row">
                                         <div class="col-md-1">
-                                            <input type="checkbox" class=" mt-16" name="chkFile" id="chkFile" wire:model="checkFile">
+                                            <input @if($idDocumento) disabled @endif type="checkbox" class=" mt-16" name="chkFile" id="chkFile" wire:model="checkFile">
                                         </div>
                                         <div class="col-md-11">
                                             <label for="txtFile" class="form-label">File:</label>
@@ -206,7 +213,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="cboCliente" class="form-label">Cliente:</label>
-                                    <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model="selectedCliente">
+                                    <select @if($idDocumento) disabled @endif name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model="selectedCliente">
                                         <option value="">-- Seleccione una opción --</option>
                                         @foreach ($clientes as $cliente)
                                             <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
@@ -221,7 +228,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="cboSolicitante" class="form-label">Solicitante:</label>
-                                    <select name="selectedSolicitante" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboSolicitante" wire:model="selectedSolicitante">
+                                    <select @if($idDocumento) disabled @endif name="selectedSolicitante" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboSolicitante" wire:model="selectedSolicitante">
                                         <option value="0">--</option>
                                         @foreach ($solicitantes as $solicitante)
                                             <option value={{$solicitante->id}}>{{$solicitante->nombres}}</option>
@@ -233,7 +240,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="cboCounter" class="form-label">Counter:</label>
-                                    <select name="idCounter" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCounter" wire:model="idCounter">
+                                    <select @if($idDocumento) disabled @endif name="idCounter" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCounter" wire:model="idCounter">
                                         @foreach ($counters as $counter)
                                             <option value={{$counter->id}}>{{$counter->nombre}}</option>
                                         @endforeach
@@ -244,7 +251,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="cboVendedor" class="form-label">Vendedor:</label>
-                                    <select name="idVendedor" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboVendedor" wire:model="idVendedor">
+                                    <select @if($idDocumento) disabled @endif name="idVendedor" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboVendedor" wire:model="idVendedor">
                                         @foreach ($vendedors as $vendedor)
                                             <option value={{$vendedor->id}}>{{$vendedor->nombre}}</option>
                                         @endforeach
@@ -257,7 +264,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="cboArea" class="form-label">Área:</label>
-                                    <select name="idArea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboArea" wire:model="idArea">
+                                    <select @if($idDocumento) disabled @endif name="idArea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboArea" wire:model="idArea">
                                         @foreach ($areas as $area)
                                             <option value={{$area->id}}>{{$area->descripcion}}</option>
                                         @endforeach
@@ -268,7 +275,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="cboTipoFacturacion" class="form-label">Tipo Fact:</label>
-                                    <select name="idTipoFacturacion" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoFacturacion" wire:model="idTipoFacturacion">
+                                    <select @if($idDocumento) disabled @endif name="idTipoFacturacion" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoFacturacion" wire:model="idTipoFacturacion">
                                         @foreach ($tipoFacturacions as $tipoFacturacion)
                                             <option value={{$tipoFacturacion->id}}>{{$tipoFacturacion->descripcion}}</option>
                                         @endforeach
@@ -279,14 +286,14 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="txtFechaEmision" class="form-label">F. Emisión:</label>
-                                    <input type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaEmision" wire:model="fechaEmision">
+                                    <input @if($idDocumento) disabled @endif type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaEmision" wire:model="fechaEmision">
                                     @error('fechaEmision')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-3">
                                     <label for="cboConsolidador" class="form-label">Consolidador:</label>
-                                    <select name="idConsolidador" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboConsolidador" wire:model="idConsolidador">
+                                    <select @if($idDocumento) disabled @endif name="idConsolidador" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboConsolidador" wire:model="idConsolidador">
                                         @foreach ($consolidadors as $consolidador)
                                             <option value={{$consolidador->id}}>{{$consolidador->razonSocial}}</option>
                                         @endforeach
@@ -299,35 +306,35 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <label for="txtCentroCosto" class="form-label">Centro Costo:</label>
-                                    <input type="text" class="uTextBox" id="txtCentroCosto" wire:model.lazy="centroCosto" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" id="txtCentroCosto" wire:model.lazy="centroCosto" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('centroCosto')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtCod1" class="form-label">COD 1:</label>
-                                    <input type="text" class="uTextBox" id="txtCod1" wire:model.lazy="cod1" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" id="txtCod1" wire:model.lazy="cod1" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('cod1')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtCod2" class="form-label">COD 2:</label>
-                                    <input type="text" class="uTextBox" id="txtCod2" wire:model.lazy="cod2" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" id="txtCod2" wire:model.lazy="cod2" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('cod2')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtCod3" class="form-label">COD 3:</label>
-                                    <input type="text" class="uTextBox" id="txtCod3" wire:model.lazy="cod3" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" id="txtCod3" wire:model.lazy="cod3" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('cod3')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtCod4" class="form-label">COD 4:</label>
-                                    <input type="text" class="uTextBox" id="txtCod4" wire:model.lazy="cod4" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" id="txtCod4" wire:model.lazy="cod4" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('cod4')
                                         <span class="error">{{$message}}</span>
                                     @enderror
@@ -340,21 +347,21 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <label for="txtCodigoReserva" class="form-label">Cod. Reserva:</label>
-                                    <input type="text" maxlength="6" class="uTextBox" style="text-transform:uppercase;" id="txtCodigoReserva" wire:model="codigoReserva" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" maxlength="6" class="uTextBox" style="text-transform:uppercase;" id="txtCodigoReserva" wire:model="codigoReserva" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('codigoReserva')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtFechaReserva" class="form-label">F. Reserva:</label>
-                                    <input type="date" class="" style="width: 100%; display:block;font-size: 0.8em;" id="txtFechaReserva" wire:model="fechaReserva">
+                                    <input @if($idDocumento) disabled @endif type="date" class="" style="width: 100%; display:block;font-size: 0.8em;" id="txtFechaReserva" wire:model="fechaReserva">
                                     @error('fechaReserva')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboGds" class="form-label">GDS:</label>
-                                    <select name="idGds" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboGds" wire:model="idGds">
+                                    <select @if($idDocumento) disabled @endif name="idGds" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboGds" wire:model="idGds">
                                         @foreach ($gdss as $gds)
                                             <option value={{$gds->id}}>{{$gds->descripcion}}</option>
                                         @endforeach
@@ -365,7 +372,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboTipoTicket" class="form-label">Tipo:</label>
-                                    <select name="idTipoTicket" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoTicket" wire:model="idTipoTicket">
+                                    <select @if($idDocumento) disabled @endif name="idTipoTicket" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoTicket" wire:model="idTipoTicket">
                                         @foreach ($tipoTickets as $tipoTicket)
                                             <option value={{$tipoTicket->id}}>{{$tipoTicket->descripcion}}</option>
                                         @endforeach
@@ -376,7 +383,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboTipoRuta" class="form-label">Nac./Int.:</label>
-                                    <select name="tipoRuta" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoRuta" wire:model="tipoRuta">
+                                    <select @if($idDocumento) disabled @endif name="tipoRuta" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoRuta" wire:model="tipoRuta">
                                         <option value="INTERNACIONAL">INTERNACIONAL</option>
                                         <option value="NACIONAL">NACIONAL</option>
                                     </select>
@@ -386,7 +393,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboTipoTarifa" class="form-label">Tipo Tarifa:</label>
-                                    <select name="tipoTarifa" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoTarifa" wire:model="tipoTarifa">
+                                    <select @if($idDocumento) disabled @endif name="tipoTarifa" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoTarifa" wire:model="tipoTarifa">
                                         <option value="BULK">BULK</option>
                                         <option value="NORMAL">NORMAL</option>
                                     </select>
@@ -398,7 +405,7 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <label for="cboAerolinea" class="form-label">Aerolinea:</label>
-                                    <select name="idAerolinea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolinea" wire:model="idAerolinea">
+                                    <select @if($idDocumento) disabled @endif name="idAerolinea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolinea" wire:model="idAerolinea">
                                         @foreach ($aerolineas as $aerolinea)
                                             <option value={{$aerolinea->id}}>{{$aerolinea->razonSocial}}</option>
                                         @endforeach
@@ -409,7 +416,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboOrigen" class="form-label">Origen:</label>
-                                    <select name="origen" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboOrigen" wire:model="origen">
+                                    <select @if($idDocumento) disabled @endif name="origen" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboOrigen" wire:model="origen">
                                         <option value="BSP">BSP</option>
                                         <option value="LA">LA</option>
                                     </select>
@@ -419,14 +426,14 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="txtPasajero" class="form-label">Pasajero:</label>
-                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtPasajero" wire:model="pasajero" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" style="text-transform:uppercase;" id="txtPasajero" wire:model="pasajero" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('pasajero')
                                         <span class="error">{{$message}}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboTipoPasajero" class="form-label">Tipo Pax:</label>
-                                    <select name="idTipoPasajero" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoPasajero" wire:model="idTipoPasajero">
+                                    <select @if($idDocumento) disabled @endif name="idTipoPasajero" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoPasajero" wire:model="idTipoPasajero">
                                         @foreach ($tipoPasajeros as $tipoPasajero)
                                             <option value={{$tipoPasajero->id}}>{{$tipoPasajero->descripcion}}</option>
                                         @endforeach
@@ -457,11 +464,11 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="txtDocumento" class="form-label">Documento:</label>
-                                    <input type="text" class="uTextBox" id="txtDocumento" disabled>
+                                    <input type="text" class="uTextBox" id="txtDocumento" wire:model.lazy.defer="numDoc" disabled>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="cboTipoDocumento" class="form-label">Tipo Documento:</label>
-                                    <select name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model="idTipoDocumento">
+                                    <select @if($idDocumento) disabled @endif name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model="idTipoDocumento">
                                         @foreach ($tipoDocumentos as $tipoDocumento)
                                             <option value={{$tipoDocumento->id}}>{{$tipoDocumento->descripcion}}</option>
                                         @endforeach
@@ -472,7 +479,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label for="cboEstado" class="form-label">Estado:</label>
-                                    <select name="estado" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboEstado" wire:model="estado">
+                                    <select @if($idDocumento) disabled @endif name="estado" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboEstado" wire:model="estado">
                                         @foreach ($estados as $estado)
                                             <option value={{$estado->id}}>{{$estado->descripcion}}</option>
                                         @endforeach
@@ -483,7 +490,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="txtObservaciones" class="form-label">Observaciones:</label>
-                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtObservaciones" wire:model="observaciones" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                    <input @if($idDocumento) disabled @endif type="text" class="uTextBox" style="text-transform:uppercase;" id="txtObservaciones" wire:model="observaciones" onkeyup="javascript:this.value=this.value.toUpperCase();">
                                     @error('observaciones')
                                         <span class="error">{{$message}}</span>
                                     @enderror
@@ -533,7 +540,7 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     <label for="cboMoneda">Moneda:</label>
-                                    <select name="moneda" style="width: 50%;font-size: 0.8em; display:inline;" id="cboMoneda" wire:model.lazy.defer="idMoneda">
+                                    <select @if($idDocumento) disabled @endif name="moneda" style="width: 50%;font-size: 0.8em; display:inline;" id="cboMoneda" wire:model.lazy.defer="idMoneda">
                                         <option>==Seleccione una opción==</option>
                                         @foreach ($monedas as $moneda)
                                             <option value={{$moneda->id}}>{{$moneda->codigo}}</option>
@@ -557,7 +564,7 @@
                                                 <label for="txtTarifaNeta" class="">Tarifa Neta:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model="tarifaNeta">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model="tarifaNeta">
                                                 @error('tarifaNeta')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -569,7 +576,7 @@
                                                 <label for="txtInafecto" class="">Inafecto:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtInafecto" wire:model="inafecto">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine" id="txtInafecto" wire:model="inafecto">
                                                 @error('inafecto')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -580,7 +587,7 @@
                                                 <label for="txtIgv" class="">IGV:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtIgv" wire:model="igv" disabled>
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine" id="txtIgv" wire:model="igv" disabled>
                                                 @error('igv')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -591,7 +598,7 @@
                                                 <label for="txtOtrosImpuestos" class="">Otros Imp.:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtOtrosImpuestos" wire:model="otrosImpuestos">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine" id="txtOtrosImpuestos" wire:model="otrosImpuestos">
                                                 @error('otrosImpuestos')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -603,7 +610,7 @@
                                                 <label for="txtTotal" class="">Total venta:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine" id="txtTotal" wire:model.lazy.defer="total">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine" id="txtTotal" wire:model.lazy.defer="total">
                                                 @error('total')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -619,7 +626,7 @@
                                                 <label for="txtXm" class="">XM:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine2" id="txtXm" wire:model="xm">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine2" id="txtXm" wire:model="xm">
                                                 @error('xm')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -630,7 +637,7 @@
                                                 <label for="txtTotalOrigen" class="">Total Pagado:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine2" id="txtTotalOrigen" wire:model.lazy.defer="totalOrigen">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine2" id="txtTotalOrigen" wire:model.lazy.defer="totalOrigen">
                                                 @error('totalOrigen')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror
@@ -641,7 +648,7 @@
                                                 <label for="txtFormaPago" class="">Forma Pago:</label>
                                             </td>
                                             <td>
-                                                <select name="idTipoPagoConsolidador" style="width: 60%;font-size: 0.8em; display:inline;" id="cboFPago" wire:model.lazy.defer="idTipoPagoConsolidador">
+                                                <select @if($idDocumento) disabled @endif name="idTipoPagoConsolidador" style="width: 60%;font-size: 0.8em; display:inline;" id="cboFPago" wire:model.lazy.defer="idTipoPagoConsolidador">
                                                     <option>==Seleccione una opción==</option>
                                                     @foreach ($medioPagos as $medioPago)
                                                         <option value={{$medioPago->id}}>{{$medioPago->descripcion}}</option>
@@ -654,7 +661,7 @@
                                                 <label for="txtComision" class="">Comisión:</label>
                                             </td>
                                             <td>
-                                                <input type="number" class="uTextBoxInLine2" id="txtComision" wire:model.lazy.defer="montoComision">
+                                                <input @if($idDocumento) disabled @endif type="number" class="uTextBoxInLine2" id="txtComision" wire:model.lazy.defer="montoComision">
                                                 @error('montoComision')
                                                     <span class="error">{{$message}}</span>
                                                 @enderror

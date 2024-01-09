@@ -111,9 +111,9 @@ class Boleto extends Model
         return $this->hasOne(Aerolinea::class,'id','idAerolinea');
     }
 
-    // public function tDocumento(){
-    //     return $this->hasOne(Estado::class,'id','idDocumento');
-    // }
+    public function tDocumento(){
+        return $this->hasOne(Documento::class,'id','idDocumento');
+    }
 
     public function tMoneda(){
         return $this->hasOne(moneda::class,'id','idMoneda');
