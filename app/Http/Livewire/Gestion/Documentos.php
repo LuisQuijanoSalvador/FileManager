@@ -17,6 +17,7 @@ class Documentos extends Component
     public $search = "";
     public $sort= 'id';
     public $direction = 'desc';
+    public $filtroCliente;
 
     public $idRegistro,$idCliente,$razonSocial,$direccionFiscal,$numeroDocumentoIdentidad,$idTipoDocumento,
     $tipoDocumento,$serie,$numero,$idMoneda,$moneda,$fechaEmision,$fechaVencimiento,$detraccion,$afecto,
@@ -26,7 +27,14 @@ class Documentos extends Component
 
     public function render()
     {
-        $documentos = Documento::where('numero', 'like', "%$this->search%")
+        // $documentos = Documento::where('numero', 'like', "%$this->search%")
+        $documentos = Documento::query()
+            ->when($this->filtroCliente, function($query){
+                $query->where('idCliente', $this->filtroCliente);
+            })
+            ->when($this->search, function($query){
+                $query->where('numero', 'like', '%'. $this->search . '%');
+            })
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(8);
         $tipoDocumentos = TipoDocumento::all()->sortBy('descripcion');

@@ -2,6 +2,14 @@
     {{-- Do your work, then step back. --}}
     <div class="div-filtro">
         <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por documento">
+        <div>
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model="filtroCliente">
+                <option value="">-- Filtrar por Cliente --</option>
+                @foreach ($clientes as $cliente)
+                    <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+                @endforeach
+            </select>
+        </div>
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
