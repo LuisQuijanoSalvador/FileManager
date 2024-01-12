@@ -56,6 +56,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('documentos', function(){ return view('gestion.documentos');})->name('listaDocumentos');
     });
 
+    Route::group(['prefix'=>'cuentaporcobrar'],function(){
+        Route::get('abonos', function(){ return view('cuentas-por-cobrar.abonos');})->name('rAbonos');
+        Route::get('estadodecuenta', function(){ return view('cuentas-por-cobrar.estado-cuenta');})->name('rEstadosdecuenta');
+    });
+
     Route::group(['prefix'=>'entidades'],function(){
         Route::get('usuarios', function(){ return view('entidades.usuarios');})->name('listaUsuarios');
         Route::get('counters', function(){ return view('entidades.counters');})->name('listaCounters');

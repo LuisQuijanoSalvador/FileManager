@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('abonos', function (Blueprint $table) {
             $table->id();
+            $table->integer('idCargo');
+            $table->integer('fechaAbono');
+            $table->integer('monto');
+            $table->integer('moneda');
+            $table->integer('tipoCambio');
+            $table->integer('idMedioPago');
+            $table->integer('idBanco')->nullable();
+            $table->integer('numeroCuenta')->nullable();
+            $table->integer('idTarjetaCredito')->nullable();
+            $table->integer('observaciones')->nullable();
+            $table->integer('idEstado');
+            $table->integer('usuarioCreacion');
+            $table->integer('usuarioModificacion')->nullable();
             $table->timestamps();
         });
     }

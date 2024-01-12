@@ -373,6 +373,21 @@ return [
             ]
         ],
         [
+            'text'        => 'Cuentas por Cobrar',
+            'url'         => 'admin/pages',
+            'icon'        => 'fas fa-clipboard',
+            'submenu'=>[
+                [
+                    'text' => 'Abonos',
+                    'route' => 'rAbonos'
+                ],
+                [
+                    'text' => 'Estados de Cuenta',
+                    'route' => 'rEstadosdecuenta'
+                ]
+            ]
+        ],
+        [
             'text'        => 'Entidades',
             'url'         => 'admin/pages',
             'icon'        => 'fas fa-building',

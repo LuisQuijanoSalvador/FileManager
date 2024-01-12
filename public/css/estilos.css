@@ -150,3 +150,7 @@ a{
     width: 90%;
     height: 400px;
 }
+.contenedorFiltro{
+    background-color: #FFFFFF;
+    padding: 20px;
+}
