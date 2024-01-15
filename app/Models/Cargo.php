@@ -27,7 +27,7 @@ class Cargo extends Model
         'tipoRuta',
         'ruta',
         'moneda',
-        'tafifaNeta',
+        'tarifaNeta',
         'inafecto',
         'igv',
         'otrosImpuestos',

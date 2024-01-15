@@ -25,4 +25,90 @@
             </div>
         </div>
     </div>
+    <hr>
+    <button @if(!$estadoCuentas) disabled @elseif(count($estadoCuentas) == 0) disabled @endif type="button" class="btn btn-success rounded" wire:click='exportar'>Exportar</button>
+
+    <div class="contenedorTablaCC">
+        <table class="tabla-listado">
+            <thead class="thead-listadoCC">
+                <tr>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Tipo Doc. 
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Num. Doc 
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Aerolinea
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        F. Emision
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        F. Vencimiento 
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        N° TKT
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Pasajero
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        N/I
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Ruta
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Mon
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Neto
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Inafecto
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        IGV
+                    </th>
+                    <th scope="col" class="py-1 cursor-pointer">
+                        Otros Imp.
+                    </th>
+                    <th scope="col" class="py-1 thAccion">
+                        Total
+                    </th>
+                    <th scope="col" class="py-1 thAccion">
+                        Solicitado por
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if($estadoCuentas)
+                @foreach ($estadoCuentas as $estCuent)
+    
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="py-1">@if($estCuent->tipoDocumento == '36')DOC. COBRANZA @elseif($estCuent->tipoDocumento == '01')FACTURA @elseif($estCuent->tipoDocumento == '03')BOLETA @endif</td>
+                    <td class="py-1">{{$estCuent->serieDocumento. ' ' . $estCuent->numeroDocumento}}</td>
+                    <td class="py-1">@if($estCuent->idAerolinea){{$estCuent->tAerolinea->razonSocial}} @else AS TRAVEL @endif</td>
+                    <td class="py-1">{{$estCuent->fechaEmision}}</td>
+                    <td class="py-1">{{$estCuent->fechaVencimiento}}</td>
+                    <td class="py-1">{{$estCuent->numeroBoleto}}</td>
+                    {{-- <td class="py-1">@if($boleto->tDocumento){{$boleto->tDocumento->serie . '-' . str_pad($boleto->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td> --}}
+                    <td class="py-1">{{$estCuent->pasajero}}</td>
+                    <td class="py-1">{{$estCuent->tipoRuta}}</td>
+                    <td class="py-1">@if($estCuent->ruta){{$estCuent->ruta}} @else VARIOS @endif</td>
+                    <td class="py-1">{{$estCuent->moneda}}</td>
+                    <td class="py-1">{{$estCuent->tarifaNeta}}</td>
+                    <td class="py-1">{{$estCuent->inafecto}}</td>
+                    <td class="py-1">{{$estCuent->igv}}</td>
+                    <td class="py-1">{{$estCuent->otrosImpuestos}}</td>
+                    <td class="py-1">{{$estCuent->saldo}}</td>
+                    <td class="py-1">{{$estCuent->tSolicitante->nombres}}</td>
+                    
+                </tr>
+                @endforeach
+                @endif
+            </tbody>
+        </table>
+    </div>
 </div>

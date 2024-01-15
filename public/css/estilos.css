@@ -154,3 +154,16 @@ a{
     background-color: #FFFFFF;
     padding: 20px;
 }
+.contenedorTablaCC{
+    overflow: auto;
+    width: auto;
+    max-height: 300px;
+}
+.thead-listadoCC{
+    position: sticky;
+    top: 0;
+    width: auto;
+    background-color: #592a56;
+    color: #FFFFFF;
+    text-align: center;
+}
