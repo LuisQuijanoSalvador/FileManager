@@ -5,6 +5,9 @@ namespace App\Http\Livewire\CuentasPorCobrar;
 use Livewire\Component;
 use App\Models\Cliente;
 use App\Models\Cargo;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CargosExport;
+use Carbon\Carbon;
 
 class EstadoCuenta extends Component
 {
@@ -13,6 +16,10 @@ class EstadoCuenta extends Component
 
     public function mount(){
         $this->clientes = Cliente::all()->sortBy('razonSocial');
+        $fechaActual = Carbon::now();
+        
+        $this->fechaInicio = Carbon::parse($fechaActual)->format("Y-m-d");
+        $this->fechaFinal = Carbon::parse($fechaActual)->format("Y-m-d");
         // $this->estadoCuenta = collect();
     }
 
@@ -33,5 +40,9 @@ class EstadoCuenta extends Component
                                     ->orderBy('fechaEmision', 'asc')
                                     ->get();
         // dd($this->estadoCuentas);      
+    }
+
+    public function exportar(){
+        return Excel::download(new CargosExport($this->idCliente,$this->fechaInicio,$this->fechaFinal),'Estado-de-cuentas.xlsx');
     }
 }
