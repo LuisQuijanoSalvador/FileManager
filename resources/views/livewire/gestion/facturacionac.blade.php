@@ -90,22 +90,22 @@
                 </div>
                 <div class="col-md-9">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <p style="text-align:right">F. inicio:</p>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <input type="date" wire:model.lazy.defer="startDate" id="startDate">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <p style="text-align:right">F. Final:</p>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <input type="date" wire:model.lazy.defer="endDate" id="endDate">
                                 </div>
                             </div>
@@ -113,83 +113,146 @@
                         <div class="col-md-2">
                             <button type="button" class="btn btn-primary" wire:click="filtrar" >Filtrar</button>
                         </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-success" wire:click="exportar" >Exportar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            
-            
         </div>
-        <table class="tabla-listado">
-            <thead class="thead-listado">
-                <tr>
-                    <th scope="col" class="py-1 cursor-pointer">
-                        
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
-                        ID 
-                        @if ($sort == 'id')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
-                        Boleto 
-                        @if ($sort == 'numeroBoleto')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
-                        File 
-                        @if ($sort == 'numeroFile')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
-                        Cliente
-                        @if ($sort == 'idCliente')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
-                        F. Emisión 
-                        @if ($sort == 'fechaEmision')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
-                        Pasajero 
-                        @if ($sort == 'pasajero')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
-                        Estado 
-                        @if ($sort == 'estado')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @if($this->boletos)
-                @foreach ($this->boletos as $boleto)
-    
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model.lazy.defer="selectedRows" value="{{ $boleto->id }}"></td>
-                    <td class="py-1">{{$boleto->id}}</td>
-                    <td class="py-1">{{$boleto->numeroBoleto}}</td>
-                    <td class="py-1">{{$boleto->numeroFile}}</td>
-                    <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
-                    <td class="py-1">{{$boleto->fechaEmision}}</td>
-                    <td class="py-1">{{$boleto->pasajero}}</td>
-                    <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
-                </tr>
-                @endforeach
-                @endif
-            </tbody>
-        </table>
-        @if($this->boletos)
+
+        <div class="contenedorTabla">
+            <table class="tabla-listado">
+                <thead class="thead-listado">
+                    <tr>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
+                            ID 
+                            @if ($sort == 'id')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
+                            Boleto 
+                            @if ($sort == 'numeroBoleto')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
+                            File 
+                            @if ($sort == 'numeroFile')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
+                            Cliente
+                            @if ($sort == 'idCliente')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            F. Emisión 
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
+                            Pasajero 
+                            @if ($sort == 'pasajero')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            Neto 
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            Inafecto 
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            IGV 
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            Otros Imp. 
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            Total 
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
+                            Estado 
+                            @if ($sort == 'estado')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $totalNeto = 0;
+                        $totalInafecto = 0;
+                        $totalIgv = 0;
+                        $totalOtrosImpuestos = 0;
+                        $totalTotal = 0;
+                    @endphp
+                    @if($this->boletos)
+                    @foreach ($this->boletos as $boleto)
+        
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model.lazy.defer="selectedRows" value="{{ $boleto->id }}"></td>
+                        <td class="py-1">{{$boleto->id}}</td>
+                        <td class="py-1">{{$boleto->numeroBoleto}}</td>
+                        <td class="py-1">{{$boleto->numeroFile}}</td>
+                        <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
+                        <td class="py-1">{{$boleto->fechaEmision}}</td>
+                        <td class="py-1">{{$boleto->pasajero}}</td>
+                        <td class="py-1 text-right">{{$boleto->tarifaNeta}}</td>
+                        <td class="py-1 text-right">{{$boleto->inafecto}}</td>
+                        <td class="py-1 text-right">{{$boleto->igv}}</td>
+                        <td class="py-1 text-right">{{$boleto->otrosImpuestos}}</td>
+                        <td class="py-1 text-right">{{$boleto->total}}</td>
+                        <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
+                    </tr>
+                    @php
+                        $totalNeto += $boleto->tarifaNeta;
+                        $totalInafecto += $boleto->inafecto;
+                        $totalIgv += $boleto->igv;
+                        $totalOtrosImpuestos += $boleto->otrosImpuestos;
+                        $totalTotal += $boleto->total;
+                    @endphp
+                    @endforeach
+                    @endif
+                    <tr>
+                        <th colspan="6">
+                            
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            Totales: &nbsp&nbsp
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            {{ number_format($totalNeto,2)}} 
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            {{number_format($totalInafecto,2)}} 
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            {{number_format($totalIgv,2)}} 
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            {{number_format($totalOtrosImpuestos,2)}} 
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                            {{number_format($totalTotal,2)}} 
+                        </th>
+                        <th scope="col" class="py-1 text-right">
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        {{-- @if($this->boletos)
         {{$this->boletos->links()}}
-        @endif
+        @endif --}}
     </div>
 </div>

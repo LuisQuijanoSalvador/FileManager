@@ -28,7 +28,7 @@ class Facturacionservac extends Component
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0,$respSenda,$descripcion="";
+            $totalTotal = 0,$respSenda,$descripcion="",$numeroTelefono;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -143,6 +143,7 @@ class Facturacionservac extends Component
         }
         
         $cliente = Cliente::find($dataServicio->idCliente);
+        $this->numeroTelefono = $cliente->numeroTelefono;
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
         if ($dataServicio->tMoneda->codigo == 'USD') {
             $this->monedaLetra = 'DOLARES AMERICANOS';
@@ -285,7 +286,7 @@ class Facturacionservac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -327,7 +328,7 @@ class Facturacionservac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -380,7 +381,7 @@ class Facturacionservac extends Component
                     "cod_cargodesc" => "",
                     "base_cargodesc" => "0.00",
                     "otrostributos_porc" => "0.00",
-                    "otrostributos_monto" => "0.00",
+                    "otrostributos_monto" => $comprobante->otrosImpuestos,
                     "otrostributos_base" => "0.00",
                     "placavehiculo" => "",
                     "tot_impuesto" => "0.00",
@@ -450,7 +451,7 @@ class Facturacionservac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -492,7 +493,7 @@ class Facturacionservac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -660,7 +661,7 @@ class Facturacionservac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -704,7 +705,7 @@ class Facturacionservac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -874,7 +875,7 @@ class Facturacionservac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -918,7 +919,7 @@ class Facturacionservac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -972,7 +973,7 @@ class Facturacionservac extends Component
                     "cod_cargodesc" => "",
                     "base_cargodesc" => "0.00",
                     "otrostributos_porc" => "0.00",
-                    "otrostributos_monto" => "0.00",
+                    "otrostributos_monto" => $comprobante->otrosImpuestos,
                     "otrostributos_base" => "0.00",
                     "placavehiculo" => "",
                     "tot_impuesto" => "0.00",

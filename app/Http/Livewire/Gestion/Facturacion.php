@@ -25,7 +25,7 @@ class Facturacion extends Component
     public $direction = 'asc';
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,
-            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad;
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$numeroTelefono;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -112,6 +112,7 @@ class Facturacion extends Component
         }
         
         $cliente = Cliente::find($dataBoleto->idCliente);
+        $this->numeroTelefono = $cliente->numeroTelefono;
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
         if ($dataBoleto->tMoneda->codigo == 'USD') {
             $this->monedaLetra = 'DOLARES AMERICANOS';
@@ -127,7 +128,8 @@ class Facturacion extends Component
         $solicitante = Solicitante::find($dataBoleto->idSolicitante);
         
         if(strlen($this->glosa) < 5){
-            $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'TKT: ' . $dataBoleto->numeroBoleto;
+            $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
+            // dd($this->glosa);
         }else{
             $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
         }
@@ -210,7 +212,7 @@ class Facturacion extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -353,7 +355,7 @@ class Facturacion extends Component
                 "cod_domifiscal"=> "0000",
                 "tiop_codi"=> "0101",
                 "fecha"=> $comprobante->fechaEmision,
-                "fvenci"=> $comprobante->fechaVencimiento,
+                "fvenc"=> $comprobante->fechaVencimiento,
                 "tipodocu"=> $comprobante->tipoDocumento,
                 "nro_serie_efact"=> $comprobante->serie,
                 "tipo_moneda"=> $comprobante->moneda,
@@ -372,7 +374,7 @@ class Facturacion extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono ,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",

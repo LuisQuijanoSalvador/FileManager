@@ -36,7 +36,13 @@
                 Neto 
             </th>
             <th scope="col">
+                Inafecto 
+            </th>
+            <th scope="col">
                 IGV 
+            </th>
+            <th scope="col">
+                Otros Imp. 
             </th>
             <th scope="col">
                 Total 
@@ -55,31 +61,35 @@
             $totalTotal = 0;
         @endphp
         {{-- @if($servicios) --}}
-            @foreach ($servicios as $servicio)
+            @foreach ($boletos as $boleto)
                 <tr>
                     <td></td>
-                    <td>{{\Carbon\Carbon::parse($servicio->fechaEmision)->format('d-m-Y')}}</td>
-                    <td>{{$servicio->pasajero}}</td>
-                    <td>{{$servicio->tBoleto->numeroBoleto}}</td>
-                    <td>@if($servicio->tProveedor){{$servicio->tProveedor->razonSocial}} @else AS TRAVEL PERU SAC @endif</td>
-                    <td>{{$servicio->tBoleto->ruta}}</td>
-                    <td>{{$servicio->tBoleto->tipoRuta}}</td>
-                    <td>{{$servicio->tarifaNeta}}</td>
-                    <td>{{$servicio->igv}}</td>
-                    <td>{{$servicio->total}}</td>
-                    <td>@if($servicio->tSolicitante){{$servicio->tSolicitante->nombres}}@else -- @endif</td>
+                    <td>{{\Carbon\Carbon::parse($boleto->fechaEmision)->format('d-m-Y')}}</td>
+                    <td>{{$boleto->pasajero}}</td>
+                    <td>{{$boleto->numeroBoleto}}</td>
+                    <td>@if($boleto->tAerolinea){{$boleto->tAerolinea->razonSocial}} @else AS TRAVEL PERU SAC @endif</td>
+                    <td>{{$boleto->ruta}}</td>
+                    <td>{{$boleto->tipoRuta}}</td>
+                    <td>{{$boleto->tarifaNeta}}</td>
+                    <td>{{$boleto->inafecto}}</td>
+                    <td>{{$boleto->igv}}</td>
+                    <td>{{$boleto->otrosImpuestos}}</td>
+                    <td>{{$boleto->total}}</td>
+                    <td>@if($boleto->tSolicitante){{$boleto->tSolicitante->nombres}}@else -- @endif</td>
                 </tr>
-                {{$totalTotal += $servicio->total}}
-                {{$totalInafecto += $servicio->inafecto}}
-                {{$totalIgv += $servicio->igv}}
-                {{$totalOtrosImpuestos += $servicio->otrosImpuestos}}
-                {{$totalNeto += $servicio->tarifaNeta}}
+                {{$totalTotal += $boleto->total}}
+                {{$totalInafecto += $boleto->inafecto}}
+                {{$totalIgv += $boleto->igv}}
+                {{$totalOtrosImpuestos += $boleto->otrosImpuestos}}
+                {{$totalNeto += $boleto->tarifaNeta}}
             @endforeach
             <tr>
                 <td colspan="6"></td>
                 <td>Totales: </td>
                 <td>{{$totalNeto}}</td>
+                <td>{{$totalInafecto}}</td>
                 <td>{{$totalIgv}}</td>
+                <td>{{$totalOtrosImpuestos}}</td>
                 <td>{{$totalTotal}}</td>
             </tr>
         {{-- @endif --}}

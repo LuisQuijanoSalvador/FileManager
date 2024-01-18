@@ -38,7 +38,9 @@ class Documento extends Model
         'idMotivoND',
         'tipoCambio',
         'idEstado',
+        'jsonDoc',
         'respuestaSunat',
+        'respuestaBaja',
         'usuarioCreacion',
         'usuarioModificacion',
     ];

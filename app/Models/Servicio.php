@@ -132,6 +132,10 @@ class Servicio extends Model
         return $this->hasOne(TipoPago::class,'id','idTipoPagoConsolidador');
     }
 
+    public function tBoleto(){
+        return $this->hasOne(Boleto::class,'idFee','id');
+    }
+
     public function tUsuarioCreacion(){
         return $this->hasOne(User::class,'id','usuarioCreacion');
     }

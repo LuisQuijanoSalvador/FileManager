@@ -26,7 +26,8 @@ class Facturacionserv extends Component
     public $direction = 'asc';
 
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
-            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda;
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda,
+            $numeroTelefono;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -101,6 +102,7 @@ class Facturacionserv extends Component
                 break;
         }
         $cliente = Cliente::find($dataServicio->idCliente);
+        $this->numeroTelefono = $cliente->numeroTelefono;
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
         if ($dataServicio->tMoneda->codigo == 'USD') {
             $this->monedaLetra = 'DOLARES AMERICANOS';
@@ -110,8 +112,13 @@ class Facturacionserv extends Component
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
         if(strlen($this->glosa) < 5){
+            $ruta = "";
+            if($dataServicio->tBoleto){
+                $ruta = $dataServicio->tBoleto->ruta;
+            }
             $this->glosa = "";
-            $this->descripcion = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | ' . $dataServicio->tTipoServicio->descripcion;
+            $this->descripcion = $dataServicio->tTipoServicio->descripcion . ' | ' . "PAX: " . $dataServicio->pasajero . ' | ' . 'RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
+            // dd($this->descripcion);
         }else{
             $this->descripcion = $dataServicio->tTipoServicio->descripcion;
         }
@@ -156,9 +163,9 @@ class Facturacionserv extends Component
 
         if($documento->idTipoDocumento == 6){
             if($documento->inafecto > 0){
-                $this->enviaDCMixto($documento);
+                $dataJson = $this->enviaDCMixto($documento);
             }else{
-                $this->enviaDC($documento);
+                $dataJson = $this->enviaDC($documento);
             }
         }else{
             if($documento->inafecto > 0){
@@ -167,19 +174,24 @@ class Facturacionserv extends Component
                 $this->enviaCPE($documento);
             }
         }
-        
+        $jsonDoc = json_encode($dataJson, JSON_PRETTY_PRINT);
         $documento->save();
 
         if ($this->respSenda['type'] == 'success') {
             $doc = Documento::find($documento->id);
             $doc->respuestaSunat = $this->respSenda['type'];
+            $doc->jsonDoc = $jsonDoc;
             $doc->save();
 
             session()->flash('success', 'El documento se ha emitido correctamente');
 
         } else {
             session()->flash('error', 'Ocurrió un error enviando a Sunat');
+            $doc = Documento::find($documento->id);
+            $doc->jsonDoc = $jsonDoc;
+            $doc->save();
         }
+        
         
         $idsSeleccionados = $this->selectedRows;
         $servicio = Servicio::find($idsSeleccionados);
@@ -229,7 +241,7 @@ class Facturacionserv extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -347,6 +359,7 @@ class Facturacionserv extends Component
         $funciones = new Funciones();
         $this->respSenda = $funciones->enviarCPE($dataToSend);
 
+        return($dataToSend);
         // if ($file['type'] == 'success') {
         //     $doc = Documento::find($comprobante->id);
         //     $doc->respuestaSunat = $file['type'];
@@ -394,7 +407,7 @@ class Facturacionserv extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -604,7 +617,7 @@ class Facturacionserv extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -768,21 +781,23 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarDC($dataToSend);
+        $this->respSenda = $funciones->enviarCPE($dataToSend);
 
-        if ($file['type'] == 'success') {
-            $doc = Documento::find($comprobante->id);
-            $doc->respuestaSunat = $file['type'];
-            $doc->save();
+        return($dataToSend);
+        // $file = $funciones->enviarDC($dataToSend);
 
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        }
+        // if ($file['type'] == 'success') {
+        //     $doc = Documento::find($comprobante->id);
+        //     $doc->respuestaSunat = $file['type'];
+        //     $doc->save();
+
+        // } else {
+        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        // }
         
     }
 
     public function enviaDC($comprobante){
-
         $mensaje_detra = "";
         if($this->detraccion == 1){
             $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
@@ -818,7 +833,7 @@ class Facturacionserv extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -916,7 +931,7 @@ class Facturacionserv extends Component
                     "cod_cargodesc" => "",
                     "base_cargodesc" => "0.00",
                     "otrostributos_porc" => "0.00",
-                    "otrostributos_monto" => "0.00",
+                    "otrostributos_monto" => $comprobante->otrosImpuestos,
                     "otrostributos_base" => "0.00",
                     "placavehiculo" => "",
                     "tot_impuesto" => "0.00",
@@ -937,16 +952,21 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarDC($dataToSend);
+        $this->respSenda = $funciones->enviarCPE($dataToSend);
 
-        if ($file['type'] == 'success') {
-            $doc = Documento::find($comprobante->id);
-            $doc->respuestaSunat = $file['type'];
-            $doc->save();
+        return($dataToSend);
 
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        }
+        // $funciones = new Funciones();
+        // $file = $funciones->enviarDC($dataToSend);
+
+        // if ($file['type'] == 'success') {
+        //     $doc = Documento::find($comprobante->id);
+        //     $doc->respuestaSunat = $file['type'];
+        //     $doc->save();
+
+        // } else {
+        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        // }
         
     }
 }

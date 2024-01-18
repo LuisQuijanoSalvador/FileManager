@@ -15,6 +15,8 @@ use App\Models\TipoCambio;
 use App\Clases\modelonumero;
 use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacturacionacExport;
 
 class Facturacionac extends Component
 {
@@ -26,7 +28,7 @@ class Facturacionac extends Component
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0,$respSenda,$descripcion="";
+            $totalTotal = 0,$respSenda,$descripcion="",$numeroTelefono;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -37,7 +39,8 @@ class Facturacionac extends Component
                                 ->where('idTipoFacturacion',2)
                                 ->where('estado',1)
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
+                                ->get();
+                                // ->paginate(10);
 
         $fechaActual = Carbon::now();
         
@@ -79,14 +82,16 @@ class Facturacionac extends Component
                                 ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
+                                ->get();
+                                // ->paginate(10);
         }else{
             $this->boletos = Boleto::where('idTipoFacturacion',2)
                                 ->whereNull('idDocumento')
                                 ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
+                                ->get();
+                                // ->paginate(10);
             }
     }
         
@@ -139,6 +144,7 @@ class Facturacionac extends Component
         }
         
         $cliente = Cliente::find($dataBoleto->idCliente);
+        $this->numeroTelefono = $cliente->numeroTelefono;
         $fechaVencimiento = Carbon::parse($this->fechaEmision)->addDays($cliente->diasCredito);
         if ($dataBoleto->tMoneda->codigo == 'USD') {
             $this->monedaLetra = 'DOLARES AMERICANOS';
@@ -261,7 +267,7 @@ class Facturacionac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono ,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -305,7 +311,7 @@ class Facturacionac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -475,7 +481,7 @@ class Facturacionac extends Component
                 "email_cliente"=> "facturaselectronicas@astravel.com.pe",
                 "email_cc"=> "",
                 "codigo_cliente"=> $comprobante->idCliente,
-                "rec_tele"=> null,
+                "rec_tele"=> $this->numeroTelefono ,
                 "rec_ubigeo"=> "",
                 "rec_pais"=> "",
                 "rec_depa"=> "",
@@ -519,7 +525,7 @@ class Facturacionac extends Component
                 "importe_total"=> $comprobante->total,
                 "total_pagar"=> $comprobante->total,
                 "redondeo"=> "0.00",
-                "total_otros_tributos"=> "0.00",
+                "total_otros_tributos"=> $comprobante->otrosImpuestos,
                 "total_otros_cargos"=> 0,
                 "cargodesc_motivo"=> "",
                 "cargodesc_base"=> "0.00",
@@ -573,7 +579,7 @@ class Facturacionac extends Component
                     "cod_cargodesc" => "",
                     "base_cargodesc" => "0.00",
                     "otrostributos_porc" => "0.00",
-                    "otrostributos_monto" => "0.00",
+                    "otrostributos_monto" => $comprobante->otrosImpuestos,
                     "otrostributos_base" => "0.00",
                     "placavehiculo" => "",
                     "tot_impuesto" => "0.00",
@@ -598,6 +604,10 @@ class Facturacionac extends Component
 
         
         
+    }
+
+    public function exportar(){
+        return Excel::download(new FacturacionacExport($this->idCliente,$this->startDate,$this->endDate),'BoletosFacturados.xlsx');
     }
 
 }
