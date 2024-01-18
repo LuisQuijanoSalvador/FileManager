@@ -15,6 +15,8 @@ use App\Models\TipoCambio;
 use App\Clases\modelonumero;
 use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacservacExport;
 
 class Facturacionservac extends Component
 {
@@ -32,11 +34,14 @@ class Facturacionservac extends Component
     public $selectedRows = [];
 
     public function mount(){
+        
         $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
                                 ->whereNull('idDocumento')
+                                ->where('estado',1)
                                 ->where('idTipoFacturacion',2)
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
+                                ->get();
+                                // ->paginate(10);
 
         $fechaActual = Carbon::now();
         
@@ -73,16 +78,21 @@ class Facturacionservac extends Component
             $this->servicios = Servicio::where('idCliente', $this->idCliente)
                                 ->whereNull('idDocumento')
                                 ->where('idTipoFacturacion',2)
+                                ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
+                                ->get();
+                                // ->paginate(10);
         }else{
             $this->servicios = Servicio::where('idTipoFacturacion',2)
                                 ->whereNull('idDocumento')
+                                ->where('estado',1)
                                 ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
                                 ->orderBy($this->sort, $this->direction)
-                                ->paginate(10);
-            }
+                                ->get();
+                                // ->paginate(10);
+        }
+        
     }
 
     public function emitirComprobante()
@@ -994,5 +1004,9 @@ class Facturacionservac extends Component
         //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
         // }
         
+    }
+
+    public function exportar(){
+        return Excel::download(new FacservacExport($this->idCliente,$this->startDate,$this->endDate),'ServiciosFacturados.xlsx');
     }
 }
