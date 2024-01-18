@@ -8,41 +8,44 @@
         </td>
     </tr>
 </table>
-<table class="tabla-listado">
-    <thead class="thead-listado">
+<table>
+    <thead>
         <tr>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
-                File
-            </th>
-            <th scope="col" class="py-1 cursor-pointer">
-                Cliente
-            </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 F. Emisión
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
-                Servicio
-            </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 Pasajero
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
+                Servicio
+            </th>
+            <th scope="col">
+                Proveedor
+            </th>
+            <th scope="col">
+                Cliente
+            </th>
+            <th scope="col">
                 Neto 
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 Inafecto 
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 IGV 
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 Otros Imp. 
             </th>
-            <th scope="col" class="py-1 cursor-pointer">
+            <th scope="col">
                 Total 
+            </th>
+            <th scope="col">
+                Solicitante 
             </th>
         </tr>
     </thead>
@@ -54,22 +57,37 @@
             $totalOtrosImpuestos = 0;
             $totalTotal = 0;
         @endphp
-        @if($servicios)
+        {{-- @if($servicios) --}}
             @foreach ($servicios as $servicio)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model.lazy.defer="selectedRows" value="{{ $servicio->id }}"></td>
-                    <td class="py-1">{{$servicio->numeroFile}}</td>
-                    <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
-                    <td class="py-1">{{$servicio->fechaEmision}}</td>
-                    <td class="py-1">{{$servicio->tTipoServicio->descripcion}}</td>
-                    <td class="py-1">{{$servicio->pasajero}}</td>
-                    <td class="py-1">{{$servicio->tarifaNeta}}</td>
-                    <td class="py-1">{{$servicio->inafecto}}</td>
-                    <td class="py-1">{{$servicio->igv}}</td>
-                    <td class="py-1">{{$servicio->otrosImpuestos}}</td>
-                    <td class="py-1">{{$servicio->total}}</td>
+                <tr>
+                    <td></td>
+                    <td>{{\Carbon\Carbon::parse($servicio->fechaEmision)->format('d-m-Y')}}</td>
+                    <td>{{$servicio->pasajero}}</td>
+                    <td>{{$servicio->tTipoServicio->descripcion}}</td>
+                    <td>@if($servicio->tProveedor){{$servicio->tProveedor->razonSocial}} @else AS TRAVEL PERU SAC @endif</td>
+                    <td>{{$servicio->tcliente->razonSocial}}</td>
+                    <td>{{$servicio->tarifaNeta}}</td>
+                    <td>{{$servicio->inafecto}}</td>
+                    <td>{{$servicio->igv}}</td>
+                    <td>{{$servicio->otrosImpuestos}}</td>
+                    <td>{{$servicio->total}}</td>
+                    <td>@if($servicio->tSolicitante){{$servicio->tSolicitante->nombres}}@else -- @endif</td>
                 </tr>
+                {{$totalTotal += $servicio->total}}
+                {{$totalInafecto += $servicio->inafecto}}
+                {{$totalIgv += $servicio->igv}}
+                {{$totalOtrosImpuestos += $servicio->otrosImpuestos}}
+                {{$totalNeto += $servicio->tarifaNeta}}
             @endforeach
-        @endif
+            <tr>
+                <td colspan="5"></td>
+                <td>Totales: </td>
+                <td>{{$totalNeto}}</td>
+                <td>{{$totalInafecto}}</td>
+                <td>{{$totalIgv}}</td>
+                <td>{{$totalOtrosImpuestos}}</td>
+                <td>{{$totalTotal}}</td>
+            </tr>
+        {{-- @endif --}}
     </tbody>
 </table>

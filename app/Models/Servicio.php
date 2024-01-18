@@ -100,6 +100,10 @@ class Servicio extends Model
         return $this->hasOne(Proveedor::class,'id','idConsolidador');
     }
 
+    public function tProveedor(){
+        return $this->hasOne(Proveedor::class,'id','idProveedor');
+    }
+
     public function tGds(){
         return $this->hasOne(Gds::class,'id','idGds');
     }

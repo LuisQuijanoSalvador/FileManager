@@ -698,7 +698,7 @@ class Boletos extends Component
         $servicio->idTipoDocumento = $this->tipoDocFee;
         $servicio->idArea = $boleto->idArea;
         $servicio->idVendedor = $boleto->idVendedor;
-        $servicio->idProveedor = $boleto->idProveedor;
+        $servicio->idProveedor = 2;
         $servicio->codigoReserva = $boleto->codigoReserva;
         $servicio->fechaReserva = $boleto->fechaReserva;
         $servicio->fechaIn = $boleto->fechaEmision;
@@ -710,6 +710,8 @@ class Boletos extends Component
         $servicio->origen = $boleto->origen;
         $servicio->pasajero = $boleto->pasajero;
         $servicio->idTipoPasajero = $boleto->idTipoPasajero;
+        $servicio->ruta = $boleto->ruta;
+        $servicio->destino = $boleto->destino;
         $servicio->tipoCambio = $boleto->tipoCambio;
         $servicio->idMoneda = $boleto->idMoneda;
         $servicio->tarifaNeta = $this->tarifaFee;
