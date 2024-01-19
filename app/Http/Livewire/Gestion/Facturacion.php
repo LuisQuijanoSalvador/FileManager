@@ -128,7 +128,7 @@ class Facturacion extends Component
         $solicitante = Solicitante::find($dataBoleto->idSolicitante);
         
         if(strlen($this->glosa) < 5){
-            $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
+            $this->glosa = 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
             // dd($this->glosa);
         }else{
             $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
