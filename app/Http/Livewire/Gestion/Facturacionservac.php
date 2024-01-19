@@ -155,20 +155,21 @@ class Facturacionservac extends Component
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
         $this->descDocumentoIdentidad = $tipoDocId->descripcion;
-
+        // dd($dataServicio->tTipoServicio->descripcion);
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
+        $nomSol = "";
         if($solicitante){
-            // if(strlen($this->glosa) < 5){
-            //     $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
-            // }
-            if(strlen($this->glosa) < 5){
-                $this->glosa = "";
-                $this->descripcion = "SOLICITADO POR: " . $solicitante->nombres . ' ' . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
-            }else{
-                $this->descripcion = $dataServicio->tTipoServicio->descripcion;
-            }
+            $nomSol = $solicitante->nombres;
+        }else{
+            $nomSol = '-';
         }
-        // dd($this->descripcion);
+        if(strlen($this->glosa) < 5){
+            $this->glosa = "";
+            $this->descripcion = "SOLICITADO POR: " . $nomSol . ' ' . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
+        }else{
+            $this->descripcion = $dataServicio->tTipoServicio->descripcion;
+        }
+        dd($this->descripcion);
         $totalLetras = $numLetras->numtoletras($this->totalTotal,$this->monedaLetra);
         
         $documento->idCliente = $dataServicio->idCliente;
