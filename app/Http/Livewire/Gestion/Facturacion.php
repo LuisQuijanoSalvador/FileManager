@@ -106,7 +106,7 @@ class Facturacion extends Component
                 $numSerie = 'F001';
                 break;
             case 2:
-                $numComprobante = $funciones->numeroComprobante('BOLETA DE VENTA');
+                $numComprobante = $funciones->numeroComprobante('BOLETA');
                 $numSerie = 'B001';
                 break;
         }
