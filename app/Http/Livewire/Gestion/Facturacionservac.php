@@ -168,7 +168,7 @@ class Facturacionservac extends Component
                 $this->descripcion = $dataServicio->tTipoServicio->descripcion;
             }
         }
-        
+        // dd($this->descripcion);
         $totalLetras = $numLetras->numtoletras($this->totalTotal,$this->monedaLetra);
         
         $documento->idCliente = $dataServicio->idCliente;
