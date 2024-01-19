@@ -160,7 +160,7 @@ class Facturacionserv extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
-
+        $dataJson = "";
         if($documento->idTipoDocumento == 6){
             if($documento->inafecto > 0){
                 $dataJson = $this->enviaDCMixto($documento);
