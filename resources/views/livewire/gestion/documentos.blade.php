@@ -1,25 +1,43 @@
 <div>
     {{-- Do your work, then step back. --}}
+    @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
     <div class="div-filtro">
         <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por documento">
         <div>
-            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model="filtroCliente">
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="filtroCliente">
                 <option value="">-- Filtrar por Cliente --</option>
                 @foreach ($clientes as $cliente)
                     <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
                 @endforeach
             </select>
         </div>
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+        
         <div>
             <button type="button" class="btn btn-success" wire:click='exportar'>Exportar</button>
             {{-- <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal">Nuevo</button> --}}
         </div>
         
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <p style="text-align:right">F. Inicio:</p>
+        </div>
+        <div class="col-md-2">
+            <input type="date" wire:model.lazy.defer="startDate" id="startDate">
+        </div>
+        <div class="col-md-1">
+            <p style="text-align:right">F. Fin:</p>
+        </div>
+        <div class="col-md-2">
+            <input type="date" wire:model.lazy.defer="endDate" id="endDate">
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary" wire:click="filtrar" >Filtrar</button>
+        </div>
     </div>
     <table class="tabla-listado">
         <thead class="thead-listado">
@@ -72,29 +90,33 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($documentos as $documento)
+            @if($this->documentos)
+                @foreach ($this->documentos as $documento)
 
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="py-1">
-                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='ver("{{$documento->id}}")'>Ver</button>
-                    </div>
-                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button @if($documento->idEstado == 2) disabled @endif type="button" class="btn btn-danger mr-2 rounded" data-bs-toggle="modal" data-bs-target="#ModalAnulacion" wire:click='encontrar("{{$documento->id}}")'>Anular</button>
-                    </div>
-                </td>
-                <td class="py-1">{{$documento->id}}</td>
-                <td class="py-1">{{$documento->numero}}</td>
-                <td class="py-1">{{$documento->tTipoDocumento->descripcion}}</td>
-                <td class="py-1">{{$documento->tcliente->razonSocial}}</td>
-                <td class="py-1">{{$documento->fechaEmision}}</td>
-                <td class="py-1">{{$documento->total}}</td>
-                <td class="py-1">{{$documento->tEstado->descripcion}}</td>
-            </tr>
-            @endforeach
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="py-1">
+                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                            <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='ver("{{$documento->id}}")'>Ver</button>
+                        </div>
+                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                            <button @if($documento->idEstado == 2) disabled @endif type="button" class="btn btn-danger mr-2 rounded" data-bs-toggle="modal" data-bs-target="#ModalAnulacion" wire:click='encontrar("{{$documento->id}}")'>Anular</button>
+                        </div>
+                    </td>
+                    <td class="py-1">{{$documento->id}}</td>
+                    <td class="py-1">{{$documento->numero}}</td>
+                    <td class="py-1">{{$documento->tTipoDocumento->descripcion}}</td>
+                    <td class="py-1">{{$documento->tcliente->razonSocial}}</td>
+                    <td class="py-1">{{$documento->fechaEmision}}</td>
+                    <td class="py-1">{{$documento->total}}</td>
+                    <td class="py-1">{{$documento->tEstado->descripcion}}</td>
+                </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
-    {{$documentos->links()}}
+    @if($this->documentos)
+        {{$this->documentos->links()}}
+    @endif
 
     <div class="modal fade" id="FormularioModal" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen" id="modalxl1">

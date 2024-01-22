@@ -10,6 +10,8 @@ use App\Models\Estado;
 use App\Models\Cliente;
 use Carbon\Carbon;
 use App\Clases\Funciones;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DocumentoExport;
 
 class Documentos extends Component
 {
@@ -23,12 +25,19 @@ class Documentos extends Component
     $tipoDocumento,$serie,$numero,$idMoneda,$moneda,$fechaEmision,$fechaVencimiento,$detraccion,$afecto,
     $inafecto,$exonerado,$igv,$otrosImpuestos,$total,$totalLetras,$glosa,$numeroFile,$tipoServicio,
     $documentoReferencia,$idMotivoNC,$idMotivoND,$tipoCambio,$idEstado,$respuestaSunat,$usuarioCreacion,
-    $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda;
+    $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda,
+    $startDate,$endDate;
 
-    public function render()
-    {
-        // $documentos = Documento::where('numero', 'like', "%$this->search%")
-        $documentos = Documento::query()
+    protected $documentos;
+
+    public function mount(){
+        $fechaActual = Carbon::now();
+        
+        $this->endDate = Carbon::parse($fechaActual)->format("Y-m-d");
+        $this->startDate = $fechaActual->subDay(15)->format("Y-m-d");
+        
+
+        $this->documentos = Documento::query()
             ->when($this->filtroCliente, function($query){
                 $query->where('idCliente', $this->filtroCliente);
             })
@@ -37,10 +46,35 @@ class Documentos extends Component
             })
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(8);
+    }
+    public function render()
+    {
+        if (strlen($this->search)> 0){
+            $this->documentos = Documento::query()
+            ->when($this->search, function($query){
+                $query->where('numero', 'like', '%'. $this->search . '%');
+            })
+                            ->orderBy($this->sort, $this->direction)
+                            ->paginate(8);
+        }
+        $this->filtrar();
+        
+        // $documentos = Documento::where('numero', 'like', "%$this->search%")
+        // $documentos = $this->documentos;
+        // $this->documentos = Documento::query()
+        //     ->when($this->filtroCliente, function($query){
+        //         $query->where('idCliente', $this->filtroCliente);
+        //     })
+        //     ->when($this->search, function($query){
+        //         $query->where('numero', 'like', '%'. $this->search . '%');
+        //     })
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(8);
+        // // $documentos = $this->documentos;
         $tipoDocumentos = TipoDocumento::all()->sortBy('descripcion');
         $estados = Estado::all()->sortBy('descripcion');
         $clientes = Cliente::all()->sortBy('razonSocial');
-        return view('livewire.gestion.documentos',compact('documentos','tipoDocumentos','estados','clientes'));
+        return view('livewire.gestion.documentos',compact('tipoDocumentos','estados','clientes'));
     }
 
     public function order($sort){
@@ -54,6 +88,20 @@ class Documentos extends Component
             $this->sort = $sort;
             $this->direction = 'desc';
         }
+    }
+
+    public function filtrar(){
+        // dd($this->filtroCliente);
+        if($this->filtroCliente){
+            $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->where('idCliente',$this->filtroCliente)
+            ->paginate(8);
+        }else{
+            $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->paginate(8);
+        }
+        
+        // dd($this->documentos);
     }
 
     public function ver($id){
@@ -134,5 +182,9 @@ class Documentos extends Component
 
     public function limpiarControles(){
 
+    }
+
+    public function exportar(){
+        return Excel::download(new DocumentoExport($this->filtroCliente,$this->startDate,$this->endDate),'Documentos.xlsx');
     }
 }
