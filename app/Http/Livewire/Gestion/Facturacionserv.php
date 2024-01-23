@@ -16,6 +16,7 @@ use App\Clases\modelonumero;
 use App\Models\Servicio;
 use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
+use App\Models\Cargo;
 
 class Facturacionserv extends Component
 {
@@ -169,9 +170,10 @@ class Facturacionserv extends Component
             }
         }else{
             if($documento->inafecto > 0){
-                $this->enviaCPEMixto($documento);
+                $dataJson = $this->enviaCPEMixto($documento);
+                
             }else{
-                $this->enviaCPE($documento);
+                $dataJson = $this->enviaCPE($documento);
             }
         }
         $jsonDoc = json_encode($dataJson, JSON_PRETTY_PRINT);
@@ -202,6 +204,14 @@ class Facturacionserv extends Component
         
         
         $this->glosa="";
+    }
+
+    public function generarCargo($docId){
+        $documentos = Documento::find($docId);
+        $servicio = Servicio::where('idDocumento', $docId)->first();
+        
+        $cargo = new Cargo();
+
     }
 
     public function enviaCPE($comprobante){
@@ -568,16 +578,20 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $file = $funciones->enviarCPE($dataToSend);
 
-        if ($file['type'] == 'success') {
-            $doc = Documento::find($comprobante->id);
-            $doc->respuestaSunat = $file['type'];
-            $doc->save();
+        $this->respSenda = $funciones->enviarCPE($dataToSend);
 
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        }
+        return($dataToSend);
+        // $file = $funciones->enviarCPE($dataToSend);
+
+        // if ($file['type'] == 'success') {
+        //     $doc = Documento::find($comprobante->id);
+        //     $doc->respuestaSunat = $file['type'];
+        //     $doc->save();
+
+        // } else {
+        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        // }
         
     } 
 
