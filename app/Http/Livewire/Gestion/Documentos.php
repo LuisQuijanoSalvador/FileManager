@@ -26,7 +26,7 @@ class Documentos extends Component
     $inafecto,$exonerado,$igv,$otrosImpuestos,$total,$totalLetras,$glosa,$numeroFile,$tipoServicio,
     $documentoReferencia,$idMotivoNC,$idMotivoND,$tipoCambio,$idEstado,$respuestaSunat,$usuarioCreacion,
     $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda,
-    $startDate,$endDate;
+    $startDate,$endDate,$selectedTipoDocumento;
 
     protected $documentos;
 
@@ -39,7 +39,7 @@ class Documentos extends Component
 
         $this->documentos = Documento::query()
             ->when($this->filtroCliente, function($query){
-                $query->where('idCliente', $this->filtroCliente);
+                $query->where('idTipoDocumento', $this->selectedTipoDocumento);
             })
             ->when($this->search, function($query){
                 $query->where('numero', 'like', '%'. $this->search . '%');
@@ -92,9 +92,9 @@ class Documentos extends Component
 
     public function filtrar(){
         // dd($this->filtroCliente);
-        if($this->filtroCliente){
+        if($this->selectedTipoDocumento){
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
-            ->where('idCliente',$this->filtroCliente)
+            ->where('idTipoDocumento',$this->selectedTipoDocumento)
             ->paginate(8);
         }else{
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
@@ -185,6 +185,6 @@ class Documentos extends Component
     }
 
     public function exportar(){
-        return Excel::download(new DocumentoExport($this->filtroCliente,$this->startDate,$this->endDate),'Documentos.xlsx');
+        return Excel::download(new DocumentoExport($this->selectedTipoDocumento,$this->startDate,$this->endDate),'Documentos.xlsx');
     }
 }

@@ -8,10 +8,10 @@
     <div class="div-filtro">
         <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por documento">
         <div>
-            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="filtroCliente">
-                <option value="">-- Filtrar por Cliente --</option>
-                @foreach ($clientes as $cliente)
-                    <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="selectedTipoDocumento">
+                <option value="">-- Filtrar por tipo Documento --</option>
+                @foreach ($tipoDocumentos as $tipoDocumento)
+                    <option value="{{$tipoDocumento->id}}">{{$tipoDocumento->descripcion}}</option>
                 @endforeach
             </select>
         </div>

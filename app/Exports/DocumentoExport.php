@@ -11,11 +11,11 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class DocumentoExport implements FromView, WithStyles
 {
-    public $idCliente, $fechaInicio, $fechaFin, $razonSocial;
+    public $idTipoDocumento, $fechaInicio, $fechaFin, $razonSocial;
     
     public function __construct($id, $fecIni, $fecFin)
     {
-        $this->idCliente = $id;
+        $this->idTipoDocumento = $id;
         $this->fechaInicio = $fecIni;
         $this->fechaFin = $fecFin;
     }
@@ -23,7 +23,7 @@ class DocumentoExport implements FromView, WithStyles
     public function  view(): View
     {
         return view('exports.gestion.documentos', [
-            'documentos' => Documento::where('idCliente', $this->idCliente)
+            'documentos' => Documento::where('idTipoDocumento', $this->idTipoDocumento)
                             ->whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
                             ->orderBy('fechaEmision', 'asc')
                             ->get()
