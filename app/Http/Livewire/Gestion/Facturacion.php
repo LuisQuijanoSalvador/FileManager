@@ -15,6 +15,8 @@ use App\Models\TipoCambio;
 use App\Clases\modelonumero;
 use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
+use App\Models\MedioPago;
+use App\Models\BoletoPago;
 
 class Facturacion extends Component
 {
@@ -25,7 +27,8 @@ class Facturacion extends Component
     public $direction = 'asc';
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,
-            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$numeroTelefono;
+            $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$numeroTelefono,
+            $chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, $desc_metodopago;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -56,8 +59,9 @@ class Facturacion extends Component
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
+        $medioPagos = MedioPago::all()->sortBy('codigo');
         
-        return view('livewire.gestion.facturacion',compact('monedas'));
+        return view('livewire.gestion.facturacion',compact('monedas','medioPagos'));
     }
 
     public function filtrarFechas(){
@@ -120,6 +124,20 @@ class Facturacion extends Component
             $this->monedaLetra = 'SOLES';
         }
 
+        $boletoPago = BoletoPago::where('idBoleto',$dataBoleto->id)->first();
+        if($boletoPago){
+            $this->idMedioPago = $boletoPago->idMedioPago;
+        }else{
+            $this->idMedioPago = 6;
+        }
+        $this->idMedioPago = $boletoPago->idMedioPago;
+        if($cliente->montoCredito > 0){
+            $this->idMedioPago = 10;
+        }
+        if($this->chkMedioPago){
+            $this->idMedioPago = $this->idMedioPagoCambio;
+        }
+
         $this->tipoDocumentoIdentidad = $dataBoleto->tCliente->tipoDocumentoIdentidad;
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
@@ -156,6 +174,7 @@ class Facturacion extends Component
         $documento->otrosImpuestos = $dataBoleto->otrosImpuestos;
         $documento->total = $dataBoleto->total;
         $documento->totalLetras = $totalLetras;
+        $documento->idMedioPago = $this->idMedioPago;
         $documento->glosa = $this->glosa;
         $documento->numeroFile = $dataBoleto->numeroFile;
         $documento->tipoServicio = 1;
@@ -168,6 +187,17 @@ class Facturacion extends Component
         $documento->usuarioModificacion = auth()->user()->id;
         $documento->save();
 
+        $medioPago = MedioPago::find($documento->idMedioPago);
+        if($medioPago->id = 10){
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CRE";
+            $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
+        }else{
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CON";
+            $this->desc_metodopago = "";
+        }
+
         $idsSeleccionados = $this->selectedRows;
         $boleto = Boleto::find($idsSeleccionados);
         $boleto->idDocumento = $documento->id;
@@ -178,6 +208,50 @@ class Facturacion extends Component
             $this->enviaCPE($documento);
         }
         
+        if($documento->idMedioPago = 10){
+            $this->generarCargo($documento->id);
+        }
+    }
+
+    public function generarCargo($docId){
+        $documento = Documento::find($docId);
+        if($documento->idMedioPago = 10){
+            $cliente = Cliente::find($documento->idCliente);
+            $boleto = Boleto::where('idDocumento',$documento->id)->first();
+            $cargo = new Cargo();
+            $cargo->idDocumento = $documento->id;
+            $cargo->idCliente = $documento->idCliente;
+            $cargo->idCobrador = $cliente->idCobrador;
+            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idProveedor = $boleto->idProveedor;
+            if($boleto->idSolicitante){
+                $cargo->idSolicitante = $boleto->idSolicitante;
+            }
+            $cargo->idServicio = $boleto->id;
+            $cargo->montoCredito = $cliente->montoCredito;
+            $cargo->diasCredito = $cliente->diasCredito;
+            $cargo->fechaEmision = $documento->fechaEmision;
+            $cargo->fechaVencimiento = $documento->fechaVencimiento;
+            $cargo->numeroBoleto = $boleto->numeroBoleto;
+            $cargo->pasajero = $boleto->pasajero;
+            $cargo->tipoRuta = $boleto->tipoRuta;
+            $cargo->ruta = $boleto->ruta;
+            $cargo->moneda = $documento->moneda;
+            $cargo->tarifaNeta = $documento->afecto;
+            $cargo->inafecto = $documento->inafecto;
+            $cargo->igv = $documento->igv;
+            $cargo->otrosImpuestos = $documento->otrosImpuestos;
+            $cargo->total = $documento->total;
+            $cargo->tipoDocumento = $documento->tipoDocumento;
+            $cargo->serieDocumento = $documento->serie;
+            $cargo->numeroDocumento = str_pad($documento->numero,8,"0",STR_PAD_LEFT);
+            $cargo->montoCargo = $documento->total;
+            $cargo->tipoCambio = $documento->tipoCambio;
+            $cargo->saldo = $documento->total;
+            $cargo->idEstado = 1;
+            $cargo->usuarioCreacion = auth()->user()->id;
+            $cargo->usuarioModificacion = auth()->user()->id;
+        }
     }
 
     public function enviaDC($comprobante){
@@ -220,9 +294,9 @@ class Facturacion extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
@@ -382,9 +456,9 @@ class Facturacion extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,

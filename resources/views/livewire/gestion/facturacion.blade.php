@@ -48,6 +48,20 @@
         
     </div>
 
+    <div class="row">
+        <div class="col-md-3">
+            <select @if(!$chkMedioPago) disabled @endif name="medioPago" style="width: 100%;font-size: 0.8em; display:inline;" id="cboMedioPago" wire:model.lazy.defer="idMedioPagoCambio">
+                @foreach ($medioPagos as $medioPago)
+                    <option value={{$medioPago->id}}>{{$medioPago->descripcion}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="checkbox" id="chkMedioPago" name="chkMedioPago"  wire:model="chkMedioPago">
+            <label for="chkMedioPago">Cambiar Medio de Pago</label>
+        </div>
+    </div>
+
     <div class="modal" id="modalGlosa" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">

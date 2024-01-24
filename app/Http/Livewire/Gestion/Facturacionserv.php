@@ -17,6 +17,8 @@ use App\Models\Servicio;
 use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
 use App\Models\Cargo;
+use App\Models\MedioPago;
+use App\Models\ServicioPago;
 
 class Facturacionserv extends Component
 {
@@ -28,7 +30,7 @@ class Facturacionserv extends Component
 
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda,
-            $numeroTelefono;
+            $numeroTelefono,$chkMedioPago,$idMedioPagoCambio,$idMedioPago;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -54,8 +56,9 @@ class Facturacionserv extends Component
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
+        $medioPagos = MedioPago::all()->sortBy('codigo');
         
-        return view('livewire.gestion.facturacionserv',compact('monedas'));
+        return view('livewire.gestion.facturacionserv',compact('monedas','medioPagos'));
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -110,6 +113,20 @@ class Facturacionserv extends Component
         } elseif($dataServicio->tMoneda->codigo == 'PEN'){
             $this->monedaLetra = 'SOLES';
         }
+
+        $servicioPago = ServicioPago::where('idServicio',$dataServicio->id)->first();
+        if($servicioPago){
+            $this->idMedioPago = $servicioPago->idMedioPago;
+        }else{
+            $this->idMedioPago = 6;
+        }
+
+        if($cliente->montoCredito > 0){
+            $this->idMedioPago = 10;
+        }
+        if($this->chkMedioPago){
+            $this->idMedioPago = $this->idMedioPagoCambio;
+        }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
         if(strlen($this->glosa) < 5){
@@ -151,6 +168,7 @@ class Facturacionserv extends Component
         $documento->otrosImpuestos = $dataServicio->otrosImpuestos;
         $documento->total = $dataServicio->total;
         $documento->totalLetras = $totalLetras;
+        $documento->idMedioPago = $this->idMedioPago;
         $documento->glosa = $this->glosa;
         $documento->numeroFile = $dataServicio->numeroFile;
         $documento->tipoServicio = 1;
@@ -162,6 +180,18 @@ class Facturacionserv extends Component
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
         $dataJson = "";
+
+        $medioPago = MedioPago::find($this->idMedioPago);
+        if($medioPago->id = 10){
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CRE";
+            $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
+        }else{
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CON";
+            $this->desc_metodopago = "";
+        }
+        
         if($documento->idTipoDocumento == 6){
             if($documento->inafecto > 0){
                 $dataJson = $this->enviaDCMixto($documento);
@@ -198,20 +228,54 @@ class Facturacionserv extends Component
         $idsSeleccionados = $this->selectedRows;
         $servicio = Servicio::find($idsSeleccionados);
         $servicio->idDocumento = $documento->id;
-
         $servicio->save();
 
-        
+        if($documento->idMedioPago = 10){
+            $this->generarCargo($documento->id);
+        }
         
         $this->glosa="";
     }
 
     public function generarCargo($docId){
-        $documentos = Documento::find($docId);
-        $servicio = Servicio::where('idDocumento', $docId)->first();
-        
-        $cargo = new Cargo();
-
+        $documento = Documento::find($docId);
+        if($documento->idMedioPago = 10){
+            $cliente = Cliente::find($documento->idCliente);
+            $servicio = Servicio::where('idDocumento',$documento->id)->first();
+            $cargo = new Cargo();
+            $cargo->idDocumento = $documento->id;
+            $cargo->idCliente = $documento->idCliente;
+            $cargo->idCobrador = $cliente->idCobrador;
+            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idProveedor = $servicio->idProveedor;
+            if($servicio->idSolicitante){
+                $cargo->idSolicitante = $servicio->idSolicitante;
+            }
+            $cargo->idServicio = $servicio->id;
+            $cargo->montoCredito = $cliente->montoCredito;
+            $cargo->diasCredito = $cliente->diasCredito;
+            $cargo->fechaEmision = $documento->fechaEmision;
+            $cargo->fechaVencimiento = $documento->fechaVencimiento;
+            $cargo->numeroBoleto = $servicio->tTipoServicio->descripcion;
+            $cargo->pasajero = $servicio->pasajero;
+            $cargo->tipoRuta = $servicio->tipoRuta;
+            $cargo->ruta = $servicio->ruta;
+            $cargo->moneda = $documento->moneda;
+            $cargo->tarifaNeta = $documento->afecto;
+            $cargo->inafecto = $documento->inafecto;
+            $cargo->igv = $documento->igv;
+            $cargo->otrosImpuestos = $documento->otrosImpuestos;
+            $cargo->total = $documento->total;
+            $cargo->tipoDocumento = $documento->tipoDocumento;
+            $cargo->serieDocumento = $documento->serie;
+            $cargo->numeroDocumento = str_pad($documento->numero,8,"0",STR_PAD_LEFT);
+            $cargo->montoCargo = $documento->total;
+            $cargo->tipoCambio = $documento->tipoCambio;
+            $cargo->saldo = $documento->total;
+            $cargo->idEstado = 1;
+            $cargo->usuarioCreacion = auth()->user()->id;
+            $cargo->usuarioModificacion = auth()->user()->id;
+        }
     }
 
     public function enviaCPE($comprobante){

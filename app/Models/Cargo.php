@@ -15,7 +15,8 @@ class Cargo extends Model
         'idCobrador',
         'idCounter',
         'idAerolinea',
-        'isSolicitante',
+        'idProveedor',
+        'idSolicitante',
         'idBoleto',
         'idServicio',
         'montoCredito',
@@ -65,6 +66,10 @@ class Cargo extends Model
 
     public function tAerolinea(){
         return $this->hasOne(Aerolinea::class,'id','idAerolinea');
+    }
+
+    public function tProveedor(){
+        return $this->hasOne(Proveedor::class,'id','idProveedor');
     }
 
     public function tBoleto(){

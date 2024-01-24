@@ -17,6 +17,8 @@ use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FacturacionacExport;
+use App\Models\MedioPago;
+use App\Models\BoletoPago;
 
 class Facturacionac extends Component
 {
@@ -28,7 +30,8 @@ class Facturacionac extends Component
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0,$respSenda,$descripcion="",$numeroTelefono;
+            $totalTotal = 0,$respSenda,$descripcion="",$numeroTelefono, $chkMedioPago,$idMedioPagoCambio,
+            $idMedioPago;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -59,8 +62,9 @@ class Facturacionac extends Component
         
         $monedas = moneda::all()->sortBy('codigo');
         $clientes = Cliente::all()->sortBy('razonSocial');
+        $medioPagos = MedioPago::all()->sortBy('codigo');
 
-        return view('livewire.gestion.facturacionac',compact('monedas','clientes'));
+        return view('livewire.gestion.facturacionac',compact('monedas','clientes','medioPagos'));
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -152,6 +156,19 @@ class Facturacionac extends Component
             $this->monedaLetra = 'SOLES';
         }
 
+        $boletoPago = BoletoPago::where('idBoleto',$dataBoleto->id)->first();
+        if($boletoPago){
+            $this->idMedioPago = $boletoPago->idMedioPago;
+        }else{
+            $this->idMedioPago = 6;
+        }
+        if($cliente->montoCredito > 0){
+            $this->idMedioPago = 10;
+        }
+        if($this->chkMedioPago){
+            $this->idMedioPago = $this->idMedioPagoCambio;
+        }
+
         $this->tipoDocumentoIdentidad = $dataBoleto->tCliente->tipoDocumentoIdentidad;
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
@@ -187,6 +204,7 @@ class Facturacionac extends Component
         $documento->otrosImpuestos = $this->totalOtrosImpuestos;
         $documento->total = $this->totalTotal;
         $documento->totalLetras = $totalLetras;
+        $documento->idMedioPago = $this->idMedioPago;
         $documento->glosa = $this->glosa;
         $documento->numeroFile = $dataBoleto->numeroFile;
         $documento->tipoServicio = 1;
@@ -204,6 +222,16 @@ class Facturacionac extends Component
         // }else{
         //     $this->enviaCPE($documento);
         // }
+        $medioPago = MedioPago::find($this->idMedioPago);
+        if($medioPago->id = 10){
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CRE";
+            $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
+        }else{
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CON";
+            $this->desc_metodopago = "";
+        }
 
         if($documento->inafecto > 0){
             $this->enviaDCMixto($documento);
@@ -229,6 +257,50 @@ class Facturacionac extends Component
         Boleto::whereIn('id',$this->selectedRows)
                 ->update(['idDocumento' => $documento->id]);
         
+        if($documento->idMedioPago = 10){
+            $this->generarCargo($documento->id);
+        }
+    }
+
+    public function generarCargo($docId){
+        $documento = Documento::find($docId);
+        if($documento->idMedioPago = 10){
+            $cliente = Cliente::find($documento->idCliente);
+            $boleto = Boleto::where('idDocumento',$documento->id)->first();
+            $cargo = new Cargo();
+            $cargo->idDocumento = $documento->id;
+            $cargo->idCliente = $documento->idCliente;
+            $cargo->idCobrador = $cliente->idCobrador;
+            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idProveedor = $boleto->idProveedor;
+            if($boleto->idSolicitante){
+                $cargo->idSolicitante = $boleto->idSolicitante;
+            }
+            $cargo->idServicio = $boleto->id;
+            $cargo->montoCredito = $cliente->montoCredito;
+            $cargo->diasCredito = $cliente->diasCredito;
+            $cargo->fechaEmision = $documento->fechaEmision;
+            $cargo->fechaVencimiento = $documento->fechaVencimiento;
+            $cargo->numeroBoleto = "BOLETOS ACUMULADOS";
+            $cargo->pasajero = $boleto->pasajero;
+            $cargo->tipoRuta = $boleto->tipoRuta;
+            $cargo->ruta = $boleto->ruta;
+            $cargo->moneda = $documento->moneda;
+            $cargo->tarifaNeta = $documento->afecto;
+            $cargo->inafecto = $documento->inafecto;
+            $cargo->igv = $documento->igv;
+            $cargo->otrosImpuestos = $documento->otrosImpuestos;
+            $cargo->total = $documento->total;
+            $cargo->tipoDocumento = $documento->tipoDocumento;
+            $cargo->serieDocumento = $documento->serie;
+            $cargo->numeroDocumento = str_pad($documento->numero,8,"0",STR_PAD_LEFT);
+            $cargo->montoCargo = $documento->total;
+            $cargo->tipoCambio = $documento->tipoCambio;
+            $cargo->saldo = $documento->total;
+            $cargo->idEstado = 1;
+            $cargo->usuarioCreacion = auth()->user()->id;
+            $cargo->usuarioModificacion = auth()->user()->id;
+        }
     }
 
     public function enviaDCMixto($comprobante){
