@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use App\Clases\Funciones;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DocumentoExport;
+use App\Models\Servicio;
+use App\Models\Boleto;
 
 class Documentos extends Component
 {
@@ -171,6 +173,8 @@ class Documentos extends Component
             $doc->respuestaBaja = $this->respSenda;
             $doc->idEstado = 2;
             $doc->save();
+
+            // $servicios = Servicio::
 
             session()->flash('success', 'El documento se ha anulado correctamente');
 

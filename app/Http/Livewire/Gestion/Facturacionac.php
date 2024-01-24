@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FacturacionacExport;
 use App\Models\MedioPago;
 use App\Models\BoletoPago;
+use App\Models\Cargo;
 
 class Facturacionac extends Component
 {

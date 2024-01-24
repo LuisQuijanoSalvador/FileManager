@@ -17,6 +17,7 @@ use App\Models\Solicitante;
 use App\Models\TipoDocumentoIdentidad;
 use App\Models\MedioPago;
 use App\Models\BoletoPago;
+use App\Models\Cargo;
 
 class Facturacion extends Component
 {

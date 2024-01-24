@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\FacservacExport;
 use App\Models\MedioPago;
 use App\Models\ServicioPago;
+use App\Models\Cargo;
 
 class Facturacionservac extends Component
 {
