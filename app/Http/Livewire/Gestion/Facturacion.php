@@ -131,14 +131,16 @@ class Facturacion extends Component
         }else{
             $this->idMedioPago = 6;
         }
-        $this->idMedioPago = $boletoPago->idMedioPago;
+        
+        // $this->idMedioPago = $boletoPago->idMedioPago;
+        
         if($cliente->montoCredito > 0){
             $this->idMedioPago = 10;
         }
         if($this->chkMedioPago){
             $this->idMedioPago = $this->idMedioPagoCambio;
         }
-
+        
         $this->tipoDocumentoIdentidad = $dataBoleto->tCliente->tipoDocumentoIdentidad;
         $tipoDocId = TipoDocumentoIdentidad::find($this->tipoDocumentoIdentidad);
         $this->codigoDocumentoIdentidad = $tipoDocId->codigo;
@@ -187,9 +189,10 @@ class Facturacion extends Component
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
         $documento->save();
-
+        
         $medioPago = MedioPago::find($documento->idMedioPago);
-        if($medioPago->id = 10){
+        
+        if($medioPago->id == 10){
             $this->metodo_pago = $medioPago->descripcion;
             $this->codigo_metodopago = "CRE";
             $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
@@ -209,7 +212,7 @@ class Facturacion extends Component
             $this->enviaCPE($documento);
         }
         
-        if($documento->idMedioPago = 10){
+        if($documento->idMedioPago == 10){
             $this->generarCargo($documento->id);
         }
     }

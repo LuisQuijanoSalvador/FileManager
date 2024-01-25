@@ -30,7 +30,8 @@ class Facturacionserv extends Component
 
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda,
-            $numeroTelefono,$chkMedioPago,$idMedioPagoCambio,$idMedioPago;
+            $numeroTelefono,$chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, 
+            $desc_metodopago;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -182,7 +183,7 @@ class Facturacionserv extends Component
         $dataJson = "";
 
         $medioPago = MedioPago::find($this->idMedioPago);
-        if($medioPago->id = 10){
+        if($medioPago->id == 10){
             $this->metodo_pago = $medioPago->descripcion;
             $this->codigo_metodopago = "CRE";
             $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
@@ -230,7 +231,7 @@ class Facturacionserv extends Component
         $servicio->idDocumento = $documento->id;
         $servicio->save();
 
-        if($documento->idMedioPago = 10){
+        if($documento->idMedioPago == 10){
             $this->generarCargo($documento->id);
         }
         
@@ -323,9 +324,9 @@ class Facturacionserv extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
@@ -489,9 +490,9 @@ class Facturacionserv extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
@@ -703,9 +704,9 @@ class Facturacionserv extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
@@ -919,9 +920,9 @@ class Facturacionserv extends Component
                 "rec_distri"=> "",
                 "rec_urb"=> "",
                 "vendedor"=> "AS TRAVEL",
-                "metodo_pago"=> "CONTADO",
-                "codigo_metodopago"=> "CON",
-                "desc_metodopago"=> "",
+                "metodo_pago"=> $this->metodo_pago,
+                "codigo_metodopago"=> $this->codigo_metodopago,
+                "desc_metodopago"=> $this->desc_metodopago,
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
