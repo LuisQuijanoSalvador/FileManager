@@ -56,6 +56,7 @@
     <div class="row">
         <div class="col-md-3">
             <select @if(!$chkMedioPago) disabled @endif name="medioPago" style="width: 100%;font-size: 0.8em; display:inline;" id="cboMedioPago" wire:model.lazy.defer="idMedioPagoCambio">
+                <option >Seleccione Medio de Pago</option>
                 @foreach ($medioPagos as $medioPago)
                     <option value={{$medioPago->id}}>{{$medioPago->descripcion}}</option>
                 @endforeach

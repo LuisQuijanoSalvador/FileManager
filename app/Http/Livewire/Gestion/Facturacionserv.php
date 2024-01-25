@@ -127,6 +127,10 @@ class Facturacionserv extends Component
         }
         if($this->chkMedioPago){
             $this->idMedioPago = $this->idMedioPagoCambio;
+            if(!$this->idMedioPago){
+                session()->flash('error', 'No ha seleccionado Medio de Pago');
+                return;
+            }
         }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
@@ -181,7 +185,7 @@ class Facturacionserv extends Component
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
         $dataJson = "";
-
+        
         $medioPago = MedioPago::find($this->idMedioPago);
         if($medioPago->id == 10){
             $this->metodo_pago = $medioPago->descripcion;

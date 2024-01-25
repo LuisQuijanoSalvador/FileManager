@@ -168,6 +168,10 @@ class Facturacionac extends Component
         }
         if($this->chkMedioPago){
             $this->idMedioPago = $this->idMedioPagoCambio;
+            if(!$this->idMedioPago){
+                session()->flash('error', 'No ha seleccionado Medio de Pago');
+                return;
+            }
         }
 
         $this->tipoDocumentoIdentidad = $dataBoleto->tCliente->tipoDocumentoIdentidad;
