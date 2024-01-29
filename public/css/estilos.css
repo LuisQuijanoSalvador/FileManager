@@ -167,3 +167,8 @@ a{
     color: #FFFFFF;
     text-align: center;
 }
+.contenedorTablaReport{
+    overflow: auto;
+    width: auto;
+    max-height: 380px;
+}

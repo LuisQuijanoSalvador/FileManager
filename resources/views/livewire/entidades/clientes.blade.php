@@ -272,7 +272,7 @@
                 <div id="flush-collapseFour" class="accordion-collapse show">
                   <div class="accordion-body">
                     <form class="row g-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="cboCounter" class="form-label">Counter:</label>
                             <select name="counter" class="form-select" id="cboCounter" wire:model.lazy="counter">
                                 <option>==Seleccione una opción==</option>
@@ -284,7 +284,7 @@
                                 <span class="error">{{$message}}</span>
                             @enderror
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="cboVendedor" class="form-label">Vendedor:</label>
                             <select name="vendedor" class="form-select" id="cboVendedor" wire:model.lazy="vendedor">
                                 <option>==Seleccione una opción==</option>
@@ -296,7 +296,11 @@
                                 <span class="error">{{$message}}</span>
                             @enderror
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <label for="cboVendedor" class="form-label">% Comisión:</label>
+                            <input type="number" class="form-control"  name="txtComision" id="txtComision" wire:model.lazy="comision">
+                        </div>
+                        <div class="col-md-3">
                             <label for="cboCobrador" class="form-label">Cobrador:</label>
                             <select name="cobrador" class="form-select" id="cboCobrador" wire:model.lazy="cobrador">
                                 <option>==Seleccione una opción==</option>

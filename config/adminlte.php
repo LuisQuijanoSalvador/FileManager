@@ -505,6 +505,25 @@ return [
                 ],
             ]
         ],
+        [
+            'text'        => 'Reportes',
+            'url'         => 'admin/pages',
+            'icon'        => 'fas fa-scroll',
+            'submenu'=>[
+                [
+                    'text' => 'Margenes',
+                    'route' => 'rptMargenes'
+                ],
+                [
+                    'text' => 'Conciliacion TC',
+                    'route' => 'rptConciliacion'
+                ],
+                [
+                    'text' => 'Comisiones',
+                    'route' => 'rptComision'
+                ],
+            ]
+        ],
         
 
 

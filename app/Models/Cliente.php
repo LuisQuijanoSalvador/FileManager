@@ -30,6 +30,7 @@ class Cliente extends Model
         'counter',
         'tipoDocumento',
         'vendedor',
+        'comision',
         'area',
         'cobrador',
         'tipoFacturacion',

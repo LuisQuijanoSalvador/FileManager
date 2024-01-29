@@ -91,5 +91,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tipoTickets', function(){ return view('tablas.tipo-tickets');})->name('listaTipoTickets');
         Route::get('tipoPagos', function(){ return view('tablas.tipo-pagos');})->name('listaTipoPagos');
     });
+
+    Route::group(['prefix'=>'reportes'],function(){
+        Route::get('margenes', function(){ return view('reportes.margenes');})->name('rptMargenes');
+        Route::get('conciliacion', function(){ return view('reportes.conciliacion');})->name('rptConciliacion');
+        Route::get('comisiones', function(){ return view('reportes.comisiones');})->name('rptComision');
+    });
 });
 

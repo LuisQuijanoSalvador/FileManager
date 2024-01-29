@@ -28,7 +28,7 @@ class Clientes extends Component
     public $idRegistro, $razonSocial, $nombreComercial, $direccionFiscal, $direccionFacturacion, $tipoCliente,
             $tipoDocumentoIdentidad, $numeroDocumentoIdentidad, $numeroTelefono, $contactoComercial,
             $telefonoComercial, $correoComercial, $contactoCobranza, $telefonoCobranza, $correoCobranza,
-            $montoCredito, $moneda, $diasCredito, $counter, $tipoDocumento, $vendedor, $area, $cobrador,
+            $montoCredito, $moneda, $diasCredito, $counter, $tipoDocumento, $vendedor, $comision, $area, $cobrador,
             $tipoFacturacion, $estado;
     
     public function rules(){
@@ -143,6 +143,7 @@ class Clientes extends Component
         $cliente->counter = $this->counter;
         $cliente->tipoDocumento = $this->tipoDocumento;
         $cliente->vendedor = $this->vendedor;
+        $cliente->comision = $this->comision;
         $cliente->area = $this->area;
         $cliente->cobrador = $this->cobrador;
         $cliente->tipoFacturacion = $this->tipoFacturacion;
@@ -175,6 +176,7 @@ class Clientes extends Component
         $this->counter = '';
         $this->tipoDocumento = '';
         $this->vendedor = '';
+        $this->comision = 0;
         $this->area = '';
         $this->cobrador = '';
         $this->tipoFacturacion = '';
@@ -205,6 +207,7 @@ class Clientes extends Component
         $this->counter = $cliente->counter;
         $this->tipoDocumento = $cliente->tipoDocumento;
         $this->vendedor = $cliente->vendedor;
+        $this->comision = $cliente->comision;
         $this->area = $cliente->area;
         $this->cobrador = $cliente->cobrador;
         $this->tipoFacturacion = $cliente->tipoFacturacion;
@@ -233,6 +236,7 @@ class Clientes extends Component
         $cliente->counter = $this->counter;
         $cliente->tipoDocumento = $this->tipoDocumento;
         $cliente->vendedor = $this->vendedor;
+        $cliente->comision = $this->comision;
         $cliente->area = $this->area;
         $cliente->cobrador = $this->cobrador;
         $cliente->tipoFacturacion = $this->tipoFacturacion;
