@@ -503,6 +503,10 @@ return [
                     'text' => 'Tipo Pago',
                     'route' => 'listaTipoPagos'
                 ],
+                [
+                    'text' => 'Bancos',
+                    'route' => 'listaBancos'
+                ],
             ]
         ],
         [

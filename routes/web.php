@@ -5,6 +5,7 @@ use App\Http\Controllers\loginController;
 use App\Http\Controllers\admin\IndexController;
 use App\Http\Controllers\entidades\UsuarioController;
 use App\Http\Livewire\Entidades\Usuarios;
+use App\Http\Controllers\AbonoController;
 
 
 /*
@@ -58,6 +59,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix'=>'cuentaporcobrar'],function(){
         Route::get('abonos', function(){ return view('cuentas-por-cobrar.abonos');})->name('rAbonos');
+        Route::get('abonopago','AbonoController@mostrar')->name('rAbonopago');
+        // Route::get('abonopago{ids}', function(){ return view('cuentas-por-cobrar.abonopago');})->name('rAbonopago');
         Route::get('estadodecuenta', function(){ return view('cuentas-por-cobrar.estado-cuenta');})->name('rEstadosdecuenta');
     });
 
@@ -90,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('gds', function(){ return view('tablas.gdss');})->name('listaGds');
         Route::get('tipoTickets', function(){ return view('tablas.tipo-tickets');})->name('listaTipoTickets');
         Route::get('tipoPagos', function(){ return view('tablas.tipo-pagos');})->name('listaTipoPagos');
+        Route::get('bancos', function(){ return view('tablas.bancos');})->name('listaBancos');
     });
 
     Route::group(['prefix'=>'reportes'],function(){

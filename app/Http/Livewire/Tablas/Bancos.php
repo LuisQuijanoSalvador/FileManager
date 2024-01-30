@@ -13,7 +13,7 @@ class Bancos extends Component
 {
     use WithPagination;
     public $search = "";
-    public $sort= 'descripcion';
+    public $sort= 'nombre';
     public $direction = 'asc';
 
     public $idRegistro, $nombre, $numeroCuenta, $cci, $idEstado;
@@ -69,5 +69,50 @@ class Bancos extends Component
         $banco->save();
         $this->limpiarControles();
         session()->flash('success', 'Los datos se han guardado exitosamente.');
+    }
+
+    public function limpiarControles(){
+        $this->idRegistro = 0;
+        $this->nombre = "";
+        $this->numeroCuenta = "";
+        $this->cci = "";
+        $this->estado = "";
+    }
+
+    public function editar($id){
+        $banco = Banco::find($id);
+        $this->limpiarControles();
+        $this->idRegistro = $banco->id;
+        $this->nombre = $banco->nombre;
+        $this->numeroCuenta = $banco->numeroCuenta;
+        $this->cci = $banco->cci;
+        $this->estado = $banco->estado;
+    }
+
+    public function actualizar($id){
+        $banco = Banco::find($id);
+        $banco->nombre = $this->nombre;
+        $banco->numeroCuenta = $this->numeroCuenta;
+        $banco->cci = $this->cci;
+        $banco->estado = $this->estado;
+        $banco->usuarioModificacion = auth()->user()->id;
+        $banco->save();
+        $this->limpiarControles();
+    }
+
+    public function encontrar($id){
+        $banco = Banco::find($id);
+        $this->idRegistro = $banco->id;
+        $this->nombre = $banco->nombre;
+    }
+
+    public function eliminar($id){
+        $banco = Banco::find($id);
+        $banco->delete();
+        $this->limpiarControles();
+    }
+
+    public function exportar(){
+        return Excel::download(new BancoExport(),'Bancos.xlsx');
     }
 }

@@ -16,6 +16,7 @@ class Abono extends Model
         'moneda',
         'tipoCambio',
         'idMedioPago',
+        'referencia',
         'idBanco',
         'numeroCuenta',
         'idTarjetaCredito',
