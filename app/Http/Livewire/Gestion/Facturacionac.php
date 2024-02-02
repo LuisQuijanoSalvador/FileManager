@@ -20,6 +20,7 @@ use App\Exports\FacturacionacExport;
 use App\Models\MedioPago;
 use App\Models\BoletoPago;
 use App\Models\Cargo;
+use App\Models\User;
 
 class Facturacionac extends Component
 {
@@ -32,7 +33,8 @@ class Facturacionac extends Component
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
             $totalTotal = 0,$respSenda,$descripcion="",$numeroTelefono, $chkMedioPago,$idMedioPagoCambio,
-            $idMedioPago, $metodo_pago, $codigo_metodopago, $desc_metodopago;
+            $idMedioPago, $metodo_pago, $codigo_metodopago, $desc_metodopago,
+            $centroCosto, $codUsuario;
     protected $boletos=[];
 
     public $selectedRows = [];
@@ -157,6 +159,17 @@ class Facturacionac extends Component
             $this->monedaLetra = 'SOLES';
         }
 
+        if($dataBoleto->centroCosto){
+            $this->centroCosto = $dataBoleto->centroCosto;
+        }else{
+            $this->centroCosto = '';
+        }
+        $oUser = User::find(auth()->user()->id);
+        $cCounter = $cliente->tCounter->codigo;
+        $cVendedor = $cliente->tVendedor->codigo;
+
+        $this->codUsuario = $oUser->codigo . '&nbsp;&nbsp; &nbsp;&nbsp;' . $cCounter . '&nbsp;&nbsp; &nbsp;&nbsp;' . $cVendedor;
+        
         $boletoPago = BoletoPago::where('idBoleto',$dataBoleto->id)->first();
         if($boletoPago){
             $this->idMedioPago = $boletoPago->idMedioPago;
@@ -180,12 +193,15 @@ class Facturacionac extends Component
         $this->descDocumentoIdentidad = $tipoDocId->descripcion;
 
         $solicitante = Solicitante::find($dataBoleto->idSolicitante);
+        $cSolic = '';
         if($solicitante){
-            if(strlen($this->glosa) < 5){
-                $this->glosa = "SOLICITADO POR: " . $solicitante->nombres . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
-                $this->descripcion = "";
-            }
+            $cSolic = $solicitante->nombres;
         }
+        if(strlen($this->glosa) < 5){
+            $this->glosa = "SOLICITADO POR: " . $cSolic . ' | ' . 'POR LA COMPRA DE BOLETO(S) AEREOS SEGUN DETALLE ADJUNTO ';
+            $this->descripcion = "";
+        }
+        
         
         $totalLetras = $numLetras->numtoletras($this->totalTotal,$this->monedaLetra);
         
@@ -358,17 +374,15 @@ class Facturacionac extends Component
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
-                "centro_costo"=> "",
+                "centro_costo"=> $this->centroCosto,
                 "nro_pedido"=> "",
                 "local"=> "",
                 "caja"=> "",
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                // "glosa"=> $comprobante->numeroFile,
                 "glosa"=> "",
-                "glosa_refe"=> "",
-                // "glosa_pie_pagina"=> $this->glosa,
+                "glosa_refe"=> $this->codUsuario,
                 "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
                 "numero_gr"=> "",
@@ -572,17 +586,15 @@ class Facturacionac extends Component
                 "totalpagado_efectivo"=> "0.00",
                 "vuelto"=> "0.00",
                 "file_nro"=> $comprobante->numeroFile,
-                "centro_costo"=> "",
+                "centro_costo"=> $this->centroCosto,
                 "nro_pedido"=> "",
                 "local"=> "",
                 "caja"=> "",
                 "cajero"=> "",
                 "nro_transaccion"=> "",
                 "orden_compra"=> "",
-                // "glosa"=> $comprobante->numeroFile,
                 "glosa"=> "",
-                "glosa_refe"=> "",
-                // "glosa_pie_pagina"=> $this->glosa,
+                "glosa_refe"=> $this->codUsuario,
                 "glosa_pie_pagina"=> "",
                 "mensaje"=> "",
                 "numero_gr"=> "",

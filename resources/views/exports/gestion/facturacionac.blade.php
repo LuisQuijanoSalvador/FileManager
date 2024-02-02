@@ -32,6 +32,21 @@
             <th scope="col">
                 Tipo Ruta
             </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                C. Costo 
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD1
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD2 
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD3
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD4
+            </th>
             <th scope="col">
                 Neto 
             </th>
@@ -70,6 +85,11 @@
                     <td>@if($boleto->tAerolinea){{$boleto->tAerolinea->razonSocial}} @else AS TRAVEL PERU SAC @endif</td>
                     <td>{{$boleto->ruta}}</td>
                     <td>{{$boleto->tipoRuta}}</td>
+                    <td class="py-1">{{$boleto->centroCosto}}</td>
+                    <td class="py-1">{{$boleto->cod1}}</td>
+                    <td class="py-1">{{$boleto->cod2}}</td>
+                    <td class="py-1">{{$boleto->cod3}}</td>
+                    <td class="py-1">{{$boleto->cod4}}</td>
                     <td>{{$boleto->tarifaNeta}}</td>
                     <td>{{$boleto->inafecto}}</td>
                     <td>{{$boleto->igv}}</td>

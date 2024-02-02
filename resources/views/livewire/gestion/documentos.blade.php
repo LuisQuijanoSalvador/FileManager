@@ -75,6 +75,36 @@
                         <i class="fas fa-sort float-right py-1 px-1"></i>
                     @endif
                 </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                    C. Costo 
+                    @if ($sort == 'fechaEmision')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                    COD1
+                    @if ($sort == 'fechaEmision')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                    COD2 
+                    @if ($sort == 'fechaEmision')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                    COD3
+                    @if ($sort == 'fechaEmision')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
+                <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                    COD4
+                    @if ($sort == 'fechaEmision')
+                        <i class="fas fa-sort float-right py-1 px-1"></i>
+                    @endif
+                </th>
                 <th scope="col" class="py-1 cursor-pointer" wire:click="order('total')">
                     Total 
                     @if ($sort == 'total')
@@ -105,8 +135,13 @@
                     <td class="py-1">{{$documento->id}}</td>
                     <td class="py-1">{{$documento->numero}}</td>
                     <td class="py-1">{{$documento->tTipoDocumento->descripcion}}</td>
-                    <td class="py-1">{{$documento->tcliente->razonSocial}}</td>
+                    <td class="py-1">{{$documento->tcliente->razonSocial}}s/td>
                     <td class="py-1">{{$documento->fechaEmision}}</td>
+                    <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->centroCosto}}@else - @endif</td>
+                    <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->cod1}}@else - @endif</td>
+                    <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->cod2}}@else - @endif</td>
+                    <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->cod3}}@else - @endif</td>
+                    <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->cod4}}@else - @endif</td>
                     <td class="py-1">{{$documento->total}}</td>
                     <td class="py-1">{{$documento->tEstado->descripcion}}</td>
                 </tr>

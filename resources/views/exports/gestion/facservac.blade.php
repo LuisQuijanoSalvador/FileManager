@@ -32,6 +32,21 @@
             <th scope="col">
                 Tipo Ruta
             </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                C. Costo 
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD1
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD2 
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD3
+            </th>
+            <th scope="col" class="py-1 cursor-pointer">
+                COD4
+            </th>
             <th scope="col">
                 Neto 
             </th>
@@ -60,10 +75,15 @@
                     <td></td>
                     <td>{{\Carbon\Carbon::parse($servicio->fechaEmision)->format('d-m-Y')}}</td>
                     <td>{{$servicio->pasajero}}</td>
-                    <td>{{$servicio->tBoleto->numeroBoleto}}</td>
+                    <td>@if($servicio->tBoleto){{$servicio->tBoleto->numeroBoleto}}@else - @endif</td>
                     <td>@if($servicio->tProveedor){{$servicio->tProveedor->razonSocial}} @else AS TRAVEL PERU SAC @endif</td>
-                    <td>{{$servicio->tBoleto->ruta}}</td>
-                    <td>{{$servicio->tBoleto->tipoRuta}}</td>
+                    <td>@if($servicio->tBoleto){{$servicio->tBoleto->ruta}}@else - @endif</td>
+                    <td>@if($servicio->tBoleto){{$servicio->tBoleto->tipoRuta}}@else - @endif</td>
+                    <td>{{$servicio->centroCosto}}</td>
+                    <td>{{$servicio->cod1}}</td>
+                    <td>{{$servicio->cod2}}</td>
+                    <td>{{$servicio->cod3}}</td>
+                    <td>{{$servicio->cod4}}</td>
                     <td>{{$servicio->tarifaNeta}}</td>
                     <td>{{$servicio->igv}}</td>
                     <td>{{$servicio->total}}</td>

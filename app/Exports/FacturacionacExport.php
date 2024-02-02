@@ -35,7 +35,7 @@ class FacturacionacExport implements FromView, WithStyles
     {
         // Aplicar estilos y colores aquí
         
-        $sheet->getStyle('B3:M3')->applyFromArray([
+        $sheet->getStyle('B3:R3')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => '12',

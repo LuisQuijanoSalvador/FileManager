@@ -68,4 +68,8 @@ class Documento extends Model
     public function tMotivoND(){
         return $this->hasOne(motivoDebito::class,'id','idMotivoND');
     }
+
+    public function tBoleto(){
+        return $this->hasOne(Boleto::class,'id','idBoleto');
+    }
 }

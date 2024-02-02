@@ -134,13 +134,17 @@ class Facturacionserv extends Component
         }
         
         $solicitante = Solicitante::find($dataServicio->idSolicitante);
+        $cSolic = '';
+        if($solicitante){
+            $cSolic = $solicitante->nombres;
+        }
         if(strlen($this->glosa) < 5){
             $ruta = "";
             if($dataServicio->tBoleto){
                 $ruta = $dataServicio->tBoleto->ruta;
             }
             $this->glosa = "";
-            $this->descripcion = $dataServicio->tTipoServicio->descripcion . ' | ' . "PAX: " . $dataServicio->pasajero . ' | ' . 'RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
+            $this->descripcion = $dataServicio->tTipoServicio->descripcion . 'SOLICITADO POR: ' . $cSolic .  "POR LA EMISION DE UN BOLETO AEREO A FAVOR DE PAX: " . $dataServicio->pasajero .  'EN LA RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->tAerolinea->codigoIata . ' - ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
             // dd($this->descripcion);
         }else{
             $this->descripcion = $dataServicio->tTipoServicio->descripcion;

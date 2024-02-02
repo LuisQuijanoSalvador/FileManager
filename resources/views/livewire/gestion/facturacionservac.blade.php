@@ -172,6 +172,36 @@
                                 <i class="fas fa-sort float-right py-1 px-1"></i>
                             @endif
                         </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            C. Costo 
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            COD1
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            COD2 
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            COD3
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            COD4
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
                         <th scope="col" class="py-1 cursor-pointer">
                             Neto 
                         </th>
@@ -212,6 +242,11 @@
                                 <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
                                 <td class="py-1">{{$servicio->fechaEmision}}</td>
                                 <td class="py-1">{{$servicio->pasajero}}</td>
+                                <td class="py-1">{{$servicio->centroCosto}}</td>
+                                <td class="py-1">{{$servicio->cod1}}</td>
+                                <td class="py-1">{{$servicio->cod2}}</td>
+                                <td class="py-1">{{$servicio->cod3}}</td>
+                                <td class="py-1">{{$servicio->cod4}}</td>
                                 <td class="py-1">{{$servicio->tarifaNeta}}</td>
                                 <td class="py-1">{{$servicio->inafecto}}</td>
                                 <td class="py-1">{{$servicio->igv}}</td>
