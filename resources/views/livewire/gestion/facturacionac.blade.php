@@ -138,10 +138,10 @@
 
         <div class="contenedorTabla">
             <table class="tabla-listado">
-                <thead class="thead-listado">
+                <thead class="thead-listadoCC">
                     <tr>
                         <th scope="col" class="py-1 cursor-pointer">
-                            
+                            <input type="checkbox" wire:model.lazy.defer="selectAll" wire:click="seleccionarTodo">
                         </th>
                         <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
                             ID 
@@ -172,6 +172,9 @@
                             @if ($sort == 'fechaEmision')
                                 <i class="fas fa-sort float-right py-1 px-1"></i>
                             @endif
+                        </th>
+                        <th scope="col" class="py-1">
+                            Tipo Doc.
                         </th>
                         <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
                             Pasajero 
@@ -250,6 +253,7 @@
                         <td class="py-1">{{$boleto->numeroFile}}</td>
                         <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
                         <td class="py-1">{{$boleto->fechaEmision}}</td>
+                        <td class="py-1">{{$boleto->tTipoDocumento->descripcion}}</td>
                         <td class="py-1">{{$boleto->pasajero}}</td>
                         <td class="py-1">{{$boleto->centroCosto}}</td>
                         <td class="py-1">{{$boleto->cod1}}</td>

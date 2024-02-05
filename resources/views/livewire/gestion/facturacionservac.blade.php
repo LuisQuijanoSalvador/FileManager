@@ -140,7 +140,7 @@
                 <thead class="thead-listado">
                     <tr>
                         <th scope="col" class="py-1 cursor-pointer">
-                            
+                            <input type="checkbox" wire:model.lazy.defer="selectAll" wire:click="seleccionarTodo">
                         </th>
                         <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
                             ID 
@@ -165,6 +165,9 @@
                             @if ($sort == 'fechaEmision')
                                 <i class="fas fa-sort float-right py-1 px-1"></i>
                             @endif
+                        </th>
+                        <th scope="col" class="py-1">
+                            Tipo Doc.
                         </th>
                         <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
                             Pasajero 
@@ -241,6 +244,7 @@
                                 <td class="py-1">{{$servicio->numeroFile}}</td>
                                 <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
                                 <td class="py-1">{{$servicio->fechaEmision}}</td>
+                                <td class="py-1">{{$servicio->tTipoDocumento->descripcion}}</td>
                                 <td class="py-1">{{$servicio->pasajero}}</td>
                                 <td class="py-1">{{$servicio->centroCosto}}</td>
                                 <td class="py-1">{{$servicio->cod1}}</td>
@@ -307,3 +311,15 @@
         @endif --}}
     </div>
 </div>
+@push('scripts')
+    <script>
+        document.addEventListener('livewire:load', function () {
+            Livewire.on('selectAll', () => {
+                const checkboxes = document.querySelectorAll('[wire\\:model="selectedRows"]');
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = !checkbox.checked;
+                });
+            });
+        });
+    </script>
+@endpush

@@ -29,6 +29,7 @@ class Facturacionac extends Component
     public $search = "";
     public $sort= 'numeroBoleto';
     public $direction = 'asc';
+    public $selectAll = false;
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
@@ -68,6 +69,21 @@ class Facturacionac extends Component
         $medioPagos = MedioPago::all()->sortBy('codigo');
 
         return view('livewire.gestion.facturacionac',compact('monedas','clientes','medioPagos'));
+    }
+
+    public function seleccionarTodo()
+    {
+        if ($this->selectAll) {
+            $this->selectedRows = Boleto::where('idCliente', $this->idCliente)
+            ->whereNull('idDocumento')
+            ->where('idTipoFacturacion',2)
+            ->where('estado',1)
+            ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->pluck('id')->toArray();
+        } else {
+            $this->selectedRows = [];
+        }
+        $this->filtrar();
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -125,7 +141,7 @@ class Facturacionac extends Component
                 $this->totalTotal += $boleto->total;
             }
             $boleto = Boleto::find($this->selectedRows[0]);
-            
+            dd($this->selectedRows);
             $this->crearDocumento($boleto);
         }  
     }

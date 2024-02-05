@@ -130,74 +130,81 @@
             
             
         </div>
-        <table class="tabla-listado">
-            <thead class="thead-listado">
-                <tr>
-                    <th scope="col" class="py-1 cursor-pointer">
-                        
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
-                        ID 
-                        @if ($sort == 'id')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
-                        Boleto 
-                        @if ($sort == 'numeroBoleto')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
-                        File 
-                        @if ($sort == 'numeroFile')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
-                        Cliente
-                        @if ($sort == 'idCliente')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
-                        F. Emisión 
-                        @if ($sort == 'fechaEmision')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
-                        Pasajero 
-                        @if ($sort == 'pasajero')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                    <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
-                        Estado 
-                        @if ($sort == 'estado')
-                            <i class="fas fa-sort float-right py-1 px-1"></i>
-                        @endif
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @if($this->boletos)
-                @foreach ($this->boletos as $boleto)
-    
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="py-1"><input type="radio" name="chkSelect" id="" wire:model="selectedRows" value="{{ $boleto->id }}"></td>
-                    <td class="py-1">{{$boleto->id}}</td>
-                    <td class="py-1">{{$boleto->numeroBoleto}}</td>
-                    <td class="py-1">{{$boleto->numeroFile}}</td>
-                    <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
-                    <td class="py-1">{{$boleto->fechaEmision}}</td>
-                    <td class="py-1">{{$boleto->pasajero}}</td>
-                    <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
-                </tr>
-                @endforeach
-                @endif
-            </tbody>
-        </table>
+        <div class="contenedorTablaCC">
+            <table class="tabla-listado">
+                <thead class="thead-listado">
+                    <tr>
+                        <th scope="col" class="py-1 cursor-pointer">
+                            
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('id')">
+                            ID 
+                            @if ($sort == 'id')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroBoleto')">
+                            Boleto 
+                            @if ($sort == 'numeroBoleto')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('numeroFile')">
+                            File 
+                            @if ($sort == 'numeroFile')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('idCliente')">
+                            Cliente
+                            @if ($sort == 'idCliente')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('fechaEmision')">
+                            F. Emisión 
+                            @if ($sort == 'fechaEmision')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1">
+                            Tipo Doc.
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('pasajero')">
+                            Pasajero 
+                            @if ($sort == 'pasajero')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                        <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
+                            Estado 
+                            @if ($sort == 'estado')
+                                <i class="fas fa-sort float-right py-1 px-1"></i>
+                            @endif
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($this->boletos)
+                    @foreach ($this->boletos as $boleto)
+        
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td class="py-1"><input type="radio" name="chkSelect" id="" wire:model="selectedRows" value="{{ $boleto->id }}"></td>
+                        <td class="py-1">{{$boleto->id}}</td>
+                        <td class="py-1">{{$boleto->numeroBoleto}}</td>
+                        <td class="py-1">{{$boleto->numeroFile}}</td>
+                        <td class="py-1">{{$boleto->tcliente->razonSocial}}</td>
+                        <td class="py-1">{{$boleto->fechaEmision}}</td>
+                        <td class="py-1">{{$boleto->tTipoDocumento->descripcion}}</td>
+                        <td class="py-1">{{$boleto->pasajero}}</td>
+                        <td class="py-1">{{$boleto->tEstado->descripcion}}</td>
+                    </tr>
+                    @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+        
         @if($this->boletos)
         {{$this->boletos->links()}}
         @endif

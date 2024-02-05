@@ -28,6 +28,7 @@ class Facturacionservac extends Component
     public $search = "";
     public $sort= 'numeroFile';
     public $direction = 'asc';
+    public $selectAll = false;
     
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,$idCliente,
             $startDate,$endDate,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
@@ -57,6 +58,21 @@ class Facturacionservac extends Component
         }else{
             $this->tipoCambio = 0.00;
         }
+    }
+
+    public function seleccionarTodo()
+    {
+        if ($this->selectAll) {
+            $this->selectedRows = Servicio::where('idCliente', $this->idCliente)
+            ->whereNull('idDocumento')
+            ->where('idTipoFacturacion',2)
+            ->where('estado',1)
+            ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->pluck('id')->toArray();
+        } else {
+            $this->selectedRows = [];
+        }
+        $this->filtrar();
     }
 
     public function render()
