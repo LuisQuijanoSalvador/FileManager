@@ -18,6 +18,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    public $role;
     /**
      * The attributes that are mass assignable.
      *
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'password',
         'estado',
         'rol',
+        'role',
     ];
 
     /**
@@ -60,6 +62,14 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function hasPermission($permission)
+    {
+        // Lógica para verificar permisos, puede ser por roles o cualquier otra lógica
+        $usuario = User::find(auth()->user()->id);
+        $this->role = $usuario->tRol->descripcion;
+        return $this->role == $permission;
+    }
 
     public function tRol(){
         return $this->hasOne(Rol::class,'id','rol');

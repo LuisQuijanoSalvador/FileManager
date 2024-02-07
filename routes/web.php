@@ -101,5 +101,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('conciliacion', function(){ return view('reportes.conciliacion');})->name('rptConciliacion');
         Route::get('comisiones', function(){ return view('reportes.comisiones');})->name('rptComision');
     });
+    Route::group(['prefix'=>'files'],function(){
+        Route::get('files', function(){ return view('files.files');})->name('listaFiles');
+        Route::get('editarFile/{id}', function(){ return view('files.editar-files');})->name('editarFiles');
+    });
 });
 

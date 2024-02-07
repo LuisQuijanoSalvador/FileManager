@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DocumentoExport;
 use App\Models\Servicio;
 use App\Models\Boleto;
+use App\Models\MedioPago;
 
 class Documentos extends Component
 {
@@ -28,7 +29,7 @@ class Documentos extends Component
     $inafecto,$exonerado,$igv,$otrosImpuestos,$total,$totalLetras,$glosa,$numeroFile,$tipoServicio,
     $documentoReferencia,$idMotivoNC,$idMotivoND,$tipoCambio,$idEstado,$respuestaSunat,$usuarioCreacion,
     $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda,
-    $startDate,$endDate,$selectedTipoDocumento;
+    $startDate,$endDate,$selectedTipoDocumento,$idMedioPago;
 
     protected $documentos;
 
@@ -76,7 +77,8 @@ class Documentos extends Component
         $tipoDocumentos = TipoDocumento::all()->sortBy('descripcion');
         $estados = Estado::all()->sortBy('descripcion');
         $clientes = Cliente::all()->sortBy('razonSocial');
-        return view('livewire.gestion.documentos',compact('tipoDocumentos','estados','clientes'));
+        $medioPagos = MedioPago::all()->sortBy('descripcion');
+        return view('livewire.gestion.documentos',compact('tipoDocumentos','estados','clientes','medioPagos'));
     }
 
     public function order($sort){
@@ -133,6 +135,7 @@ class Documentos extends Component
         $this->numeroFile = $documento->numeroFile;
         $this->tipoServicio = $documento->tipoServicio;
         $this->documentoReferencia = $documento->documentoReferencia;
+        $this->idMedioPago = $documento->idMedioPago;
         $this->idMotivoNC = $documento->idMotivoNC;
         $this->idMotivoND = $documento->idMotivoND;
         $this->tipoCambio = $documento->tipoCambio;

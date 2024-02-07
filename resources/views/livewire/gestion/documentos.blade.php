@@ -198,7 +198,14 @@
                             <label for="txtDocRef" class="">Doc. Rereferncia: </label>
                             <input disabled type="text" class="uTextBox" id="txtDocRef" wire:model.lazy.defer="documentoReferencia">
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <label for="cboMedioPago" class="form-label">Medio Pago:</label>
+                            <select disabled name="idMedioPago" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboMedioPago" wire:model="idMedioPago">
+                                @foreach ($medioPagos as $medioPago)
+                                    <option value={{$medioPago->id}}>{{$medioPago->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2"></div>
                         <div class="col-md-2">

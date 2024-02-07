@@ -528,6 +528,12 @@ return [
                 ],
             ]
         ],
+        [
+            'text'        => 'Files',
+            'route'         => 'listaFiles',
+            'icon'        => 'fas fa-folder-open',
+            
+        ],
         
 
 
