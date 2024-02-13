@@ -534,6 +534,12 @@ return [
             'icon'        => 'fas fa-folder-open',
             
         ],
+        [
+            'text'        => 'Contabilidad',
+            'route'         => 'rIntegrador',
+            'icon'        => 'fas fa-book',
+            
+        ],
         
 
 

@@ -105,5 +105,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('files', function(){ return view('files.files');})->name('listaFiles');
         Route::get('editarFile/{id}', function(){ return view('files.editar-files');})->name('editarFiles');
     });
+    Route::group(['prefix'=>'contabilidad'],function(){
+        Route::get('integrador', function(){ return view('contabilidad.integrador');})->name('rIntegrador');
+    });
 });
 
