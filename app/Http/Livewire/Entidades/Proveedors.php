@@ -22,7 +22,7 @@ class Proveedors extends Component
     public $direction = 'asc';
 
     public $idRegistro, $razonSocial, $nombreComercial, $direccionFiscal, $direccionFacturacion, $tipoProveedor,
-            $esConsolidador,$comision,$tipoDocumentoIdentidad, $numeroDocumentoIdentidad, $numeroTelefono, 
+            $esConsolidador=0,$comision,$tipoDocumentoIdentidad, $numeroDocumentoIdentidad, $numeroTelefono, 
             $correo,$montoCredito, $moneda, $diasCredito, $tipoDocumento, $estado;
 
     public function rules(){
