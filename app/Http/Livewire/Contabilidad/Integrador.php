@@ -6,6 +6,10 @@ use Livewire\Component;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Documento;
+use App\Models\Boleto;
+use App\Models\Servicio;
+use App\Models\Proveedor;
+use App\Models\Cliente;
 use Illuminate\Support\Facades\DB;
 
 class Integrador extends Component
@@ -67,7 +71,7 @@ class Integrador extends Component
                 WHERE b.IdDocumento = documentos.id LIMIT 1), '')
             ELSE numeroDocumentoIdentidad
         END AS CodigoAnexo"))
-        ->addSelect('afecto', 'igv', 'otrosImpuestos', 'inafecto', 'exonerado', 'total','numero', 'serie')
+        ->addSelect('afecto', 'igv', 'otrosImpuestos', 'inafecto', 'exonerado', 'total','numero', 'serie','id')
         ->addSelect(DB::raw("CONCAT(serie, '-', numero) AS numeroDocumento"), 'fechaVencimiento', 'idEstado')
         ->whereBetween('FechaEmision', [$this->fechaIni, $this->fechaFin])
         ->where('TipoDocumento', $this->tipoDocumento)
@@ -76,6 +80,16 @@ class Integrador extends Component
         $fila = 5;
         if($this->tipoDocumento == '01'){
             foreach($documentos as $documento){
+                
+                $docCli = '';
+                $servicio = Servicio::where('idDocumento',$documento->id)->first();
+                
+                if(!is_null($servicio)){
+                    $cliente = Cliente::find($servicio->idCliente);
+                    $docCli = $cliente->numeroDocumentoIdentidad;
+                }else{
+                    $docCli = '';
+                }
                 if($documento->idEstado == 1){
                     if($documento->afecto > 0){
                         $fechaEntero = strtotime($documento->fechaEmision);
@@ -92,7 +106,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->afecto);
@@ -103,7 +117,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->otrosImpuestos > 0){
                         $fila = $fila + 1;
@@ -121,7 +135,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
@@ -132,7 +146,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->inafecto > 0){
                         $fila = $fila + 1;
@@ -150,7 +164,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
@@ -161,7 +175,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->exonerado > 0){
                         $fila = $fila + 1;
@@ -179,7 +193,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
@@ -190,7 +204,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->igv > 0){
                         $fila = $fila + 1;
@@ -220,7 +234,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     $fila = $fila + 1;
                     $fechaEntero = strtotime($documento->fechaEmision);
@@ -241,7 +255,7 @@ class Integrador extends Component
                     }else{
                         $hoja->setCellValue('K' . $fila, '121201');
                     }
-                    $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                    $hoja->setCellValue('L' . $fila, $docCli);
                     $hoja->setCellValue('M' . $fila, '0');
                     $hoja->setCellValue('N' . $fila, 'D');
                     $hoja->setCellValue('O' . $fila, $documento->total);
@@ -252,7 +266,7 @@ class Integrador extends Component
                     $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                     $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                     $hoja->setCellValue('V' . $fila, '');
-                    $hoja->setCellValue('W' . $fila, $documento->glosa);
+                    $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     
                     $fila++;
                     $this->correlativo = $this->correlativo +1;
@@ -290,7 +304,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->otrosImpuestos > 0){
                         $fila = $fila + 1;
@@ -319,7 +333,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->inafecto > 0){
                         $fila = $fila + 1;
@@ -348,7 +362,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->exonerado > 0){
                         $fila = $fila + 1;
@@ -377,7 +391,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     if($documento->igv > 0){
                         $fila = $fila + 1;
@@ -407,7 +421,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     }
                     $fila = $fila + 1;
                     $fechaEntero = strtotime($documento->fechaEmision);
@@ -439,7 +453,7 @@ class Integrador extends Component
                     $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                     $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                     $hoja->setCellValue('V' . $fila, '');
-                    $hoja->setCellValue('W' . $fila, $documento->glosa);
+                    $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     
                     $fila++;
                     $this->correlativo = $this->correlativo +1;
@@ -450,6 +464,24 @@ class Integrador extends Component
 
         if($this->tipoDocumento == '36'){
             foreach($documentos as $documento){
+                $docCons = '';
+                $docCli = '';
+                $boleto = Boleto::where('idDocumento',$documento->id)->first();
+                // dd($boleto);
+                if(!is_null($boleto)){
+                    $proovedor = Proveedor::find($boleto->idConsolidador);
+                    $docCons = $proovedor->numeroDocumentoIdentidad;
+                }else{
+                    $docCons = '';
+                }
+                if(!is_null($boleto)){
+                    $cliente = Cliente::find($boleto->idCliente);
+                    $docCli = $cliente->numeroDocumentoIdentidad;
+                }else{
+                    $docCli = '';
+                }
+                
+                
                 if($documento->idEstado == 1){
                     $fechaEntero = strtotime($documento->fechaEmision);
                         $mes = date('m',$fechaEntero);
@@ -469,7 +501,7 @@ class Integrador extends Component
                         }else{
                             $hoja->setCellValue('K' . $fila, '168311');
                         }
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $cliente->numeroDocumentoIdentidad);
                         $hoja->setCellValue('M' . $fila, '0');
                         $hoja->setCellValue('N' . $fila, 'D');
                         $hoja->setCellValue('O' . $fila, $documento->total);
@@ -480,7 +512,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
     
                         $fila = $fila + 1;
     
@@ -502,7 +534,7 @@ class Integrador extends Component
                         }else{
                             $hoja->setCellValue('K' . $fila, '469911');
                         }
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCons);
                         $hoja->setCellValue('M' . $fila, '0');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->total);
@@ -513,7 +545,7 @@ class Integrador extends Component
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                         $hoja->setCellValue('V' . $fila, '');
-                        $hoja->setCellValue('W' . $fila, $documento->glosa);
+                        $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
     
                         $fila++;
                         $this->correlativo = $this->correlativo +1;
