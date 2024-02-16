@@ -141,7 +141,7 @@ class Facturacionac extends Component
                 $this->totalTotal += $boleto->total;
             }
             $boleto = Boleto::find($this->selectedRows[0]);
-            dd($this->selectedRows);
+            // dd($this->selectedRows);
             $this->crearDocumento($boleto);
         }  
     }
