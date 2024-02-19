@@ -113,7 +113,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'FT');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -142,7 +142,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'FT');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -167,11 +167,11 @@ class Integrador extends Component
                         $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
-                        $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
+                        $hoja->setCellValue('O' . $fila, $documento->inafecto);
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'FT');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -196,11 +196,11 @@ class Integrador extends Component
                         $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
-                        $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
+                        $hoja->setCellValue('O' . $fila, $documento->exonerado);
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'FT');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -230,7 +230,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'FT');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -262,7 +262,7 @@ class Integrador extends Component
                     $hoja->setCellValue('P' . $fila, 0);
                     $hoja->setCellValue('Q' . $fila, 0);
                     $hoja->setCellValue('R' . $fila, 'FT');
-                    $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                     $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                     $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                     $hoja->setCellValue('V' . $fila, '');
@@ -300,7 +300,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'BV');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -329,7 +329,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'BV');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -354,11 +354,11 @@ class Integrador extends Component
                         $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
-                        $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
+                        $hoja->setCellValue('O' . $fila, $documento->inafecto);
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'BV');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -383,11 +383,11 @@ class Integrador extends Component
                         $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
-                        $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
+                        $hoja->setCellValue('O' . $fila, $documento->exonerado);
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'BV');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -417,7 +417,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'BV');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, '');
                         $hoja->setCellValue('V' . $fila, '');
@@ -449,7 +449,7 @@ class Integrador extends Component
                     $hoja->setCellValue('P' . $fila, 0);
                     $hoja->setCellValue('Q' . $fila, 0);
                     $hoja->setCellValue('R' . $fila, 'BV');
-                    $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                     $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                     $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                     $hoja->setCellValue('V' . $fila, '');
@@ -470,7 +470,11 @@ class Integrador extends Component
                 // dd($boleto);
                 if(!is_null($boleto)){
                     $proovedor = Proveedor::find($boleto->idConsolidador);
-                    $docCons = $proovedor->numeroDocumentoIdentidad;
+                    if(!is_null($proovedor)){
+                        $docCons = $proovedor->numeroDocumentoIdentidad;
+                    }else{
+                        $docCons = '';
+                    }
                 }else{
                     $docCons = '';
                 }
@@ -508,7 +512,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'DC');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                         $hoja->setCellValue('V' . $fila, '');
@@ -541,7 +545,7 @@ class Integrador extends Component
                         $hoja->setCellValue('P' . $fila, 0);
                         $hoja->setCellValue('Q' . $fila, 0);
                         $hoja->setCellValue('R' . $fila, 'DC');
-                        $hoja->setCellValue('S' . $fila, $documento->serie . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                        $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
                         $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
                         $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                         $hoja->setCellValue('V' . $fila, '');
