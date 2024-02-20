@@ -15,7 +15,7 @@ use App\Models\Abono;
 class Abonopago extends Component
 {
     public $selectedIds, $datos, $fechaAbono, $tipoCambio, $moneda = 1, $idBanco = 2, $idTarjetaCredito = 1,
-    $idMedioPago = 1, $observaciones = '';
+    $idMedioPago = 1, $observaciones = '', $referencia = '';
     public $pagos = [];
 
     public function mount(){
