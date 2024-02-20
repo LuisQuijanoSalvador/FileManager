@@ -31,6 +31,7 @@ use App\Models\TarjetaCredito;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use App\Models\ServicioPago;
+use App\Models\Documento;
 
 class Servicios extends Component
 {
@@ -50,7 +51,7 @@ class Servicios extends Component
             $otrosImpuestos=0,$xm=0,$total=0,$totalOrigen=0,$porcentajeComision,$montoComision=0,
             $descuentoCorporativo,$codigoDescCorp,$tarifaNormal,$tarifaAlta,$tarifaBaja,$destino,
             $centroCosto,$cod1,$cod2,$cod3,$cod4,$observaciones,$estado=1,$idTipoPagoConsolidador=6,
-            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion;
+            $usuarioCreacion,$fechaCreacion,$usuarioModificacion,$fechaModificacion,$numDoc;
 
     public $idMedioPago=6,$idTarjetaCredito=1,$numeroTarjeta,$monto,$fechaVencimientoTC,$servicioPagos,$servPag;
 
@@ -401,8 +402,10 @@ class Servicios extends Component
         $this->usuarioModificacion = $servicio->usuarioModificacion;
         $this->fechaModificacion = Carbon::parse($servicio->updated_at)->format("Y-m-d");
 
-        // $servPag = ServicioPago::where('idServicio',$id)->first();
-        // dd($servPag);
+        if($this->idDocumento){
+            $oDocumento = Documento::find($this->idDocumento);
+            $this->numDoc = $oDocumento->serie . '-' . str_pad($oDocumento->numero,8,"0",STR_PAD_LEFT);
+        }
     }
 
     public function actualizar($id){

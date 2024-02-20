@@ -49,6 +49,9 @@
                         <i class="fas fa-sort float-right py-1 px-1"></i>
                     @endif
                 </th>
+                <th scope="col" class="py-1">
+                    Documento
+                </th>
                 <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
                     Estado 
                     @if ($sort == 'estado')
@@ -69,6 +72,7 @@
                 <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
                 <td class="py-1">{{Carbon::parse($servicio->fechaEmision)->format("d-m-Y")}}</td>
                 <td class="py-1">{{$servicio->pasajero}}</td>
+                <td class="py-1">@if($servicio->tDocumento){{$servicio->tDocumento->serie . '-' . str_pad($servicio->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td>
                 <td class="py-1">{{$servicio->tEstado->descripcion}}</td>
                 <td class="py-1">
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
@@ -357,7 +361,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label for="txtDocumento" class="form-label">Documento:</label>
-                                <input type="text" class="uTextBox" id="txtDocumento" disabled>
+                                <input type="text" class="uTextBox" id="txtDocumento" wire:model.lazy.defer="numDoc" disabled>
                             </div>
                             <div class="col-md-3">
                                 <label for="cboTipoDocumento" class="form-label">Tipo Documento:</label>
