@@ -59,8 +59,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix'=>'cuentaporcobrar'],function(){
         Route::get('abonos', function(){ return view('cuentas-por-cobrar.abonos');})->name('rAbonos');
-        // Route::get('abonopago','AbonoController@mostrar')->name('rAbonopago');
-        Route::get('abonopago/{ids}', function(){ return view('cuentas-por-cobrar.abonopago');})->name('rAbonopago');
+        // Route::get('abonopago/{datosJson}', function($datosJson){
+        //     return view('cuentas-por-cobrar.abonopago', ['datosJson' => $datosJson]);
+        // })->name('rAbonopago');
+        Route::get('abonopago/{datosJson}', function($datosJson){
+            $datos = json_decode($datosJson, true);
+            // dd($datos);
+            return view('cuentas-por-cobrar.abonopago', compact('datos'));
+        })->name('rAbonopago');
+
         Route::get('estadodecuenta', function(){ return view('cuentas-por-cobrar.estado-cuenta');})->name('rEstadosdecuenta');
     });
 

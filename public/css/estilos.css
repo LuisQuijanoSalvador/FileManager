@@ -172,3 +172,13 @@ a{
     width: auto;
     max-height: 380px;
 }
+
+.saldo{
+    background-color: #be0e3c;
+    color: #FFFFFF;
+}
+
+.cargo{
+    background-color: #329ce2;
+    color: #FFFFFF;
+}

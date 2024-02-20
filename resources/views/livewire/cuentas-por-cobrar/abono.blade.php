@@ -77,9 +77,9 @@
                             <td class="py-1">{{$cargo->id}}</td>
                             <td class="py-1">{{$cargo->Cliente}}</td>
                             <td class="py-1">{{$cargo->FechaEmision}}</td>
-                            <td class="py-1">{{$cargo->Cargo}}</td>
+                            <td class="py-1 cargo">{{$cargo->Cargo}}</td>
                             <td class="py-1">{{$cargo->Moneda}}</td>
-                            <td class="py-1">{{$cargo->Saldo}}</td>
+                            <td class="py-1 saldo">{{$cargo->Saldo}}</td>
                             <td class="py-1">{{$cargo->TipoCambio}}</td>
                             <td class="py-1">{{$cargo->FechaVencimiento}}</td>
                             <td class="py-1">{{$cargo->TipoDocumento}}</td>
@@ -99,7 +99,7 @@
     {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click="abrirModal">
         Abonar
     </button> --}}
-    <button type="button" class="btn btn-primary" wire:click="abrirModal">
+    <button type="button" class="btn btn-primary" wire:click="abrirPago">
         Abonar
     </button>
   

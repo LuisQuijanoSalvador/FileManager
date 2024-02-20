@@ -1,10 +1,10 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Abonos')
+@section('title', 'Cargos')
 
 @section('content_header')
-    <h3>Abonos</h3>
+    <h3>Cargos</h3>
 @stop
 
 {{-- Inicio del contenido de la Página --}}

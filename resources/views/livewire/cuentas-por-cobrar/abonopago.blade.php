@@ -1,10 +1,12 @@
 <div>
     {{-- If your happiness depends on money, you will never be happy with yourself. --}}
+
+    <hr>
     <div class="">
         <div class="row">
             <div class="col-md-4">
                 <label for="txtFechaAbono" class="form-label">F. Abono:</label>
-                <input type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaAbono" wire:model="fechaAbono">
+                <input type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaAbono" wire:model.lazy.defer="fechaAbono">
             </div>
             <div class="col-md-4">
                 <label for="idMedioPago" class="form-label">Medio Pago:</label>
@@ -59,6 +61,7 @@
                 <input type="text" class="uTextBox" id="txtObservaciones" wire:model.lazy.defer="observaciones" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
             </div>
         </div>
+
         <hr>
         <div class="contenedorTabla">
             <table class="tabla-listado">
@@ -77,7 +80,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($this->cargosAbono as $cargo)
+                    @foreach ($cargos as $cargo)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <td class="py-1">{{$cargo->id}}</td>
                             <td class="py-1">{{$cargo->tipoDocumento}}</td>
@@ -88,12 +91,16 @@
                             <td class="py-1">{{$cargo->montoCargo}}</td>
                             <td class="py-1">{{$cargo->tipoCambio}}</td>
                             <td class="py-1">{{$cargo->saldo}}</td>
-                            <td class="py-1"><input type="text">
+                            <td class="py-1"><input type="number" wire:model="pagos.{{ $cargo->id }}">
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div> 
+        <hr>
+        <button type="button" class="btn btn-primary" wire:click="abonar">
+            Abonar
+        </button>
     </div>
 </div>

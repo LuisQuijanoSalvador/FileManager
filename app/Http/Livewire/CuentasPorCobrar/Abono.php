@@ -66,12 +66,12 @@ class Abono extends Component
         $this->cargos = DB::select('CALL get_cargos_fechasCliente(?, ?, ?)', [$this->fechaInicio, $this->fechaFin, $this->idCliente]);
     }
 
-    public function abrirModal(){
+    public function abrirPago(){
         // $this->cargosAbono =Cargo::whereIn('id',$this->selectedRows);
         // $serializedIds = serialize($this->selectedRows);
         $jsonIds = json_encode($this->selectedRows);
-        // return redirect()->route('rAbonopago', ['ids' => $jsonIds]);
-        return redirect()->route('rAbonopago');
+        return redirect()->route('rAbonopago', ['datosJson' => $jsonIds]);
+        // return redirect()->route('rAbonopago')->with('datosJson', $jsonIds);
     }
 
 }

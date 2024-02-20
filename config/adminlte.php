@@ -378,7 +378,7 @@ return [
             'icon'        => 'fas fa-clipboard',
             'submenu'=>[
                 [
-                    'text' => 'Abonos',
+                    'text' => 'Cargos',
                     'route' => 'rAbonos'
                 ],
                 [

@@ -9,7 +9,7 @@
 
 {{-- Inicio del contenido de la Página --}}
 @section('content')
-    @livewire('cuentas-por-cobrar.abonopago')
+    @livewire('cuentas-por-cobrar.abonopago',['datos' => $datos])
 @stop
 
 {{-- Fin del contenido de la Página --}}
