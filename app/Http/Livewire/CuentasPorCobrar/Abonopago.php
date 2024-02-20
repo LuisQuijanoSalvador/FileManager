@@ -59,7 +59,7 @@ class Abonopago extends Component
             $abono->moneda = $this->moneda;
             $abono->tipoCambio = $this->tipoCambio;
             $abono->idMedioPago = $this->idMedioPago;
-            $abono->referencia = '';
+            $abono->referencia = $this->referencia;
             $abono->idBanco = $this->idBanco;
             $banco = Banco::find($this->idBanco);
             $abono->numeroCuenta = $banco->numeroCuenta;
