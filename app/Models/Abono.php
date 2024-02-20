@@ -12,6 +12,7 @@ class Abono extends Model
     protected $fillable = [
         'idCargo',
         'fechaAbono',
+        'numeroAbono',
         'monto',
         'moneda',
         'tipoCambio',

@@ -11,6 +11,7 @@ use App\Models\TipoCambio;
 use Carbon\Carbon;
 use App\Models\Cargo;
 use App\Models\Abono;
+use App\Clases\Funciones;
 
 class Abonopago extends Component
 {
@@ -44,17 +45,21 @@ class Abonopago extends Component
     }
 
     public function abonar(){
+        $funciones = new Funciones();
+        $numAbono = $funciones->generaFile('ABONOS');
+        $numAbonoCompleto = str_pad($numAbono,10,"0",STR_PAD_LEFT);
+
+        // dd($this->pagos);
+
         foreach ($this->pagos as $id => $pago) {
-            // Guarda el pago correspondiente al ID en tu base de datos o en otra ubicación
-            // Por ejemplo:
-            // Cargo::find($id)->update(['saldo' => $pago]);
             $cargo = Cargo::find($id);
-            $cargo->saldo = $cargo->montoCargo - $pago;
+            $cargo->saldo = $cargo->saldo - $pago;
             $cargo->save();
             
             $abono = new Abono();
             $abono->idCargo = $id;
             $abono->fechaAbono = $this->fechaAbono;
+            $abono->numeroAbono =$numAbonoCompleto;
             $abono->monto = $pago;
             $abono->moneda = $this->moneda;
             $abono->tipoCambio = $this->tipoCambio;
@@ -68,8 +73,7 @@ class Abonopago extends Component
             $abono->idEstado = 1;
             $abono->usuarioCreacion = auth()->user()->id;
             $abono->save();
-
-            return redirect()->route('rAbonos');
         }
+        return redirect()->route('rAbonos');
     }
 }

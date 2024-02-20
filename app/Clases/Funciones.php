@@ -52,6 +52,19 @@ class Funciones
         return $this->numero;
     }
 
+    public function numeroAbono($tabla){
+        $this->numero = 0;
+        $comprobante = Correlativo::where('tabla',$tabla)->first();
+        $this->numero = $comprobante->numero;
+
+        $nuevoNumero = $this->numero + 1;
+        $comprobante->numero =$nuevoNumero;
+        $comprobante->usuarioModificacion = auth()->user()->id;
+        $comprobante->save();
+        
+        return $this->numero;
+    }
+
 
     public function enviarCPE($arrayData){
         $client = new Client();
