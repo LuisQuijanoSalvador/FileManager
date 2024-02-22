@@ -75,6 +75,7 @@ class Integrador extends Component
         ->addSelect(DB::raw("CONCAT(serie, '-', numero) AS numeroDocumento"), 'fechaVencimiento', 'idEstado')
         ->whereBetween('FechaEmision', [$this->fechaIni, $this->fechaFin])
         ->where('TipoDocumento', $this->tipoDocumento)
+        ->orderBy('fechaEmision')
         ->get();
         
         $fila = 5;
@@ -268,15 +269,55 @@ class Integrador extends Component
                     $hoja->setCellValue('V' . $fila, '');
                     $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
                     
-                    $fila++;
-                    $this->correlativo = $this->correlativo +1;
+                    // $fila++;
+                    // $this->correlativo = $this->correlativo +1;
+                }else{
+                    // $fila = $fila + 1;
+                    // $this->correlativo = $this->correlativo +1;
+                    $fechaEntero = strtotime($documento->fechaEmision);
+                    $mes = date('m',$fechaEntero);
+                    $numComprobante = $mes . str_pad($this->correlativo, 4, "0", STR_PAD_LEFT);
+                    $hoja->setCellValue('A' . $fila, '');
+                    $hoja->setCellValue('B' . $fila, $this->subdiario);
+                    $hoja->setCellValue('C' . $fila, $numComprobante);
+                    $hoja->setCellValue('D' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('E' . $fila, $documento->moneda);
+                    $hoja->setCellValue('F' . $fila, 'ANULADA FT-'.$documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('G' . $fila, 0);
+                    $hoja->setCellValue('H' . $fila, 'V');
+                    $hoja->setCellValue('I' . $fila, 'S');
+                    $hoja->setCellValue('J' . $fila, '');
+                    $hoja->setCellValue('K' . $fila, '121202');
+                    $hoja->setCellValue('L' . $fila, '0001');
+                    $hoja->setCellValue('M' . $fila, '0');
+                    $hoja->setCellValue('N' . $fila, 'D');
+                    $hoja->setCellValue('O' . $fila, 0);
+                    $hoja->setCellValue('P' . $fila, 0);
+                    $hoja->setCellValue('Q' . $fila, 0);
+                    $hoja->setCellValue('R' . $fila, 'FT');
+                    $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
+                    $hoja->setCellValue('V' . $fila, '');
+                    $hoja->setCellValue('W' . $fila, substr('ANULADA FT-'.$documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT),0,30));
                 }
-                
+                $fila++;
+                $this->correlativo = $this->correlativo +1;
+
             }
         }
 
         if($this->tipoDocumento == '03'){
             foreach($documentos as $documento){
+                $docCli = '';
+                $servicio = Servicio::where('idDocumento',$documento->id)->first();
+                
+                if(!is_null($servicio)){
+                    $cliente = Cliente::find($servicio->idCliente);
+                    $docCli = $cliente->numeroDocumentoIdentidad;
+                }else{
+                    $docCli = '';
+                }
                 if($documento->idEstado == 1){
                     if($documento->afecto > 0){
                         $fechaEntero = strtotime($documento->fechaEmision);
@@ -293,7 +334,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->afecto);
@@ -322,7 +363,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->otrosImpuestos);
@@ -351,7 +392,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->inafecto);
@@ -380,7 +421,7 @@ class Integrador extends Component
                         $hoja->setCellValue('I' . $fila, 'S');
                         $hoja->setCellValue('J' . $fila, '');
                         $hoja->setCellValue('K' . $fila, $documento->CuentaContable);
-                        $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                        $hoja->setCellValue('L' . $fila, $docCli);
                         $hoja->setCellValue('M' . $fila, '100');
                         $hoja->setCellValue('N' . $fila, 'H');
                         $hoja->setCellValue('O' . $fila, $documento->exonerado);
@@ -442,7 +483,7 @@ class Integrador extends Component
                     }else{
                         $hoja->setCellValue('K' . $fila, '121201');
                     }
-                    $hoja->setCellValue('L' . $fila, $documento->numeroDocumentoIdentidad);
+                    $hoja->setCellValue('L' . $fila, $docCli);
                     $hoja->setCellValue('M' . $fila, '0');
                     $hoja->setCellValue('N' . $fila, 'D');
                     $hoja->setCellValue('O' . $fila, $documento->total);
@@ -454,11 +495,38 @@ class Integrador extends Component
                     $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                     $hoja->setCellValue('V' . $fila, '');
                     $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
-                    
-                    $fila++;
-                    $this->correlativo = $this->correlativo +1;
+                }else{
+                    // $fila = $fila + 1;
+                    // $this->correlativo = $this->correlativo +1;
+                    $fechaEntero = strtotime($documento->fechaEmision);
+                    $mes = date('m',$fechaEntero);
+                    $numComprobante = $mes . str_pad($this->correlativo, 4, "0", STR_PAD_LEFT);
+                    $hoja->setCellValue('A' . $fila, '');
+                    $hoja->setCellValue('B' . $fila, $this->subdiario);
+                    $hoja->setCellValue('C' . $fila, $numComprobante);
+                    $hoja->setCellValue('D' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('E' . $fila, $documento->moneda);
+                    $hoja->setCellValue('F' . $fila, 'ANULADA BV-'.$documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('G' . $fila, 0);
+                    $hoja->setCellValue('H' . $fila, 'V');
+                    $hoja->setCellValue('I' . $fila, 'S');
+                    $hoja->setCellValue('J' . $fila, '');
+                    $hoja->setCellValue('K' . $fila, '121202');
+                    $hoja->setCellValue('L' . $fila, '0001');
+                    $hoja->setCellValue('M' . $fila, '0');
+                    $hoja->setCellValue('N' . $fila, 'D');
+                    $hoja->setCellValue('O' . $fila, 0);
+                    $hoja->setCellValue('P' . $fila, 0);
+                    $hoja->setCellValue('Q' . $fila, 0);
+                    $hoja->setCellValue('R' . $fila, 'BV');
+                    $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
+                    $hoja->setCellValue('V' . $fila, '');
+                    $hoja->setCellValue('W' . $fila, substr('ANULADA BV-'.$documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT),0,30));
                 }
-                
+                $fila++;
+                $this->correlativo = $this->correlativo +1;
             }
         }
 
@@ -550,10 +618,39 @@ class Integrador extends Component
                         $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
                         $hoja->setCellValue('V' . $fila, '');
                         $hoja->setCellValue('W' . $fila, substr($documento->glosa,0,30));
-    
-                        $fila++;
-                        $this->correlativo = $this->correlativo +1;
                 }
+                else{
+                    // $fila = $fila + 1;
+                    // $this->correlativo = $this->correlativo +1;
+                    $fechaEntero = strtotime($documento->fechaEmision);
+                    $mes = date('m',$fechaEntero);
+                    $numComprobante = $mes . str_pad($this->correlativo, 4, "0", STR_PAD_LEFT);
+                    $hoja->setCellValue('A' . $fila, '');
+                    $hoja->setCellValue('B' . $fila, $this->subdiario);
+                    $hoja->setCellValue('C' . $fila, $numComprobante);
+                    $hoja->setCellValue('D' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('E' . $fila, $documento->moneda);
+                    $hoja->setCellValue('F' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT).' ****ANULADO****');
+                    $hoja->setCellValue('G' . $fila, 0);
+                    $hoja->setCellValue('H' . $fila, 'V');
+                    $hoja->setCellValue('I' . $fila, 'S');
+                    $hoja->setCellValue('J' . $fila, '');
+                    $hoja->setCellValue('K' . $fila, '121202');
+                    $hoja->setCellValue('L' . $fila, '0001');
+                    $hoja->setCellValue('M' . $fila, '0');
+                    $hoja->setCellValue('N' . $fila, 'D');
+                    $hoja->setCellValue('O' . $fila, 0);
+                    $hoja->setCellValue('P' . $fila, 0);
+                    $hoja->setCellValue('Q' . $fila, 0);
+                    $hoja->setCellValue('R' . $fila, 'FT');
+                    $hoja->setCellValue('S' . $fila, $documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT));
+                    $hoja->setCellValue('T' . $fila, date('d/m/Y', strtotime($documento->fechaEmision)));
+                    $hoja->setCellValue('U' . $fila, date('d/m/Y', strtotime($documento->fechaVencimiento)));
+                    $hoja->setCellValue('V' . $fila, '');
+                    $hoja->setCellValue('W' . $fila, substr($documento->serie . '-' . str_pad($documento->numero, 6, "0", STR_PAD_LEFT),0,30).' ****ANULADO****');
+                }
+                $fila++;
+                $this->correlativo = $this->correlativo +1;
             }
             
         }
