@@ -99,9 +99,13 @@ class Documentos extends Component
         if($this->selectedTipoDocumento){
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
             ->where('idTipoDocumento',$this->selectedTipoDocumento)
+            ->orderBy('fechaEmision')
+            ->orderBy('numero')
             ->paginate(8);
         }else{
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->orderBy('fechaEmision')
+            ->orderBy('numero')
             ->paginate(8);
         }
         
