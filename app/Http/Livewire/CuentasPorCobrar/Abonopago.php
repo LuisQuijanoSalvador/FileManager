@@ -16,7 +16,7 @@ use App\Clases\Funciones;
 class Abonopago extends Component
 {
     public $selectedIds, $datos, $fechaAbono, $tipoCambio, $moneda = 1, $idBanco = 2, $idTarjetaCredito = 1,
-    $idMedioPago = 1, $observaciones = '', $referencia = '';
+    $idMedioPago = 1, $observaciones = '', $referencia = '', $totalPagos = 0;
     public $pagos = [];
 
     public function mount(){

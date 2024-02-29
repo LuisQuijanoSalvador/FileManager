@@ -91,10 +91,22 @@
                             <td class="py-1">{{$cargo->montoCargo}}</td>
                             <td class="py-1">{{$cargo->tipoCambio}}</td>
                             <td class="py-1">{{$cargo->saldo}}</td>
-                            <td class="py-1"><input type="number" wire:model="pagos.{{ $cargo->id }}">
+                            <td class="py-1"><input class="text-right" type="number" wire:model="pagos.{{ $cargo->id }}">
                             </td>
                         </tr>
                     @endforeach
+                    @php
+                        $totalPagos = 0;
+                        foreach ($cargos as $cargo) {
+                            $totalPagos += $pagos[$cargo->id] ?? 0;
+                        }
+                        $this->totalPagos = $totalPagos;
+                    @endphp
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td colspan="6"></td>
+                        <td colspan="4" class="text-right font-weight-bold">Total de Pagos: {{$totalPagos}} &nbsp;&nbsp;&nbsp;</td>
+                    </tr>
+                    
                 </tbody>
             </table>
         </div> 

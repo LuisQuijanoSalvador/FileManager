@@ -19,6 +19,8 @@ use App\Models\MedioPago;
 use App\Models\BoletoPago;
 use App\Models\Cargo;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacturacionacExport;
 
 class Facturacion extends Component
 {
@@ -31,15 +33,20 @@ class Facturacion extends Component
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$monedaLetra,
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$numeroTelefono,
             $chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, $desc_metodopago,
-            $centroCosto, $codUsuario;
+            $centroCosto, $codUsuario,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
+            $totalTotal = 0, $idCliente, $startDate, $endDate;
     protected $boletos=[];
 
     public $selectedRows = [];
-
-    public $startDate;// = Carbon::parse($fechaActual->subDays(7))->format("Y-m-d");
-    public $endDate;// = Carbon::parse($fechaActual2)->format("Y-m-d");
     
     public function mount(){
+        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+                                ->whereNull('idDocumento')
+                                ->where('idTipoFacturacion',2)
+                                ->where('estado',1)
+                                ->orderBy($this->sort, $this->direction)
+                                ->get();
+
         $fechaActual = Carbon::now();
         
         $this->fechaEmision = Carbon::parse($fechaActual)->format("Y-m-d");
@@ -55,21 +62,39 @@ class Facturacion extends Component
     public function render()
     {
         
-        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
-                            ->whereNull('idDocumento')
-                            ->where('idTipoFacturacion',1)
-                            ->where('estado',1)
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(10);
+        // $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+        //                     ->whereNull('idDocumento')
+        //                     ->where('idTipoFacturacion',1)
+        //                     ->where('estado',1)
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
         $medioPagos = MedioPago::all()->sortBy('codigo');
+        $clientes = Cliente::all()->sortBy('razonSocial');
         
-        return view('livewire.gestion.facturacion',compact('monedas','medioPagos'));
+        return view('livewire.gestion.facturacion',compact('monedas','medioPagos','clientes'));
     }
 
-    public function filtrarFechas(){
-        $this->boletos = Boleto::whereBetween('fechaEmision', [$this->startDate, $this->endDate])->get();
-        // dd($this->boletos);
+    public function filtrar(){
+        if ($this->idCliente and $this->startDate and $this->endDate) {
+
+            $this->boletos = Boleto::where('idCliente', $this->idCliente)
+                                ->whereNull('idDocumento')
+                                ->where('idTipoFacturacion',2)
+                                ->where('estado',1)
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->get();
+                                // ->paginate(10);
+        }else{
+            $this->boletos = Boleto::where('idTipoFacturacion',2)
+                                ->whereNull('idDocumento')
+                                ->where('estado',1)
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->get();
+                                // ->paginate(10);
+            }
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -87,11 +112,26 @@ class Facturacion extends Component
         // 
         // $this->selectedRows contendrá los IDs de las filas seleccionadas
         $idsSeleccionados = $this->selectedRows;
+        
         if (empty($idsSeleccionados)) {
             session()->flash('error', 'Debe seleccionar un boleto.');
             return false;
         } else {
-            $boleto = Boleto::find($idsSeleccionados);
+            $boletos = Boleto::select('id','numeroBoleto','numeroFile','idCliente','idSolicitante','fechaEmision','idCounter','idTipoFacturacion','idTipoDocumento','idArea','idVendedor','idConsolidador','codigoReserva','fechaReserva','idGds','idTipoTicket','tipoRuta','tipoTarifa','idAerolinea','origen','pasajero','idTipoPasajero','ruta','destino','idDocumento','tipoCambio','idMoneda','tarifaNeta','inafecto','igv','otrosImpuestos','xm','total','totalOrigen','porcentajeComision','montoComision','descuentoCorporativo','codigoDescCorp','tarifaNormal','tarifaAlta','tarifaBaja','idTipoPagoConsolidador','centroCosto','cod1','cod2','cod3','cod4','observaciones','idFee','estado','usuarioCreacion','usuarioModificacion')
+                                ->whereIn('id',$this->selectedRows)
+                                ->get();
+            
+            foreach ($boletos as $boleto) {
+                $this->totalNeto += $boleto->tarifaNeta;
+                $this->totalInafecto += $boleto->inafecto;
+                $this->totalIGV += $boleto->igv;
+                $this->totalOtrosImpuestos += $boleto->otrosImpuestos;
+                $this->totalTotal += $boleto->total;
+            }
+            
+            $boleto = Boleto::find($this->selectedRows[0]);
+            
+            // $boleto = Boleto::find($idsSeleccionados);
 
             $this->crearDocumento($boleto);
             $glosa="";
@@ -176,7 +216,7 @@ class Facturacion extends Component
             $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
         }
         
-        $totalLetras = $numLetras->numtoletras($dataBoleto->total,$this->monedaLetra);
+        $totalLetras = $numLetras->numtoletras($this->totalTotal,$this->monedaLetra);
         
         $documento->idCliente = $dataBoleto->idCliente;
         $documento->razonSocial = $dataBoleto->tCliente->razonSocial;
@@ -191,12 +231,12 @@ class Facturacion extends Component
         $documento->fechaEmision = $this->fechaEmision;
         $documento->fechaVencimiento = Carbon::parse($fechaVencimiento)->format("Y-m-d");
         $documento->detraccion = $this->detraccion;
-        $documento->afecto = $dataBoleto->tarifaNeta;
-        $documento->inafecto = $dataBoleto->inafecto;
+        $documento->afecto = $this->totalNeto;
+        $documento->inafecto = $this->totalInafecto;
         $documento->exonerado = 0;
-        $documento->igv = $dataBoleto->igv;
-        $documento->otrosImpuestos = $dataBoleto->otrosImpuestos;
-        $documento->total = $dataBoleto->total;
+        $documento->igv = $this->totalIGV;
+        $documento->otrosImpuestos = $this->totalOtrosImpuestos;
+        $documento->total = $this->totalTotal;
         $documento->totalLetras = $totalLetras;
         $documento->idMedioPago = $this->idMedioPago;
         $documento->glosa = $this->glosa;
@@ -209,6 +249,7 @@ class Facturacion extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
+        dd($documento);
         $documento->save();
         
         $medioPago = MedioPago::find($documento->idMedioPago);
@@ -233,14 +274,14 @@ class Facturacion extends Component
             $this->enviaCPE($documento);
         }
         
-        if($documento->idMedioPago == 10){
+        if($documento->idMedioPago <> 6){
             $this->generarCargo($documento->id);
         }
     }
 
     public function generarCargo($docId){
         $documento = Documento::find($docId);
-        if($documento->idMedioPago = 10){
+        if($documento->idMedioPago <> 6){
             $cliente = Cliente::find($documento->idCliente);
             $boleto = Boleto::where('idDocumento',$documento->id)->first();
             $cargo = new Cargo();
@@ -600,4 +641,8 @@ class Facturacion extends Component
         }
         
     } 
+
+    public function exportar(){
+        return Excel::download(new FacturacionacExport($this->idCliente,$this->startDate,$this->endDate),'BoletosFacturados.xlsx');
+    }
 }
