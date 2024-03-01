@@ -4,7 +4,7 @@
 <div>
     {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
     <div class="div-filtro">
-        <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por File">
+        <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Digite el criterio a buscar">
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}

@@ -221,9 +221,21 @@ class Servicios extends Component
     
     public function render()
     {
-        $servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(6);
+        // $servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
+        //                     ->orwhere('pasajero', 'like', "%$this->search%")
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(6);
+        $servicios = Servicio::join('clientes', 'servicios.idCliente', '=', 'clientes.id')
+        ->join('documentos', 'servicios.idDocumento', '=', 'documentos.id')
+        ->where(function ($query) {
+            $query->where('servicios.numeroFile', 'like', "%$this->search%")
+                ->orWhere('servicios.pasajero', 'like', "%$this->search%")
+                ->orWhere('clientes.razonSocial', 'like', "%$this->search%")
+                ->orWhere('documentos.numero', 'like', "%$this->search%");
+        })
+        // ->orderBy($this->sort, $this->direction)
+        ->paginate(6);
+
         $counters = Counter::all()->sortBy('nombre');
         $tipoFacturacions = TipoFacturacion::all()->sortBy('descripcion');
         $tipoDocumentos = TipoDocumento::all()->sortBy('descripcion');
