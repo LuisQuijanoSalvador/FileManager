@@ -264,10 +264,13 @@ class Facturacion extends Component
             $this->desc_metodopago = "";
         }
 
-        $idsSeleccionados = $this->selectedRows;
-        $boleto = Boleto::find($idsSeleccionados);
-        $boleto->idDocumento = $documento->id;
-        $boleto->save();
+        // $idsSeleccionados = $this->selectedRows;
+        // $boleto = Boleto::find($idsSeleccionados);
+        // $boleto->idDocumento = $documento->id;
+        // $boleto->save();
+        Boleto::whereIn('id',$this->selectedRows)
+        ->update(['idDocumento' => $documento->id]);
+
         if($dataBoleto->idTipoDocumento == 6){
             $this->enviaDC($documento);
         }else{
