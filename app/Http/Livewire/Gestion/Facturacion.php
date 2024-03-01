@@ -249,7 +249,7 @@ class Facturacion extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
-        dd($documento);
+        
         $documento->save();
         
         $medioPago = MedioPago::find($documento->idMedioPago);
