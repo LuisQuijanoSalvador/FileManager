@@ -52,6 +52,9 @@
                 <th scope="col" class="py-1">
                     Documento
                 </th>
+                <th scope="col" class="py-1">
+                    Tipo Serv.
+                </th>
                 <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
                     Estado 
                     @if ($sort == 'estado')
@@ -73,6 +76,7 @@
                 <td class="py-1">{{Carbon::parse($servicio->fechaEmision)->format("d-m-Y")}}</td>
                 <td class="py-1">{{$servicio->pasajero}}</td>
                 <td class="py-1">@if($servicio->tDocumento){{$servicio->tDocumento->serie . '-' . str_pad($servicio->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td>
+                <td class="py-1">{{$servicio->tTipoServicio->descripcion}}</td>
                 <td class="py-1">{{$servicio->tEstado->descripcion}}</td>
                 <td class="py-1">
                     <div class="btn-group text-end" role="group" aria-label="Botones de accion">
