@@ -1039,7 +1039,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $this->respSenda = $funciones->enviarCPE($dataToSend);
+        $this->respSenda = $funciones->enviarDC($dataToSend);
 
         return($dataToSend);
         // $file = $funciones->enviarDC($dataToSend);
@@ -1210,7 +1210,7 @@ class Facturacionserv extends Component
         // DD($dataToSend);
 
         $funciones = new Funciones();
-        $this->respSenda = $funciones->enviarCPE($dataToSend);
+        $this->respSenda = $funciones->enviarDC($dataToSend);
 
         return($dataToSend);
 
