@@ -241,7 +241,7 @@ class Facturacionserv extends Component
         $servicio->idDocumento = $documento->id;
         $servicio->save();
 
-        if($documento->idMedioPago == 10){
+        if($documento->idMedioPago <> 6){
             $this->generarCargo($documento->id);
         }
         
@@ -250,7 +250,7 @@ class Facturacionserv extends Component
 
     public function generarCargo($docId){
         $documento = Documento::find($docId);
-        if($documento->idMedioPago = 10){
+        if($documento->idMedioPago <> 6){
             $cliente = Cliente::find($documento->idCliente);
             $servicio = Servicio::where('idDocumento',$documento->id)->first();
             $cargo = new Cargo();
