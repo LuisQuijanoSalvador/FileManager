@@ -135,12 +135,12 @@ class Facturacion extends Component
             
             // $boleto = Boleto::find($idsSeleccionados);
 
-            $this->crearDocumento($boleto,$this->numerosBoleto,$this->paxs);
+            $this->crearDocumento($boleto, $boletos);
             $glosa="";
         }  
     }
 
-    public function crearDocumento($dataBoleto,$numBoletos,$pasajeros){
+    public function crearDocumento($dataBoleto,$boletos){
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
@@ -212,10 +212,14 @@ class Facturacion extends Component
         }
         
         if(strlen($this->glosa) < 5){
-            $detalleBoletos = implode(', ', $numBoletos);
-            $detallePax = implode(', ',$pasajeros);
+            
+            $this->glosa = 'SOLICITADO POR: ' . $cSolic . '<br>' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: <br>';
+            foreach($boletos as $boleto){
+                $this->glosa = $this->glosa . 'PAX: ' . $boleto->pasajero . ' TKT: ' . $boleto->tAerolinea->codigoIata . ' - ' . $boleto->numeroBoleto . ' RUTA: ' . $boleto->ruta . ' ' . $boleto->tAerolinea->razonSocial .'<br>';
+            }
+            dd($this->glosa);
             // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->tAerolinea->codigoIata . ' - ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
-            $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS  A FAVOR DE: ' . $detallePax . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' | TKT(s): ' . $detalleBoletos . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
+            // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS  A FAVOR DE: ' . $detallePax . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' | TKT(s): ' . $detalleBoletos . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
             
         }else{
             $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
