@@ -67,7 +67,8 @@ class Facturacion extends Component
                             ->where('idTipoFacturacion',1)
                             ->where('estado',1)
                             ->orderBy($this->sort, $this->direction)
-                            ->paginate(10);
+                            // ->paginate(10);
+                            ->get();
         $monedas = moneda::all()->sortBy('codigo');
         $medioPagos = MedioPago::all()->sortBy('codigo');
         $clientes = Cliente::all()->sortBy('razonSocial');
