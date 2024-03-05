@@ -102,16 +102,16 @@
         <div class="div-filtro row">
             <div class="row">
                 <div class="col-md-3">
-                    <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model.lazy.defer="idCliente">
+                    {{-- <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model.lazy.defer="idCliente">
                         <option value="">-- Seleccione un cliente --</option>
                         @foreach ($clientes as $cliente)
                             <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
                         @endforeach
-                    </select>
-                    {{-- <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto"> --}}
+                    </select> --}}
+                    <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto">
                     
                 </div>
-                <div class="col-md-9">
+                {{-- <div class="col-md-9">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="row">
@@ -140,7 +140,7 @@
                             <button type="button" class="btn btn-success" wire:click="exportar" >Exportar</button>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="contenedorTablaCC">

@@ -35,17 +35,17 @@ class Facturacion extends Component
             $chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, $desc_metodopago,
             $centroCosto, $codUsuario,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
             $totalTotal = 0, $idCliente, $startDate, $endDate;
-    protected $boletos=[];
+    protected $boletos=[],$numerosBoleto = [],$paxs = [];
 
     public $selectedRows = [];
     
     public function mount(){
-        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
-                                ->whereNull('idDocumento')
-                                ->where('idTipoFacturacion',2)
-                                ->where('estado',1)
-                                ->orderBy($this->sort, $this->direction)
-                                ->get();
+        // $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+        //                         ->whereNull('idDocumento')
+        //                         ->where('idTipoFacturacion',2)
+        //                         ->where('estado',1)
+        //                         ->orderBy($this->sort, $this->direction)
+        //                         ->get();
 
         $fechaActual = Carbon::now();
         
@@ -62,12 +62,12 @@ class Facturacion extends Component
     public function render()
     {
         
-        // $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
-        //                     ->whereNull('idDocumento')
-        //                     ->where('idTipoFacturacion',1)
-        //                     ->where('estado',1)
-        //                     ->orderBy($this->sort, $this->direction)
-        //                     ->paginate(10);
+        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+                            ->whereNull('idDocumento')
+                            ->where('idTipoFacturacion',1)
+                            ->where('estado',1)
+                            ->orderBy($this->sort, $this->direction)
+                            ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
         $medioPagos = MedioPago::all()->sortBy('codigo');
         $clientes = Cliente::all()->sortBy('razonSocial');
@@ -127,18 +127,20 @@ class Facturacion extends Component
                 $this->totalIGV += $boleto->igv;
                 $this->totalOtrosImpuestos += $boleto->otrosImpuestos;
                 $this->totalTotal += $boleto->total;
+                $this->numerosBoleto[] = $boleto->numeroBoleto;
+                $this->paxs[] = $boleto->pasajero;
             }
             
             $boleto = Boleto::find($this->selectedRows[0]);
             
             // $boleto = Boleto::find($idsSeleccionados);
 
-            $this->crearDocumento($boleto);
+            $this->crearDocumento($boleto,$this->numerosBoleto,$this->paxs);
             $glosa="";
         }  
     }
 
-    public function crearDocumento($dataBoleto){
+    public function crearDocumento($dataBoleto,$numBoletos,$pasajeros){
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
@@ -210,8 +212,11 @@ class Facturacion extends Component
         }
         
         if(strlen($this->glosa) < 5){
-            $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->tAerolinea->codigoIata . ' - ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
-            // dd($this->glosa);
+            $detalleBoletos = implode(', ', $numBoletos);
+            $detallePax = implode(', ',$pasajeros);
+            // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->tAerolinea->codigoIata . ' - ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
+            $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS  A FAVOR DE: ' . $detallePax . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' | TKT(s): ' . $detalleBoletos . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
+            
         }else{
             $this->descripcion = $dataBoleto->tTipoTicket->descripcion;
         }
