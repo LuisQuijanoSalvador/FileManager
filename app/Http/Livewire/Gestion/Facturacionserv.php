@@ -256,10 +256,13 @@ class Facturacionserv extends Component
         }
         
         
-        $idsSeleccionados = $this->selectedRows;
-        $servicio = Servicio::find($idsSeleccionados);
-        $servicio->idDocumento = $documento->id;
-        $servicio->save();
+        // $idsSeleccionados = $this->selectedRows;
+        // $servicio = Servicio::find($idsSeleccionados);
+        // $servicio->idDocumento = $documento->id;
+        // $servicio->save();
+
+        Servicio::whereIn('id',$this->selectedRows)
+        ->update(['idDocumento' => $documento->id]);
 
         if($documento->idMedioPago <> 6){
             $this->generarCargo($documento->id);
