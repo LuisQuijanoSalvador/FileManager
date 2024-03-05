@@ -135,7 +135,7 @@
                     <td class="py-1">{{$documento->id}}</td>
                     <td class="py-1">{{$documento->numero}}</td>
                     <td class="py-1">{{$documento->tTipoDocumento->descripcion}}</td>
-                    <td class="py-1">{{$documento->tcliente->razonSocial}}s/td>
+                    <td class="py-1">{{$documento->tcliente->razonSocial}}</td>
                     <td class="py-1">{{$documento->fechaEmision}}</td>
                     <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->centroCosto}}@else - @endif</td>
                     <td class="py-1">@if($documento->tBoleto){{$documento->tBoleto->cod1}}@else - @endif</td>

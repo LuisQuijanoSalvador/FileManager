@@ -164,30 +164,48 @@ class Documentos extends Component
     }
 
     public function anular(){
-        $dataToSend = [
-            "ruc_emisor" => "20604309027",
-            "nro_efact" => $this->serie . $this->numeroCompleto,
-            "tipodocu" => $this->codigoDoc, 
-            "fechabaja" => $this->fechaBaja, 
-            "motivobaja" => $this->motivoBaja 
-        ];
+        $docu = Documento::find($this->idRegistro);
+        if($docu->tipoDocumento == 36){
+            $docu = Documento::find($this->idRegistro);
+            $docu->idEstado = 2;
+            $docu->save();
 
-        $funciones = new Funciones();
-        $this->respSenda = $funciones->anularCPE($dataToSend);
-
-        if ($this->respSenda['type'] == 'success') {
-            $doc = Documento::find($this->idRegistro);
-            $doc->respuestaBaja = $this->respSenda;
-            $doc->idEstado = 2;
-            $doc->save();
-
-            // $servicios = Servicio::
+            $boletos = Boleto::where('idDocumento',$docu->id)->get();
+            foreach($boletos as $boleto){
+                $boleto->idDocumento = NULL;
+                $boleto->save();
+            }
 
             session()->flash('success', 'El documento se ha anulado correctamente');
-
-        } else {
-            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+        }else{
+            $dataToSend = [
+                "ruc_emisor" => "20604309027",
+                "nro_efact" => $this->serie . $this->numeroCompleto,
+                "tipodocu" => $this->codigoDoc, 
+                "fechabaja" => $this->fechaBaja, 
+                "motivobaja" => $this->motivoBaja 
+            ];
+    
+            $funciones = new Funciones();
+            $this->respSenda = $funciones->anularCPE($dataToSend);
+    
+            if ($this->respSenda['type'] == 'success') {
+                $doc = Documento::find($this->idRegistro);
+                $doc->respuestaBaja = $this->respSenda;
+                $doc->idEstado = 2;
+                $doc->save();
+    
+                $servicio = Servicio::where('idDocumento',$doc->id)->first();
+                $servicio->idDocumento = NULL;
+                $servicio->save();
+                
+                session()->flash('success', 'El documento se ha anulado correctamente');
+    
+            } else {
+                session()->flash('error', 'Ocurrió un error enviando a Sunat');
+            }
         }
+        
 
     }
 
