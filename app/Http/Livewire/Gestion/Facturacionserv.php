@@ -31,7 +31,8 @@ class Facturacionserv extends Component
     public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda,
             $numeroTelefono,$chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, 
-            $desc_metodopago;
+            $desc_metodopago,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
+            $totalTotal = 0;
     protected $servicios=[];
 
     public $selectedRows = [];
@@ -54,6 +55,7 @@ class Facturacionserv extends Component
         $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
                             ->whereNull('idDocumento')
                             ->where('idTipoFacturacion',1)
+                            ->where('estado',1)
                             ->orderBy($this->sort, $this->direction)
                             ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
@@ -81,13 +83,27 @@ class Facturacionserv extends Component
             session()->flash('error', 'Debe seleccionar un servicio.');
             return false;
         } else {
-            $servicio = Servicio::find($idsSeleccionados);
+            $servicios = Servicio::select('id','numeroServicio','numeroFile','idCliente','idSolicitante','fechaEmision','idCounter','idTipoFacturacion','idTipoDocumento','idArea','idVendedor','codigoReserva','fechaReserva','idGds','idTipoServicio','tipoRuta','tipoTarifa','idAerolinea','origen','pasajero','idTipoPasajero','ruta','destino','idDocumento','tipoCambio','idMoneda','tarifaNeta','inafecto','igv','otrosImpuestos','xm','total','totalOrigen','porcentajeComision','montoComision','descuentoCorporativo','codigoDescCorp','tarifaNormal','tarifaAlta','tarifaBaja','idTipoPagoConsolidador','centroCosto','cod1','cod2','cod3','cod4','observaciones','estado','usuarioCreacion','usuarioModificacion')
+            ->whereIn('id',$this->selectedRows)
+            ->get();
 
-            $this->crearDocumento($servicio);
+            foreach ($servicios as $servicio) {
+            $this->totalNeto += $servicio->tarifaNeta;
+            $this->totalInafecto += $servicio->inafecto;
+            $this->totalIGV += $servicio->igv;
+            $this->totalOtrosImpuestos += $servicio->otrosImpuestos;
+            $this->totalTotal += $servicio->total;
+            }
+
+            $servicio = Servicio::find($this->selectedRows[0]);
+
+            // $servicio = Servicio::find($idsSeleccionados);
+
+            $this->crearDocumento($servicio, $servicios);
         }  
     }
 
-    public function crearDocumento($dataServicio){
+    public function crearDocumento($dataServicio, $servicios){
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
@@ -144,7 +160,11 @@ class Facturacionserv extends Component
                 $ruta = $dataServicio->tBoleto->ruta;
             }
             $this->glosa = "";
-            $this->descripcion = $dataServicio->tTipoServicio->descripcion . 'SOLICITADO POR: ' . $cSolic .  "POR LA EMISION DE UN BOLETO AEREO A FAVOR DE PAX: " . $dataServicio->pasajero .  'EN LA RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->tAerolinea->codigoIata . ' - ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
+            // $this->descripcion = 'SOLICITADO POR: ' . $cSolic . '<br>' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: <br>';
+            foreach($servicios as $servicio){
+                $this->descripcion = $this->descripcion . 'FEE POR BOLETO, PAX: ' . $servicio->pasajero . ' TKT: ' . $servicio->tBoleto->tAerolinea->codigoIata . ' - ' . $servicio->tBoleto->numeroBoleto . ' RUTA: ' . $servicio->tBoleto->ruta . ' ' . $servicio->tBoleto->tAerolinea->razonSocial .'<br>';
+            }
+            // $this->descripcion = $dataServicio->tTipoServicio->descripcion . 'SOLICITADO POR: ' . $cSolic .  "POR LA EMISION DE UN BOLETO AEREO A FAVOR DE PAX: " . $dataServicio->pasajero .  'EN LA RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->tAerolinea->codigoIata . ' - ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
             // dd($this->descripcion);
         }else{
             $this->descripcion = $dataServicio->tTipoServicio->descripcion;
@@ -170,12 +190,12 @@ class Facturacionserv extends Component
         $documento->fechaEmision = $this->fechaEmision;
         $documento->fechaVencimiento = Carbon::parse($fechaVencimiento)->format("Y-m-d");
         $documento->detraccion = $this->detraccion;
-        $documento->afecto = $dataServicio->tarifaNeta;
-        $documento->inafecto = $dataServicio->inafecto;
+        $documento->afecto = $this->totalNeto;
+        $documento->inafecto = $this->totalInafecto;
         $documento->exonerado = 0;
-        $documento->igv = $dataServicio->igv;
-        $documento->otrosImpuestos = $dataServicio->otrosImpuestos;
-        $documento->total = $dataServicio->total;
+        $documento->igv = $this->totalIGV;
+        $documento->otrosImpuestos = $this->totalOtrosImpuestos;
+        $documento->total = $this->totalTotal;
         $documento->totalLetras = $totalLetras;
         $documento->idMedioPago = $this->idMedioPago;
         $documento->glosa = $this->glosa;
@@ -290,7 +310,7 @@ class Facturacionserv extends Component
     }
 
     public function enviaCPE($comprobante){
-
+        
         $mensaje_detra = "";
         if($this->detraccion == 1){
             $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
@@ -457,6 +477,7 @@ class Facturacionserv extends Component
     } 
 
     public function enviaCPEMixto($comprobante){
+        
         $mensaje_detra = "";
         if($this->detraccion == 1){
             $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";
@@ -671,6 +692,7 @@ class Facturacionserv extends Component
     } 
 
     public function enviaCPEInafecto($comprobante){
+        
         $mensaje_detra = "";
         if($this->detraccion == 1){
             $mensaje_detra = "OPERACION SUJETA AL SISTEMA DE PAGO DE OBLIGACIONES TRIBUTARIAS CON EL GOBIERNO CENTRAL BANCO DE LA NACION: 00058327778";

@@ -169,6 +169,21 @@
                             <i class="fas fa-sort float-right py-1 px-1"></i>
                         @endif
                     </th>
+                    <th scope="col" class="py-1">
+                        Neto
+                    </th>
+                    <th scope="col" class="py-1">
+                        Inafecto
+                    </th>
+                    <th scope="col" class="py-1">
+                        IGV
+                    </th>
+                    <th scope="col" class="py-1">
+                        Otros Imp.
+                    </th>
+                    <th scope="col" class="py-1">
+                        Total
+                    </th>
                     <th scope="col" class="py-1 cursor-pointer" wire:click="order('estado')">
                         Estado 
                         @if ($sort == 'estado')
@@ -182,13 +197,18 @@
                 @foreach ($this->servicios as $servicio)
     
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="py-1"><input type="radio" name="chkSelect" id="" wire:model="selectedRows" value="{{ $servicio->id }}"></td>
+                    <td class="py-1"><input type="checkbox" name="chkSelect" id="" wire:model="selectedRows" value="{{ $servicio->id }}"></td>
                     <td class="py-1">{{$servicio->id}}</td>
                     <td class="py-1">{{$servicio->numeroFile}}</td>
                     <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
                     <td class="py-1">{{$servicio->fechaEmision}}</td>
                     <td class="py-1">{{$servicio->tTipoDocumento->descripcion}}</td>
                     <td class="py-1">{{$servicio->pasajero}}</td>
+                    <td class="py-1">{{$servicio->tarifaNeta}}</td>
+                    <td class="py-1">{{$servicio->inafecto}}</td>
+                    <td class="py-1">{{$servicio->igv}}</td>
+                    <td class="py-1">{{$servicio->otrosImpuestos}}</td>
+                    <td class="py-1">{{$servicio->total}}</td>
                     <td class="py-1">{{$servicio->tEstado->descripcion}}</td>
                 </tr>
                 @endforeach

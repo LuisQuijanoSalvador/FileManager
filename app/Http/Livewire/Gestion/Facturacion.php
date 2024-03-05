@@ -217,7 +217,7 @@ class Facturacion extends Component
             foreach($boletos as $boleto){
                 $this->glosa = $this->glosa . 'PAX: ' . $boleto->pasajero . ' TKT: ' . $boleto->tAerolinea->codigoIata . ' - ' . $boleto->numeroBoleto . ' RUTA: ' . $boleto->ruta . ' ' . $boleto->tAerolinea->razonSocial .'<br>';
             }
-            dd($this->glosa);
+            
             // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->tAerolinea->codigoIata . ' - ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
             // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS  A FAVOR DE: ' . $detallePax . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' | TKT(s): ' . $detalleBoletos . ' EN ' . $dataBoleto->tAerolinea->razonSocial;
             
