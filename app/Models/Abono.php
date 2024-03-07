@@ -31,6 +31,10 @@ class Abono extends Model
         return $this->hasOne(Estado::class,'id','idEstado');
     }
 
+    public function tCargo(){
+        return $this->hasOne(Cargo::class,'id','idCargo');
+    }
+
     public function tMedioPago(){
         return $this->hasOne(MedioPago::class,'id','idMedioPago');
     }

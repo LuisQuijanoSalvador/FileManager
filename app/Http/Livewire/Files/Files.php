@@ -8,6 +8,8 @@ use App\Models\Estado;
 use App\Models\File;
 use App\Models\Area;
 use App\Models\Cliente;
+use App\Clases\Funciones;
+use Carbon\Carbon;
 
 class Files extends Component
 {
@@ -52,14 +54,19 @@ class Files extends Component
 
     public function grabar(){
         // $this->validate();
+        $fechaActual = Carbon::now();
+        $area = Area::find($this->idArea);
+        $funciones = new Funciones();
+        $numfile = $funciones->generaFile('FILES');
 
         $file = new File();
-        $file->numeroFile = $this->numeroFile;
+        $file->numeroFile = $area->codigo . str_pad($numfile,7,"0",STR_PAD_LEFT);
         $file->idArea = $this->idArea;
         $file->idCliente = $this->idCliente;
         $file->descripcion = $this->descripcion;
         $file->totalPago = $this->totalPago;
         $file->totalCobro = $this->totalCobro;
+        $file->fechaFile = Carbon::parse($fechaActual)->format("Y-m-d");
         $file->idEstado = 1;
         $file->usuarioCreacion = auth()->user()->id;
         $file->save();

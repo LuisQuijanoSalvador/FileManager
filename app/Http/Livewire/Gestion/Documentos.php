@@ -52,15 +52,15 @@ class Documentos extends Component
     }
     public function render()
     {
-        if (strlen($this->search)> 0){
-            $this->documentos = Documento::query()
-            ->when($this->search, function($query){
-                $query->where('numero', 'like', '%'. $this->search . '%');
-            })
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(8);
-        }
-        $this->filtrar();
+        // if (strlen($this->search)> 0){
+        //     $this->documentos = Documento::query()
+        //     ->when($this->search, function($query){
+        //         $query->where('numero', 'like', '%'. $this->search . '%');
+        //     })
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(8);
+        // }
+        // $this->filtrar();
         
         // $documentos = Documento::where('numero', 'like', "%$this->search%")
         // $documentos = $this->documentos;
@@ -81,6 +81,12 @@ class Documentos extends Component
         return view('livewire.gestion.documentos',compact('tipoDocumentos','estados','clientes','medioPagos'));
     }
 
+    public function buscarDoc(){
+        $this->documentos = Documento::where('numero', 'like', "%$this->search%")
+                            ->paginate(8);
+        $this->search = '';
+    }
+
     public function order($sort){
         if ($this->sort == $sort) {
             if ($this->direction == 'desc') {
@@ -99,8 +105,8 @@ class Documentos extends Component
         if($this->selectedTipoDocumento){
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
             ->where('idTipoDocumento',$this->selectedTipoDocumento)
-            ->orderBy('fechaEmision')
-            ->orderBy('numero')
+            ->orderBy('fechaEmision', 'desc')
+            ->orderBy('numero', 'desc')
             ->paginate(8);
         }else{
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])

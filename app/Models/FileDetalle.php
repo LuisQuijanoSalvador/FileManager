@@ -18,4 +18,20 @@ class FileDetalle extends Model
         'usuarioCreacion',
         'usuarioModificacion',
     ];
+
+    public function tFile(){
+        return $this->hasOne(File::class,'id','idFile');
+    }
+
+    public function tServicio(){
+        return $this->hasOne(Servicio::class,'id','idServicio');
+    }
+
+    public function tBoleto(){
+        return $this->hasOne(Boleto::class,'id','idBoleto');
+    }
+
+    public function tEstado(){
+        return $this->hasOne(Estado::class,'id','idEstado');
+    }
 }

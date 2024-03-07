@@ -6,7 +6,16 @@
             </div>
         @endif
     <div class="div-filtro">
-        <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por documento">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" class="txtFiltro" id="txtFiltro" wire:model.lazy.defer="search" placeholder="Buscar por documento">
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-outline-secondary txtFiltro" style="padding-top: 0;" type="button" id="button-addon2"  wire:click='buscarDoc'>Buscar</button>
+            </div>
+        </div>
+        
+        
         <div>
             <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="selectedTipoDocumento">
                 <option value="">-- Filtrar por tipo Documento --</option>

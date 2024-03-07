@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('idArea')->nullable();
             $table->integer('idCliente')->nullable();
             $table->string('descripcion')->nullable();
+            $table->date('fechaFile');
             $table->decimal('totalPago');
             $table->decimal('totalCobro');
             $table->integer('idEstado');

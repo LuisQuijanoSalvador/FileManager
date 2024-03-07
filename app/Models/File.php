@@ -14,6 +14,7 @@ class File extends Model
         'idArea',
         'idCliente',
         'descripcion',
+        'fechaFile',
         'totalPago',
         'totalCobro',
         'idEstado',

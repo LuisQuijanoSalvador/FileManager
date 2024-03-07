@@ -162,7 +162,7 @@ class Facturacionserv extends Component
             $this->glosa = "";
             // $this->descripcion = 'SOLICITADO POR: ' . $cSolic . '<br>' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: <br>';
             foreach($servicios as $servicio){
-                $this->descripcion = $this->descripcion . 'FEE POR BOLETO, PAX: ' . $servicio->pasajero . ' TKT: ' . $servicio->tBoleto->tAerolinea->codigoIata . ' - ' . $servicio->tBoleto->numeroBoleto . ' RUTA: ' . $servicio->tBoleto->ruta . ' ' . $servicio->tBoleto->tAerolinea->razonSocial .'<br>';
+                $this->descripcion = $this->descripcion . 'FEE POR BOLETO, PAX: ' . $servicio->pasajero . ' TKT: ' . $servicio->tBoleto->tAerolinea->codigoIata . ' - ' . $servicio->tBoleto->numeroBoleto . ' RUTA: ' . $servicio->tBoleto->ruta . ' ' . $servicio->tBoleto->tAerolinea->razonSocial .'\n';
             }
             // $this->descripcion = $dataServicio->tTipoServicio->descripcion . 'SOLICITADO POR: ' . $cSolic .  "POR LA EMISION DE UN BOLETO AEREO A FAVOR DE PAX: " . $dataServicio->pasajero .  'EN LA RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->tAerolinea->codigoIata . ' - ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
             // dd($this->descripcion);
