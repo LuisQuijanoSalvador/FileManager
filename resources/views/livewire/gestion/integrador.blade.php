@@ -6,10 +6,10 @@
         </div>
     @endif
     @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-2">
             <label for="cboCounter" class="form-label">Counter:</label>
@@ -22,20 +22,26 @@
                 <span class="error">{{$message}}</span>
             @enderror
         </div>
-        <div class="col-md-4">
+    </div>
+    <div class="row">
+        <div class="col-md-5">
             <label for="">GDS:</label>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="radio" id="radSabre" name="radGds" value="sabre" wire:model="selectedGds">
                     <label for="radSabre">Sabre</label><br>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="radio" id="radKiu" name="radGds" value="kiu" wire:model="selectedGds">
                     <label for="radKiu">Kiu</label><br>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <input type="radio" id="radNdc" name="radGds" value="ndc" wire:model="selectedGds">
                     <label for="radNdc">NDC</label>
+                </div>
+                <div class="col-md-3">
+                    <input type="radio" id="radNdc" name="radGds" value="amadeus" wire:model="selectedGds">
+                    <label for="radNdc">Amadeus</label>
                 </div>
             </div>    
         </div>

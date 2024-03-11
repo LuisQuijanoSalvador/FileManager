@@ -16,6 +16,7 @@ use App\Models\Area;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Clases\Funciones;
+use DateTime;
 
 class Integrador extends Component
 {
@@ -52,6 +53,9 @@ class Integrador extends Component
         }
         else if($this->selectedGds == 'ndc'){
             $this->parsearNdc($lineasBoleto);
+        }
+        else if($this->selectedGds == 'amadeus'){
+            $this->parsearAmadeus($lineasBoleto);
         }
     }
     public function parsearSabre($boleto){
@@ -614,6 +618,165 @@ class Integrador extends Component
         }
         $this->otrosImpuestos = $this->hw;
         
+        $this->grabarBoleto();
+        // dd($this->idAerolinea);
+    }
+
+    public function parsearAmadeus($boleto){
+        $contador = 0;
+        $contPE = 0;
+        if (count($boleto) < 5) {
+            session()->flash('error', 'Formato incorrecto del boleto.');
+            return;
+        }
+        foreach ($boleto as $linea) {
+            $contador = $contador + 1;
+            
+            //Obtener Pasajero
+            $posPasajero = strpos($linea,"Traveler ");
+            if($posPasajero !== false){
+                $this->pasajero = trim(str_replace("Traveler ","",$linea));
+            }
+
+            //Obtener Aerolínea y Numero de Boleto
+            $posBoleto = strpos($linea,"Ticket: ");
+            if($posBoleto !== false){
+                $codigoAerolinea = substr($linea,$posBoleto+8,3);
+                $oAerolinea = Aerolinea::where('codigoIata',$codigoAerolinea)->first();
+                $this->idAerolinea = $oAerolinea->id;
+                
+                $this->numeroBoleto = substr($linea,12,10);
+                $oBoleto = Boleto::where('numeroBoleto',$this->numeroBoleto)->first();
+                if($oBoleto){
+                    session()->flash('error', 'El boleto ya está integrado.');
+                    return;
+                }
+            }
+            
+            //Obtener Código de Reserva
+            $posPnr = strpos($linea,"Booking ref:");
+            if ($posPnr !== false) {
+                $this->codigoReserva = substr($linea,$posPnr+13,6);
+            }
+
+            //Obtener Fecha de Emision
+            $posFechaEmision = strpos($linea,"Issue date:");
+            if ($posFechaEmision !== false) {
+                $fecEmision = substr($linea,$posFechaEmision+12,30);
+                $fecEmision = str_replace(" Baggage","",$fecEmision);
+                $datetime = DateTime::createFromFormat('d F y', $fecEmision);
+                $this->fechaEmision = $datetime->format('Y-m-d');
+                
+                $tc = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
+                if($tc){
+                    $this->tipoCambio = $tc->montoCambio;
+                }else{
+                    $this->tipoCambio = 0.00;
+                }
+            }
+            
+            //Obtener Cliente
+            $posCliente = strpos($linea,"RUC2");
+            if ($posCliente !== false) {
+                $ruc = substr($linea,$posCliente+3,11);
+                $oCliente = Cliente::where('numeroDocumentoIdentidad',$ruc)->first();
+                if ($oCliente) {
+                    $this->idCliente = $oCliente->id;
+                    $this->idTipoFacturacion = $oCliente->tipoFacturacion;
+                    $this->idArea = $oCliente->area;
+                    $this->idVendedor = $oCliente->vendedor;
+                }
+            }
+            if(!$this->idCliente){
+                $posClienteNI = strpos($linea,"NI");
+                if ($posClienteNI !== false){
+                    if(strlen($linea) == 10){
+                        $dni = substr($linea,2,8);
+                        $oCliente = Cliente::where('numeroDocumentoIdentidad',$dni)->first();
+                        if ($oCliente) {
+                            $this->idCliente = $oCliente->id;
+                            $this->idTipoFacturacion = $oCliente->tipoFacturacion;
+                            $this->idArea = $oCliente->area;
+                            $this->idVendedor = $oCliente->vendedor;
+                        }
+                    }
+                }
+            }
+
+            //Obtener Ruta / Destino
+            $posRuta = strpos($linea,"Fare Calculation :");
+            if ($posRuta !== false) {
+                $cadena = Str::remove(range(0,9),$linea);
+                $cadena = str_replace("."," ",$cadena);
+                $cadena = Str::remove("NUC",$cadena);
+                $cadena = Str::remove("END",$cadena);
+                $cadena = Str::remove("ROE",$cadena);
+                $cadena = Str::remove("X/",$cadena);
+                $palabras = Str::of($cadena)->explode(' ');
+                $palabras3 = $palabras->filter(function($palabra){
+                    return Str::length($palabra) == 3;
+                });
+                foreach ($palabras3 as $word) {
+                    $this->ruta = $this->ruta . $word . "/";
+                }
+                $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
+                $dest = str_replace("/","",$this->ruta);
+                $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
+                $this->destino =  substr($dest, $incioCadena, 3);
+            }
+
+            //Obtener Forma de Pago
+            $posFpago = strpos($linea,"Form of payment :");
+            if ($posFpago !== false){
+                if(strpos($linea,"CCVI")){
+                    $this->idTarjetaCredito = 2;
+                    $this->idMedioPago = 6;
+                }else{
+                    $this->idTarjetaCredito = 1;
+                    $this->idMedioPago = 8;
+                }
+            }
+
+            // Obtener Tarifas
+            // $posDy = strpos($linea,"DY");
+            // if ($posDy !== false) {
+            //     $this->tipoRuta = "INTERNACIONAL";
+            // }else{
+            //     $this->tipoRuta = "NACIONAL";
+            // }
+            $posTNeta = strpos($linea,"Air Fare :");
+            if ($posTNeta !== false) {
+                $neto = substr($linea,$posTNeta+15,8);
+                $this->tarifaNeta = trim($neto);
+                $this->igv = $this->tarifaNeta * 0.18;
+            }
+            
+            // $posPe = strpos($linea,"PE: USD");
+            // if ($posPe !== false) {
+            //     $pe = substr($linea,$posPe+7,6);
+            //     $this->igv = trim($pe);
+            // }else{
+            //     $posPe = strpos($linea,"PE: ");
+            //     if ($posPe !== false) {
+            //         $contPE = $contPE + 1;
+            //         if($contPE == 2){
+            //             $pe = substr($linea,$posPe+4,6);
+            //             $this->igv = trim($pe);
+            //         } 
+            //     } 
+            // }
+
+            $posTotal = strpos($linea,"Total Amount");
+            if ($posTotal !== false){
+                $total = substr($linea,$posTotal+19,8);
+                $this->otrosImpuestos = $total - $this->tarifaNeta - $this->igv;
+            }
+            
+            // // dd($this->tipoRuta);
+        }
+        // $this->otrosImpuestos = $this->hw;
+
+        $this->idGds = 4;
         $this->grabarBoleto();
         // dd($this->idAerolinea);
     }
