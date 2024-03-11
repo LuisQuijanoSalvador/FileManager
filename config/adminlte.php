@@ -379,7 +379,11 @@ return [
             'submenu'=>[
                 [
                     'text' => 'Cargos',
-                    'route' => 'rAbonos'
+                    'route' => 'rCargos'
+                ],
+                [
+                    'text' => 'Abonos',
+                    'route' => 'rAbonosVista'
                 ],
                 [
                     'text' => 'Estados de Cuenta',

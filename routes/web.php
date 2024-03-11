@@ -58,7 +58,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::group(['prefix'=>'cuentaporcobrar'],function(){
-        Route::get('abonos', function(){ return view('cuentas-por-cobrar.abonos');})->name('rAbonos');
+        Route::get('cargos', function(){ return view('cuentas-por-cobrar.abonos');})->name('rCargos');
+        Route::get('abonos', function(){ return view('cuentas-por-cobrar.abonosedit');})->name('rAbonosVista');
         Route::get('abonopago/{datosJson}', function($datosJson){
             $datos = json_decode($datosJson, true);
             return view('cuentas-por-cobrar.abonopago', compact('datos'));
