@@ -201,9 +201,15 @@ class Documentos extends Component
                 $doc->idEstado = 2;
                 $doc->save();
     
-                $servicio = Servicio::where('idDocumento',$doc->id)->first();
-                $servicio->idDocumento = NULL;
-                $servicio->save();
+                // $servicio = Servicio::where('idDocumento',$doc->id)->first();
+                // $servicio->idDocumento = NULL;
+                // $servicio->save();
+
+                $servicios = Servicio::where('idDocumento',$doc->id)->get();
+                foreach($servicios as $servicio){
+                    $servicio->idDocumento = NULL;
+                    $servicio->save();
+                }
                 
                 session()->flash('success', 'El documento se ha anulado correctamente');
     
