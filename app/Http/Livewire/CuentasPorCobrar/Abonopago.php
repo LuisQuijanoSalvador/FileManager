@@ -74,6 +74,6 @@ class Abonopago extends Component
             $abono->usuarioCreacion = auth()->user()->id;
             $abono->save();
         }
-        return redirect()->route('rAbonos');
+        return redirect()->route('rCargos');
     }
 }
