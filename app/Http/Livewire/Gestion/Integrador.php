@@ -635,6 +635,7 @@ class Integrador extends Component
             $posPasajero = strpos($linea,"Traveler ");
             if($posPasajero !== false){
                 $this->pasajero = trim(str_replace("Traveler ","",$linea));
+                $this->pasajero = trim(str_replace(" (ADT)","",$this->pasajero));
             }
             $posPasajero = strpos($linea,"Viajero ");
             if($posPasajero !== false){
@@ -842,7 +843,6 @@ class Integrador extends Component
                 $this->yr = Str::remove("YR",$this->yr);
                 $this->tarifaNeta = $this->tarifaNeta + $this->yr;
                 $this->igv = $this->tarifaNeta * 0.18;
-                dd($this->tarifaNeta. ' - '.$this->igv);
             }
             $posYR = strpos($linea,"Recargo De Aerolinea :");
             if ($posYR !== false){

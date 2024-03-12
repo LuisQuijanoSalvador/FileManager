@@ -145,7 +145,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="cboMoneda">Moneda:</label>
-                                    <select name="moneda" style="width: 50%;font-size: 0.8em; display:inline;" id="cboMoneda" wire:model.lazy.defer="idMoneda">
+                                    <select name="moneda" style="width: 50%;font-size: 0.8em; display:block;" id="cboMoneda" wire:model.lazy.defer="idMoneda">
                                         <option>==Seleccione una opción==</option>
                                         @foreach ($monedas as $moneda)
                                             <option value={{$moneda->id}}>{{$moneda->codigo}}</option>
@@ -154,25 +154,50 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="txtTarifaNeta" class="">Tarifa Neta:</label>
-                                    <input type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model="tarifaNeta">
+                                    <input type="number" class="uTextBox" id="txtTarifaNeta" wire:model="tarifaNeta">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="txtTotal" class="">Total venta:</label>
-                                    <input type="number" class="uTextBoxInLine" id="txtTotal" wire:model.lazy.defer="total">
+                                    <label for="txtTotalOrigen" class="">Total Pagado:</label>
+                                    <input type="number" class="uTextBox" id="txtTotalOrigen" wire:model.lazy.defer="totalOrigen">
+                                    
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <label for="txtTotalOrigen" class="">Total Pagado:</label>
-                                    <input type="number" class="uTextBoxInLine2" id="txtTotalOrigen" wire:model.lazy.defer="totalOrigen">
+                                    <label for="txtXm" class="">XM:</label>
+                                    <input type="number" class="uTextBox" id="txtXm" wire:model="xm">
                                  </div>
                                 <div class="col-md-4">
-                                    <label for="txtXm" class="">XM:</label>
-                                    <input type="number" class="uTextBoxInLine2" id="txtXm" wire:model="xm">
+                                    <label for="txtTotal" class="">Total venta:</label>
+                                    <input type="number" class="uTextBox" id="txtTotal" wire:model.lazy.defer="total">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="txtComision" class="">Comisión:</label>
-                                    <input type="number" class="uTextBoxInLine2" id="txtComision" wire:model.lazy.defer="montoComision">
+                                    <input type="number" class="uTextBox" id="txtComision" wire:model.lazy.defer="montoComision">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="txtCod1" class="form-label">COD1:</label>
+                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtCod1" wire:model="cod1" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtCod2" class="form-label">COD2:</label>
+                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtCod2" wire:model="cod2" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtCod3" class="form-label">COD3:</label>
+                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtCod3" wire:model="cod3" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="txtCentroCosto" class="form-label">Centro Costo:</label>
+                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtCentroCosto" wire:model="centroCosto" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
                                 </div>
                             </div>
                         </div>

@@ -38,6 +38,12 @@ class EditarFiles extends Component
         $this->solicitantes = collect();
         $this->clientes = Cliente::all()->sortBy('razonSocial');
     }
+
+    public function updatedselectedCliente($cliente_id){
+        $this->solicitantes = Solicitante::where('cliente', $cliente_id)->get();
+        
+        
+    }
     public function render()
     {
         $counters = Counter::all()->sortBy('nombre');
@@ -61,9 +67,25 @@ class EditarFiles extends Component
             return;
         }
         $this->idAerolinea = $boleto->idAerolinea;
+        $this->selectedCliente = $boleto->idCliente;
+        $this->idCounter = $boleto->idCounter;
+        $this->idArea = $boleto->idArea;
+        $this->idVendedor = $boleto->idVendedor;
+        $this->idTipoTicket = $boleto->idTipoTicket;
+        $this->selectedSolicitante = $boleto->idSolicitante;
+        $this->pasajero = $boleto->pasajero;
+        $this->idMoneda = $boleto->idMoneda;
+        $this->tarifaNeta = $boleto->tarifaNeta;
+        $this->total = $boleto->total;
+        $this->totalOrigen = $boleto->totalOrigen;
+        $this->xm = $boleto->xm;
+        $this->montoComision = $boleto->montoComision;
         // $this->solicitantes = Solicitante::where('cliente', $cliente_id)->get();
     }
 
+    public function actualizar(){
+        
+    }
     public function limpiarControles(){
 
     }
