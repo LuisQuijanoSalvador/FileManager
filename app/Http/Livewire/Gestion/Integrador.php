@@ -494,7 +494,6 @@ class Integrador extends Component
                 $codigoAerolinea = substr($linea,$posBoleto+18,3);
                 $oAerolinea = Aerolinea::where('codigoIata',$codigoAerolinea)->first();
                 $this->idAerolinea = $oAerolinea->id;
-                
                 $this->numeroBoleto = substr($linea,21,10);
                 $oBoleto = Boleto::where('numeroBoleto',$this->numeroBoleto)->first();
                 if($oBoleto){
@@ -637,6 +636,11 @@ class Integrador extends Component
             if($posPasajero !== false){
                 $this->pasajero = trim(str_replace("Traveler ","",$linea));
             }
+            $posPasajero = strpos($linea,"Viajero ");
+            if($posPasajero !== false){
+                $this->pasajero = trim(str_replace("Viajero ","",$linea));
+                $this->pasajero = trim(str_replace(" (ADT)","",$this->pasajero));
+            }
 
             //Obtener Aerolínea y Numero de Boleto
             $posBoleto = strpos($linea,"Ticket: ");
@@ -652,11 +656,28 @@ class Integrador extends Component
                     return;
                 }
             }
+            $posBoleto = strpos($linea,"Billete Electrónico: ");
+            if($posBoleto !== false){
+                $codigoAerolinea = substr($linea,$posBoleto+22,3);
+                $oAerolinea = Aerolinea::where('codigoIata',$codigoAerolinea)->first();
+                $this->idAerolinea = $oAerolinea->id;
+                
+                $this->numeroBoleto = substr($linea,26,10);
+                $oBoleto = Boleto::where('numeroBoleto',$this->numeroBoleto)->first();
+                if($oBoleto){
+                    session()->flash('error', 'El boleto ya está integrado.');
+                    return;
+                }
+            }
             
             //Obtener Código de Reserva
             $posPnr = strpos($linea,"Booking ref:");
             if ($posPnr !== false) {
                 $this->codigoReserva = substr($linea,$posPnr+13,6);
+            }
+            $posPnr = strpos($linea,"Loc. Reserva: ");
+            if ($posPnr !== false) {
+                $this->codigoReserva = substr($linea,$posPnr+14,6);
             }
 
             //Obtener Fecha de Emision
@@ -667,6 +688,32 @@ class Integrador extends Component
                 $datetime = DateTime::createFromFormat('d F y', $fecEmision);
                 $this->fechaEmision = $datetime->format('Y-m-d');
                 
+                $tc = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
+                if($tc){
+                    $this->tipoCambio = $tc->montoCambio;
+                }else{
+                    $this->tipoCambio = 0.00;
+                }
+            }
+            $posFechaEmision = strpos($linea,"Fecha de Emisión: ");
+            if ($posFechaEmision !== false) {
+                setlocale(LC_TIME, 'es_ES');
+                $fecEmision = substr($linea,$posFechaEmision+18,30);
+                $fecEmision = trim(str_replace(" Equipaje","",$fecEmision));
+                $fecEmision = str_replace("ENERO","JANUARY",$fecEmision);
+                $fecEmision = str_replace("FEBRERO","FEBRUARY",$fecEmision);
+                $fecEmision = str_replace("MARZO","MARCH",$fecEmision);
+                $fecEmision = str_replace("ABRIL","APRIL",$fecEmision);
+                $fecEmision = str_replace("MAYO","MAY",$fecEmision);
+                $fecEmision = str_replace("JUNIO","JUNE",$fecEmision);
+                $fecEmision = str_replace("JULIO","JULY",$fecEmision);
+                $fecEmision = str_replace("AGOSTO","AUGUST",$fecEmision);
+                $fecEmision = str_replace("SEPTIEMBRE","SEPTEMBER",$fecEmision);
+                $fecEmision = str_replace("OCTUBRE","OCTOBER",$fecEmision);
+                $fecEmision = str_replace("NOVIEMBRE","NOVEMBER",$fecEmision);
+                $fecEmision = str_replace("DICIEMBRE","DECEMBER",$fecEmision);
+                $datetime = DateTime::createFromFormat('d M y', $fecEmision);
+                $this->fechaEmision = $datetime->format('Y-m-d');
                 $tc = TipoCambio::where('fechaCambio',$this->fechaEmision)->first();
                 if($tc){
                     $this->tipoCambio = $tc->montoCambio;
@@ -709,6 +756,28 @@ class Integrador extends Component
                 $cadena = Str::remove(range(0,9),$linea);
                 $cadena = str_replace("."," ",$cadena);
                 $cadena = Str::remove("NUC",$cadena);
+                $cadena = Str::remove("USD",$cadena);
+                $cadena = Str::remove("END",$cadena);
+                $cadena = Str::remove("ROE",$cadena);
+                $cadena = Str::remove("X/",$cadena);
+                $palabras = Str::of($cadena)->explode(' ');
+                $palabras3 = $palabras->filter(function($palabra){
+                    return Str::length($palabra) == 3;
+                });
+                foreach ($palabras3 as $word) {
+                    $this->ruta = $this->ruta . $word . "/";
+                }
+                $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
+                $dest = str_replace("/","",$this->ruta);
+                $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
+                $this->destino =  substr($dest, $incioCadena, 3);
+            }
+            $posRuta = strpos($linea,"Cálculo de Tarifa :");
+            if ($posRuta !== false) {
+                $cadena = Str::remove(range(0,9),$linea);
+                $cadena = str_replace("."," ",$cadena);
+                $cadena = Str::remove("NUC",$cadena);
+                $cadena = Str::remove("USD",$cadena);
                 $cadena = Str::remove("END",$cadena);
                 $cadena = Str::remove("ROE",$cadena);
                 $cadena = Str::remove("X/",$cadena);
@@ -736,6 +805,16 @@ class Integrador extends Component
                     $this->idMedioPago = 8;
                 }
             }
+            $posFpago = strpos($linea,"Modo de pago :");
+            if ($posFpago !== false){
+                if(strpos($linea,"CCVI")){
+                    $this->idTarjetaCredito = 2;
+                    $this->idMedioPago = 6;
+                }else{
+                    $this->idTarjetaCredito = 1;
+                    $this->idMedioPago = 8;
+                }
+            }
 
             // Obtener Tarifas
             // $posDy = strpos($linea,"DY");
@@ -744,10 +823,32 @@ class Integrador extends Component
             // }else{
             //     $this->tipoRuta = "NACIONAL";
             // }
+            
             $posTNeta = strpos($linea,"Air Fare :");
             if ($posTNeta !== false) {
                 $neto = substr($linea,$posTNeta+15,8);
                 $this->tarifaNeta = trim($neto);
+                $this->igv = $this->tarifaNeta * 0.18;
+            }
+            $posTNeta = strpos($linea,"Tarifa aérea :");
+            if ($posTNeta !== false) {
+                $neto = substr($linea,$posTNeta+19,8);
+                $this->tarifaNeta = trim($neto);
+                // $this->igv = $this->tarifaNeta * 0.18;
+            }
+            $posYR = strpos($linea,"Airline Surcharges :");
+            if ($posYR !== false){
+                $this->yr = substr($linea,$posYR+25,10);
+                $this->yr = Str::remove("YR",$this->yr);
+                $this->tarifaNeta = $this->tarifaNeta + $this->yr;
+                $this->igv = $this->tarifaNeta * 0.18;
+                dd($this->tarifaNeta. ' - '.$this->igv);
+            }
+            $posYR = strpos($linea,"Recargo De Aerolinea :");
+            if ($posYR !== false){
+                $this->yr = substr($linea,$posYR+27,10);
+                $this->yr = Str::remove("YR",$this->yr);
+                $this->tarifaNeta = $this->tarifaNeta + $this->yr;
                 $this->igv = $this->tarifaNeta * 0.18;
             }
             
@@ -771,10 +872,13 @@ class Integrador extends Component
                 $total = substr($linea,$posTotal+19,8);
                 $this->otrosImpuestos = $total - $this->tarifaNeta - $this->igv;
             }
+            $posTotal = strpos($linea,"Importe Total :");
+            if ($posTotal !== false){
+                $total = substr($linea,$posTotal+20,8);
+                $this->otrosImpuestos = $total - $this->tarifaNeta - $this->igv;
+            }
             
-            // // dd($this->tipoRuta);
         }
-        // $this->otrosImpuestos = $this->hw;
 
         $this->idGds = 4;
         $this->grabarBoleto();

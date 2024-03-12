@@ -23,7 +23,7 @@
     <hr>
     <div class="row">
         <div class="col-md-2">
-            <button type="button" class="btn btn-primary">Agregar Boleto</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#FormularioModalBoleto">Agregar Boleto</button>
         </div>
         <div class="col-md-2">
             <button type="button" class="btn btn-success" >Agregar Servicio</button>
@@ -32,25 +32,151 @@
 
     <hr>
     {{-- Modal para Insertar y Actualizar --}}
-    <div class="modal fade" id="FormularioModal" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="FormularioModalBoleto" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen" id="modalxl1">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Registro </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" wire:click='limpiarControles' aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Boleto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="txtNuneroBoleto" class="form-label">Numero Boleto:</label>
-                            <input type="text" class="form-control" id="txtNumeroBoleto" wire:model.lazy.defer="numeroBoleto" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-auto">
+                                    <span for="txtNuneroBoleto" class="">Boleto:</span>
+                                </div>
+                                <div class="col-md-auto">
+                                    <input type="text" class="form-control" id="txtNumeroBoleto" wire:model.lazy.defer="numeroBoleto" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-1">
-                            <button type="button" class="btn btn-primary" wire:click="buscar" >buscar</button>
+                            <button type="button" class="btn btn-primary" wire:click="buscar" >Buscar</button>
                         </div>
                     </div>
+                    <hr>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="cboAerolinea" class="form-label">Aerolinea:</label>
+                                    <select name="idAerolinea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolinea" wire:model="idAerolinea">
+                                        @foreach ($aerolineas as $aerolinea)
+                                            <option value={{$aerolinea->id}}>{{$aerolinea->razonSocial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cboCliente" class="form-label">Cliente:</label>
+                                    <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCliente" wire:model="selectedCliente">
+                                        <option value="">-- Seleccione una opción --</option>
+                                        @foreach ($clientes as $cliente)
+                                            <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="cboCounter" class="form-label">Counter:</label>
+                                    <select name="idCounter" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboCounter" wire:model="idCounter">
+                                        @foreach ($counters as $counter)
+                                            <option value={{$counter->id}}>{{$counter->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cboArea" class="form-label">Área:</label>
+                                    <select name="idArea" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboArea" wire:model="idArea">
+                                        @foreach ($areas as $area)
+                                            <option value={{$area->id}}>{{$area->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="cboVendedor" class="form-label">Vendedor:</label>
+                                    <select name="idVendedor" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboVendedor" wire:model="idVendedor">
+                                        @foreach ($vendedors as $vendedor)
+                                            <option value={{$vendedor->id}}>{{$vendedor->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cboTipoTicket" class="form-label">Tipo:</label>
+                                    <select name="idTipoTicket" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoTicket" wire:model="idTipoTicket">
+                                        @foreach ($tipoTickets as $tipoTicket)
+                                            <option value={{$tipoTicket->id}}>{{$tipoTicket->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="txtPasajero" class="form-label">Pasajero:</label>
+                                    <input type="text" class="uTextBox" style="text-transform:uppercase;" id="txtPasajero" wire:model="pasajero" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cboSolicitante" class="form-label">Solicitante:</label>
+                                    <select name="selectedSolicitante" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboSolicitante" wire:model="selectedSolicitante">
+                                        <option value="0">--</option>
+                                        @foreach ($solicitantes as $solicitante)
+                                            <option value={{$solicitante->id}}>{{$solicitante->nombres}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="cboMoneda">Moneda:</label>
+                                    <select name="moneda" style="width: 50%;font-size: 0.8em; display:inline;" id="cboMoneda" wire:model.lazy.defer="idMoneda">
+                                        <option>==Seleccione una opción==</option>
+                                        @foreach ($monedas as $moneda)
+                                            <option value={{$moneda->id}}>{{$moneda->codigo}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtTarifaNeta" class="">Tarifa Neta:</label>
+                                    <input type="number" class="uTextBoxInLine" id="txtTarifaNeta" wire:model="tarifaNeta">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtTotal" class="">Total venta:</label>
+                                    <input type="number" class="uTextBoxInLine" id="txtTotal" wire:model.lazy.defer="total">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="txtTotalOrigen" class="">Total Pagado:</label>
+                                    <input type="number" class="uTextBoxInLine2" id="txtTotalOrigen" wire:model.lazy.defer="totalOrigen">
+                                 </div>
+                                <div class="col-md-4">
+                                    <label for="txtXm" class="">XM:</label>
+                                    <input type="number" class="uTextBoxInLine2" id="txtXm" wire:model="xm">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="txtComision" class="">Comisión:</label>
+                                    <input type="number" class="uTextBoxInLine2" id="txtComision" wire:model.lazy.defer="montoComision">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click='limpiarControles'>Cancelar</button>
