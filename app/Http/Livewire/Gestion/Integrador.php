@@ -698,7 +698,6 @@ class Integrador extends Component
             }
             $posFechaEmision = strpos($linea,"Fecha de Emisión: ");
             if ($posFechaEmision !== false) {
-                setlocale(LC_TIME, 'es_ES');
                 $fecEmision = substr($linea,$posFechaEmision+18,30);
                 $fecEmision = trim(str_replace(" Equipaje","",$fecEmision));
                 $fecEmision = str_replace("ENERO","JANUARY",$fecEmision);
