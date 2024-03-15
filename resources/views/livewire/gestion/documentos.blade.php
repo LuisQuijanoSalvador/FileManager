@@ -14,13 +14,19 @@
                 <button class="btn btn-outline-secondary txtFiltro" style="padding-top: 0;" type="button" id="button-addon2"  wire:click='buscarDoc'>Buscar</button>
             </div>
         </div>
-        
-        
         <div>
-            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="selectedTipoDocumento">
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboTipoDoc" wire:model.lazy.defer="selectedTipoDocumento">
                 <option value="">-- Filtrar por tipo Documento --</option>
                 @foreach ($tipoDocumentos as $tipoDocumento)
                     <option value="{{$tipoDocumento->id}}">{{$tipoDocumento->descripcion}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <select name="selectedCliente" style="width: 60%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model.lazy.defer="selectedIdCliente">
+                <option value="">-- Filtrar por Cliente --</option>
+                @foreach ($clientes as $cliente)
+                    <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
                 @endforeach
             </select>
         </div>

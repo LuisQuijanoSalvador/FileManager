@@ -366,6 +366,11 @@ return [
                     ]
                     ],
                     [
+                        'text' => 'Nota de Credito',
+                        'route' => 'notaCredito',
+                        'icon'    => 'fas fa-file-invoice'
+                    ],
+                    [
                         'text' => 'Documentos',
                         'route' => 'listaDocumentos',
                         'icon'    => 'fas fa-layer-group'

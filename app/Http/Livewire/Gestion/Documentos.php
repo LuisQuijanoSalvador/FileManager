@@ -29,7 +29,7 @@ class Documentos extends Component
     $inafecto,$exonerado,$igv,$otrosImpuestos,$total,$totalLetras,$glosa,$numeroFile,$tipoServicio,
     $documentoReferencia,$idMotivoNC,$idMotivoND,$tipoCambio,$idEstado,$respuestaSunat,$usuarioCreacion,
     $usuarioModificacion,$numeroCompleto,$comprobante,$motivoBaja,$codigoDoc,$fechaBaja,$respSenda,
-    $startDate,$endDate,$selectedTipoDocumento,$idMedioPago;
+    $startDate,$endDate,$selectedTipoDocumento,$idMedioPago,$selectedIdCliente;
 
     protected $documentos;
 
@@ -102,16 +102,33 @@ class Documentos extends Component
 
     public function filtrar(){
         // dd($this->filtroCliente);
-        if($this->selectedTipoDocumento){
+        if($this->selectedTipoDocumento and !$this->selectedIdCliente){
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
             ->where('idTipoDocumento',$this->selectedTipoDocumento)
             ->orderBy('fechaEmision', 'desc')
             ->orderBy('numero', 'desc')
             ->paginate(8);
-        }else{
+        }
+        
+        if(!$this->selectedTipoDocumento and !$this->selectedIdCliente){
             $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
             ->orderBy('fechaEmision')
             ->orderBy('numero')
+            ->paginate(8);
+        }
+        if($this->selectedTipoDocumento and $this->selectedIdCliente){
+            $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->where('idTipoDocumento',$this->selectedTipoDocumento)
+            ->where('idCliente',$this->selectedIdCliente)
+            ->orderBy('fechaEmision', 'desc')
+            ->orderBy('numero', 'desc')
+            ->paginate(8);
+        }
+        if(!$this->selectedTipoDocumento and $this->selectedIdCliente){
+            $this->documentos = Documento::whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+            ->where('idCliente',$this->selectedIdCliente)
+            ->orderBy('fechaEmision', 'desc')
+            ->orderBy('numero', 'desc')
             ->paginate(8);
         }
         

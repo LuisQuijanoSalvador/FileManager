@@ -54,7 +54,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('inmediataservicios', function(){ return view('gestion.facturacionserv');})->name('factinmediataserv');
         Route::get('acumuladaservicios', function(){ return view('gestion.facturacionservac');})->name('factacumuladaserv');
 
+        Route::get('notascredito', function(){ return view('gestion.notas-credito');})->name('notaCredito');
+        
         Route::get('documentos', function(){ return view('gestion.documentos');})->name('listaDocumentos');
+        
     });
 
     Route::group(['prefix'=>'cuentaporcobrar'],function(){
