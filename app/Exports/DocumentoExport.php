@@ -11,23 +11,51 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class DocumentoExport implements FromView, WithStyles
 {
-    public $idTipoDocumento, $fechaInicio, $fechaFin, $razonSocial;
+    public $idTipoDocumento, $fechaInicio, $fechaFin, $idCliente;
     
-    public function __construct($id, $fecIni, $fecFin)
+    public function __construct($id, $idCliente, $fecIni, $fecFin)
     {
         $this->idTipoDocumento = $id;
+        $this->idCliente = $idCliente;
         $this->fechaInicio = $fecIni;
         $this->fechaFin = $fecFin;
     }
     
     public function  view(): View
     {
-        return view('exports.gestion.documentos', [
-            'documentos' => Documento::where('idTipoDocumento', $this->idTipoDocumento)
-                            ->whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
-                            ->orderBy('fechaEmision', 'asc')
-                            ->get()
-        ]);
+        if($this->idTipoDocumento and !$this->idCliente){
+            return view('exports.gestion.documentos', [
+                'documentos' => Documento::where('idTipoDocumento', $this->idTipoDocumento)
+                                ->whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
+                                ->orderBy('fechaEmision', 'asc')
+                                ->get()
+            ]);
+        }
+        if(!$this->idTipoDocumento and !$this->idCliente){
+            return view('exports.gestion.documentos', [
+                'documentos' => Documento::whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
+                                ->orderBy('fechaEmision', 'asc')
+                                ->get()
+            ]);
+        }
+        if(!$this->idTipoDocumento and $this->idCliente){
+            return view('exports.gestion.documentos', [
+                'documentos' => Documento::where('idCliente', $this->idCliente)
+                                ->whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
+                                ->orderBy('fechaEmision', 'asc')
+                                ->get()
+            ]);
+        }
+        if($this->idTipoDocumento and $this->idCliente){
+            return view('exports.gestion.documentos', [
+                'documentos' => Documento::where('idTipoDocumento', $this->idTipoDocumento)
+                                ->where('idCliente', $this->idCliente)
+                                ->whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
+                                ->orderBy('fechaEmision', 'asc')
+                                ->get()
+            ]);
+        }
+        
     }
 
     public function styles(Worksheet $sheet)

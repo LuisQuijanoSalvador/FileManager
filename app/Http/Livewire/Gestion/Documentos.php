@@ -243,6 +243,6 @@ class Documentos extends Component
     }
 
     public function exportar(){
-        return Excel::download(new DocumentoExport($this->selectedTipoDocumento,$this->startDate,$this->endDate),'Documentos.xlsx');
+        return Excel::download(new DocumentoExport($this->selectedTipoDocumento,$this->selectedIdCliente,$this->startDate,$this->endDate),'Documentos.xlsx');
     }
 }
