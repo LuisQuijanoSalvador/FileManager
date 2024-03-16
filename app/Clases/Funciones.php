@@ -43,13 +43,17 @@ class Funciones
         $this->numero = 0;
         $comprobante = Correlativo::where('tabla',$tabla)->first();
         $this->numero = $comprobante->numero;
-
-        $nuevoNumero = $this->numero + 1;
-        $comprobante->numero =$nuevoNumero;
-        $comprobante->usuarioModificacion = auth()->user()->id;
-        $comprobante->save();
         
         return $this->numero;
+    }
+
+    public function grabarCorrelativo($tabla,$numero){
+        $nuevoNumero = $numero + 1;
+
+        $comprobante = Correlativo::where('tabla',$tabla)->first();
+        $comprobante->numero = $nuevoNumero;
+        $comprobante->usuarioModificacion = auth()->user()->id;
+        $comprobante->save();
     }
 
     public function numeroAbono($tabla){

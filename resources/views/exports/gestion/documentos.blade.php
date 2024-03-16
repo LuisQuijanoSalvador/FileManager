@@ -25,6 +25,9 @@
                 F. Emisión
             </th>
             <th scope="col">
+                Boleto
+            </th>
+            <th scope="col">
                 Total
             </th>
             <th scope="col">
@@ -45,6 +48,7 @@
                 <td class="py-1">{{$documento->numero}}</td>
                 <td class="py-1">{{$documento->tcliente->razonSocial}}</td>
                 <td class="py-1">{{\Carbon\Carbon::parse($documento->fechaEmision)->format('d-m-Y')}}</td>
+                <td class="py-1">@if($documento->tBoleto){{ $documento->tBoleto->numeroBoleto}} @endif</td>
                 <td class="py-1">{{$documento->total}}</td>
                 <td class="py-1">{{$documento->tEstado->descripcion}}</td>
             </tr>

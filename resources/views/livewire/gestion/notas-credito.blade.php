@@ -94,8 +94,8 @@
     <hr>
     <div class="row">
         <div class="col-md-3">
-            <label for="cboTipoDocumento" class="form-label">Motivo:</label>
-            <select name="idTipoDocumento" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoDocumento" wire:model.lazy.defer="idTipoDocumento">
+            <label for="cboMotivo" class="form-label">Motivo:</label>
+            <select name="idMotivo" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboMotivo" wire:model.lazy.defer="motivo">
                 @foreach ($motivos as $motivo)
                     <option value={{$motivo->id}}>{{$motivo->descripcion}}</option>
                 @endforeach
