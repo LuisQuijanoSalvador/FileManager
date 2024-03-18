@@ -1,10 +1,15 @@
 <div>
     {{-- The best athlete wants his opponent at his best. --}}
     @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 <hr>
 <div class="row align-items-center">
     <div class="col-md-2 mt-2">
@@ -89,11 +94,7 @@
         <div class="row">
             <div class="col-md-3">
                 <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Filtrar por boleto">
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
+                
             </div>
             <div class="col-md-9">
                 {{-- <div>

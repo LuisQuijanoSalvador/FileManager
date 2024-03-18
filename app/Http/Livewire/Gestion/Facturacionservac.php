@@ -283,6 +283,18 @@ class Facturacionservac extends Component
 
         $documento->save();
 
+        switch ($dataServicio->idTipoDocumento) {
+            case 6:
+                $funciones->grabarCorrelativo('DOCUMENTO DE COBRANZA',$numComprobante);
+                break;
+            case 1:
+                $funciones->grabarCorrelativo('FACTURA',$numComprobante);
+                break;
+            case 2:
+                $funciones->grabarCorrelativo('BOLETA',$numComprobante);
+                break;
+        }
+
         if ($this->respSenda['type'] == 'success') {
             $doc = Documento::find($documento->id);
             $doc->respuestaSunat = $this->respSenda['type'];

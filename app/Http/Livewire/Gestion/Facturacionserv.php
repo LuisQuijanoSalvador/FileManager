@@ -240,11 +240,24 @@ class Facturacionserv extends Component
         $jsonDoc = json_encode($dataJson, JSON_PRETTY_PRINT);
         $documento->save();
 
+        switch ($dataServicio->idTipoDocumento) {
+            case 6:
+                $funciones->grabarCorrelativo('DOCUMENTO DE COBRANZA',$numComprobante);
+                break;
+            case 1:
+                $funciones->grabarCorrelativo('FACTURA',$numComprobante);
+                break;
+            case 2:
+                $funciones->grabarCorrelativo('BOLETA',$numComprobante);
+                break;
+        }
+
         if ($this->respSenda['type'] == 'success') {
             $doc = Documento::find($documento->id);
             $doc->respuestaSunat = $this->respSenda['type'];
             $doc->jsonDoc = $jsonDoc;
             $doc->save();
+            
 
             session()->flash('success', 'El documento se ha emitido correctamente');
 

@@ -261,6 +261,18 @@ class Facturacion extends Component
         $documento->usuarioModificacion = auth()->user()->id;
         
         $documento->save();
+
+        switch ($dataBoleto->idTipoDocumento) {
+            case 6:
+                $funciones->grabarCorrelativo('DOCUMENTO DE COBRANZA',$numComprobante);
+                break;
+            case 1:
+                $funciones->grabarCorrelativo('FACTURA',$numComprobante);
+                break;
+            case 2:
+                $funciones->grabarCorrelativo('BOLETA',$numComprobante);
+                break;
+        }
         
         $medioPago = MedioPago::find($documento->idMedioPago);
         
@@ -274,10 +286,6 @@ class Facturacion extends Component
             $this->desc_metodopago = "";
         }
 
-        // $idsSeleccionados = $this->selectedRows;
-        // $boleto = Boleto::find($idsSeleccionados);
-        // $boleto->idDocumento = $documento->id;
-        // $boleto->save();
         Boleto::whereIn('id',$this->selectedRows)
         ->update(['idDocumento' => $documento->id]);
 
@@ -290,6 +298,9 @@ class Facturacion extends Component
         if($documento->idMedioPago <> 6){
             $this->generarCargo($documento->id);
         }
+
+        session()->flash('success', 'El documento se ha emitido correctamente');
+        $this->glosa = '';
     }
 
     public function generarCargo($docId){
