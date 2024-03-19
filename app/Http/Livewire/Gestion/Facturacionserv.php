@@ -228,13 +228,18 @@ class Facturacionserv extends Component
                 $dataJson = $this->enviaDC($documento);
             }
         }else{
-            if($documento->inafecto > 0 && $documento->afecto > 0){
+            if($documento->inafecto > 0 && $documento->afecto > 0 && $documento->otrosImpuestos == 0){
                 $dataJson = $this->enviaCPEMixto($documento);
                 
             }elseif($documento->inafecto > 0 && $documento->afecto == 0){
                 $dataJson = $this->enviaCPEInafecto($documento);
 
             }elseif($documento->inafecto > 0 && $documento->afecto > 0 && $documento->otrosImpuestos > 0){
+                if($medioPago->id == 10){
+                    $this->metodo_pago = $medioPago->descripcion;
+                    $this->codigo_metodopago = "CRE";
+                    $this->desc_metodopago = round($documento->total -$documento->otrosImpuestos,2) . "," . "1;" . round($documento->total -$documento->otrosImpuestos,2) . ";" . $documento->fechaVencimiento;
+                }
                 $dataJson = $this->enviaCPEMixto3($documento);
 
             }else{
@@ -1338,9 +1343,9 @@ class Facturacionserv extends Component
                 "ant_monto"=> "0.00",
                 "op_exportacion"=> "0.00",
                 "op_exonerada"=> 0.00,
-                "op_inafecta"=> $comprobante->inafecto - $comprobante->otrosImpuestos,
+                "op_inafecta"=> round($comprobante->inafecto - $comprobante->otrosImpuestos,2),
                 "op_gravada"=> $comprobante->afecto,
-                "tot_valorventa"=> $comprobante->afecto + ($comprobante->inafecto - $comprobante->otrosImpuestos),
+                "tot_valorventa"=> round($comprobante->afecto + ($comprobante->inafecto - $comprobante->otrosImpuestos),2),
                 "tot_precioventa"=> $comprobante->total - $comprobante->otrosImpuestos,
                 "isc"=> "0.00",
                 "igv"=> $comprobante->igv,
@@ -1430,10 +1435,10 @@ class Facturacionserv extends Component
                     "tipo_afect_igv" => "30",
                     "codigo_tributo" => "9998",
                     "is_anticipo" => 0,
-                    "valorunitbruto" => $comprobante->inafecto - $comprobante->otrosImpuestos,
-                    "valorunit" => $comprobante->inafecto - $comprobante->otrosImpuestos,
-                    "valorventabruto" => $comprobante->inafecto - $comprobante->otrosImpuestos,
-                    "valorventa" => $comprobante->inafecto - $comprobante->otrosImpuestos,
+                    "valorunitbruto" => round($comprobante->inafecto - $comprobante->otrosImpuestos,2),
+                    "valorunit" => round($comprobante->inafecto - $comprobante->otrosImpuestos,2),
+                    "valorventabruto" => round($comprobante->inafecto - $comprobante->otrosImpuestos,2),
+                    "valorventa" => round($comprobante->inafecto - $comprobante->otrosImpuestos,2),
                     "preciounitbruto" => $comprobante->inafecto,//$comprobante->total,
                     "preciounit" => $comprobante->inafecto,//$comprobante->total,
                     "precioventa" => $comprobante->inafecto,//$comprobante->total,
@@ -1472,16 +1477,7 @@ class Facturacionserv extends Component
         $this->respSenda = $funciones->enviarCPE($dataToSend);
 
         return($dataToSend);
-        // $file = $funciones->enviarCPE($dataToSend);
-
-        // if ($file['type'] == 'success') {
-        //     $doc = Documento::find($comprobante->id);
-        //     $doc->respuestaSunat = $file['type'];
-        //     $doc->save();
-
-        // } else {
-        //     session()->flash('error', 'Ocurrió un error enviando a Sunat');
-        // }
+        
         
     } 
 }
