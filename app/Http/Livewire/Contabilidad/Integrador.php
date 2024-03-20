@@ -138,8 +138,9 @@ class Integrador extends Component
             ->whereBetween('FechaEmision', [$this->fechaIni, $this->fechaFin])
             ->where('TipoDocumento', $this->tipoDocumento)
             ->orderBy('fechaEmision')
-            ->get();
-            dd($documentos->getQuery()->toSql());
+            // ->get();
+            ->getQuery();
+            dd($documentos->toSql());
 
             $fila = 5;
             if($this->tipoDocumento == '01'){
