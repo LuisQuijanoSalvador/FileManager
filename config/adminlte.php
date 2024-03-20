@@ -535,6 +535,10 @@ return [
                     'text' => 'Comisiones',
                     'route' => 'rptComision'
                 ],
+                [
+                    'text' => 'Ventas',
+                    'route' => 'rptVentas'
+                ],
             ]
         ],
         [

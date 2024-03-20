@@ -107,6 +107,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('margenes', function(){ return view('reportes.margenes');})->name('rptMargenes');
         Route::get('conciliacion', function(){ return view('reportes.conciliacion');})->name('rptConciliacion');
         Route::get('comisiones', function(){ return view('reportes.comisiones');})->name('rptComision');
+        Route::get('ventas', function(){ return view('reportes.reporte-ventas');})->name('rptVentas');
     });
     Route::group(['prefix'=>'files'],function(){
         Route::get('files', function(){ return view('files.files');})->name('listaFiles');
