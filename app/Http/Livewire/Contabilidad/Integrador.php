@@ -139,7 +139,7 @@ class Integrador extends Component
             ->where('TipoDocumento', $this->tipoDocumento)
             ->orderBy('fechaEmision')
             ->get();
-            dd($documentos->toSql());
+            dd($documentos->getQuery()->toSql());
 
             $fila = 5;
             if($this->tipoDocumento == '01'){
