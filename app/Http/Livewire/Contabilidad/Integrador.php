@@ -137,7 +137,7 @@ class Integrador extends Component
             ->addSelect(DB::raw("CONCAT(serie, '-', numero) AS numeroDocumento"), 'fechaVencimiento', 'idEstado')
             ->whereBetween('FechaEmision', [$this->fechaIni, $this->fechaFin])
             ->where('TipoDocumento', $this->tipoDocumento)
-            ->orderBy('fechaEmision')
+            ->orderBy('fechaEmision','numero')
             ->get();
             
             $fila = 5;
