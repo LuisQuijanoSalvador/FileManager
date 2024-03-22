@@ -33,6 +33,9 @@ class ReporteVentas extends Component
             $this->ventas = DB::table('vista_ventas')
                             ->where('idCliente',$this->idCliente)
                             ->whereBetween('FechaEmision',[$this->fechaInicio, $this->fechaFin])
+                            ->orderby('FechaEmision')
+                            ->orderBy('pasajero')
+                            ->orderBy('tipo')
                             ->get();
             // $this->ventas = Ventas::whereBetween('fechaEmision', [$this->fechaInicio, $this->fechaFin])
             //                  ->when($this->idCliente, function ($query) {
