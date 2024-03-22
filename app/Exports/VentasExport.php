@@ -29,6 +29,9 @@ class VentasExport implements FromView, WithStyles
                 'ventass' => DB::table('vista_ventas')
                 ->where('idCliente',$this->idCliente)
                 ->whereBetween('FechaEmision',[$this->fechaInicio, $this->fechaFin])
+                ->orderby('FechaEmision')
+                ->orderBy('pasajero')
+                ->orderBy('tipo')
                 ->get()
             ]);
         }
@@ -36,6 +39,9 @@ class VentasExport implements FromView, WithStyles
             return view('exports.reportes.ventas', [
                 'ventass' => DB::table('vista_ventas')
                 ->whereBetween('FechaEmision',[$this->fechaInicio, $this->fechaFin])
+                ->orderby('FechaEmision')
+                ->orderBy('pasajero')
+                ->orderBy('tipo')
                 ->get()
             ]);
         }
