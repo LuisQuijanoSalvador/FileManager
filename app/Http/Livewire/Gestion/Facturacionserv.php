@@ -162,7 +162,7 @@ class Facturacionserv extends Component
             $this->glosa = "";
             // $this->descripcion = 'SOLICITADO POR: ' . $cSolic . '<br>' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: <br>';
             foreach($servicios as $servicio){
-                $this->descripcion = $this->descripcion . 'FEE POR BOLETO, PAX: ' . $servicio->pasajero . ' TKT: ' . $servicio->tBoleto->tAerolinea->codigoIata . ' - ' . $servicio->tBoleto->numeroBoleto . ' RUTA: ' . $servicio->tBoleto->ruta . ' ' . $servicio->tBoleto->tAerolinea->razonSocial .'\n';
+                $this->descripcion = $this->descripcion . 'FEE POR BOLETO, PAX: ' . $servicio->pasajero . ' TKT: ' . $servicio->tBoleto->tAerolinea->codigoIata . ' - ' . $servicio->tBoleto->numeroBoleto . ' RUTA: ' . $servicio->tBoleto->ruta . ' ' . $servicio->tBoleto->tAerolinea->razonSocial .'<br>';
             }
             // $this->descripcion = $dataServicio->tTipoServicio->descripcion . 'SOLICITADO POR: ' . $cSolic .  "POR LA EMISION DE UN BOLETO AEREO A FAVOR DE PAX: " . $dataServicio->pasajero .  'EN LA RUTA: ' . $ruta . ' | ' . 'TKT: ' . $dataServicio->tBoleto->tAerolinea->codigoIata . ' - ' . $dataServicio->tBoleto->numeroBoleto . ' EN ' . $dataServicio->tBoleto->tAerolinea->razonSocial;
             // dd($this->descripcion);
@@ -291,6 +291,34 @@ class Facturacionserv extends Component
         }
         
         $this->glosa="";
+        $this->limpiarVariables();
+    }
+
+    public function limpiarVariables(){
+        $this->idRegistro = 0;
+        $this->idMoneda = 1;
+        $this->tipoCambio = 0;
+        $this->fechaEmision = NULL;
+        $this->detraccion = 0;
+        $this->glosa = "";
+        $this->descripcion = "";
+        $this->tipoDocumentoIdentidad = NULL;
+        $this->codigoDocumentoIdentidad = NULL;
+        $this->descDocumentoIdentidad = NULL;
+        $this->monedaLetra = NULL;
+        $this->respSenda = NULL;
+        $this->numeroTelefono = NULL;
+        $this->chkMedioPago = 0;
+        $this->idMedioPagoCambio = NULL;
+        $this->idMedioPago = NULL;
+        $this->metodo_pago = NULL;
+        $this->codigo_metodopago = NULL;
+        $this->desc_metodopago = NULL;
+        $this->totalNeto = 0;
+        $this->totalInafecto = 0;
+        $this->totalIGV = 0;
+        $this->totalOtrosImpuestos = 0;
+        $this->totalTotal = 0;
     }
 
     public function generarCargo($docId){
