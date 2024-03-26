@@ -103,7 +103,8 @@ class Facturacionserv extends Component
         }  
     }
 
-    public function crearDocumento($dataServicio, $servicios){
+    public function crearDocumento($dataServicioIn, $servicios){
+        $dataServicio = $dataServicioIn;
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
@@ -292,6 +293,7 @@ class Facturacionserv extends Component
         
         $this->glosa="";
         $this->limpiarVariables();
+        $dataServicio = NULL;
     }
 
     public function limpiarVariables(){
