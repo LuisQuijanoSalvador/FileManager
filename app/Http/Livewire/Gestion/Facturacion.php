@@ -141,7 +141,8 @@ class Facturacion extends Component
         }  
     }
 
-    public function crearDocumento($dataBoleto,$boletos){
+    public function crearDocumento($dataBoletoIn,$boletos){
+        $dataBoleto = $dataBoletoIn;
         $documento = new Documento();
         $funciones = new Funciones();
         $numLetras = new modelonumero();
@@ -301,6 +302,39 @@ class Facturacion extends Component
 
         session()->flash('success', 'El documento se ha emitido correctamente');
         $this->glosa = '';
+        $this->limpiarVariables();
+        $dataBoleto = NULL;
+    }
+
+    public function limpiarVariables(){
+        $this->idRegistro = 0;
+        $this->idMoneda = 1;
+        $this->tipoCambio = 0;
+        $this->fechaEmision = NULL;
+        $this->detraccion = 0;
+        $this->glosa = "";
+        $this->monedaLetra = "";
+        $this->tipoDocumentoIdentidad = NULL;
+        $this->codigoDocumentoIdentidad = NULL;
+        $this->descDocumentoIdentidad = NULL;
+        $this->numeroTelefono = NULL;
+        $this->chkMedioPago = 0;
+        $this->idMedioPagoCambio = NULL;
+        $this->idMedioPago = NULL;
+        $this->metodo_pago = NULL;
+        $this->codigo_metodopago = NULL;
+        $this->desc_metodopago = NULL;
+        $this->centroCosto = NULL;
+        $this->codUsuario = NULL;
+        $this->totalNeto = 0;
+        $this->totalInafecto = 0;
+        $this->totalIGV = 0;
+        $this->totalOtrosImpuestos = 0;
+        $this->totalTotal = 0;
+        $this->idCliente = NULL;
+        $this->startDate = NULL;
+        $this->endDate = NULL;
+        $this->selectedRows = NULL;
     }
 
     public function generarCargo($docId){
