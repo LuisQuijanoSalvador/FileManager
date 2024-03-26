@@ -321,6 +321,7 @@ class Facturacionserv extends Component
         $this->totalIGV = 0;
         $this->totalOtrosImpuestos = 0;
         $this->totalTotal = 0;
+        $this->selectedRows = NULL;
     }
 
     public function generarCargo($docId){
