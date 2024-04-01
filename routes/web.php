@@ -108,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('conciliacion', function(){ return view('reportes.conciliacion');})->name('rptConciliacion');
         Route::get('comisiones', function(){ return view('reportes.comisiones');})->name('rptComision');
         Route::get('ventas', function(){ return view('reportes.reporte-ventas');})->name('rptVentas');
+        Route::get('ventasalltech', function(){ return view('reportes.reporte-alltech');})->name('rptVentasAlltech');
     });
     Route::group(['prefix'=>'files'],function(){
         Route::get('files', function(){ return view('files.files');})->name('listaFiles');

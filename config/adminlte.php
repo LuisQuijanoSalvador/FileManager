@@ -539,6 +539,10 @@ return [
                     'text' => 'Ventas',
                     'route' => 'rptVentas'
                 ],
+                [
+                    'text' => 'Alltech',
+                    'route' => 'rptVentasAlltech'
+                ],
             ]
         ],
         [
