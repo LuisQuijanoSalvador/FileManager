@@ -1024,7 +1024,6 @@
                                         @error('idMedioPago')
                                             <span class="error">{{$message}}</span>
                                         @enderror
-                                        {{$idMedioPago}}
                                     </div>
                                     <div class="col-md-2">
                                         <label for="cboTarjeta" class="form-label">Tarjeta:</label>
