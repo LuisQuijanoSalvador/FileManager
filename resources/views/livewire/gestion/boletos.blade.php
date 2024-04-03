@@ -673,286 +673,568 @@
                         </div>
                     </div>
                 </div>
+                @if($idRegistro==0)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Rutas
+                            </button>
+                        </h2>
 
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Rutas
-                        </button>
-                    </h2>
-
-                    <div id="flush-collapseThree" class="accordion-collapse">
-                        <div class="seccion1">
-                            <div class="row">
-                                
-                                <div class="col-md-1">
-                                    <label for="txtCiudadSalida" class="">Salida:</label>
-                                    <input type="text" class="uTextBox" maxlength="3" id="txtCiudadSalida" wire:model.lazy.defer="ciudadSalida" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    @error('ciudadSalida')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtCiudadLlegada" class="">Llegada:</label>
-                                    <input required type="text" class="uTextBox" maxlength="3" id="txtCiudadLlegada" wire:model.lazy.defer="ciudadLlegada" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    @error('ciudadLlegada')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="cboAerolineaRuta" class="form-label">Aerolinea:</label>
-                                    <select required name="idAerolineaRuta" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolineaRuta" wire:model.defer="idAerolineaRuta">
-                                        <option>--</option>
-                                        @foreach ($aerolineas as $aerolinea)
-                                            <option value="{{$aerolinea->id}}">{{$aerolinea->razonSocial}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('idAerolineaRuta')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtVuelo" class="">Vuelo:</label>
-                                    <input required type="text" class="uTextBox" id="txtVuelo" wire:model.lazy.defer="vuelo" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    @error('vuelo')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtClase" class="">Clase:</label>
-                                    <input required type="text" class="uTextBox" maxlength="1" id="txtClase" wire:model.lazy.defer="clase" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    @error('clase')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtFechaSalida" class="form-label">F. Salida:</label>
-                                    <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaSalida" wire:model.lazy.defer="fechaSalida">
-                                    @error('fechaSalida')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtHoraSalida" class="">Hora:</label>
-                                    <input required type="text" class="uTextBox" maxlength="4" id="txtHoraSalida" wire:model.lazy.defer="horaSalida" onkeypress="return valideKey(event);">
-                                    @error('horaSalida')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtFechaLlegada" class="form-label">F. Llegada:</label>
-                                    <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaLlegada" wire:model.lazy.defer="fechaLlegada">
-                                    @error('fechaLlegada')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtHoraLlegada" class="">Hora:</label>
-                                    <input required type="text" class="uTextBox" maxlength="4" id="txtHoraLlegada" wire:model.lazy.defer="horaLlegada" onkeypress="return valideKey(event);">
-                                    @error('horaLlegada')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="txtFarebasis" class="">Farebasis:</label>
-                                    <input type="text" class="uTextBox" id="txtFarebasis" wire:model.lazy.defer="farebasis" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        <div id="flush-collapseThree" class="accordion-collapse">
+                            <div class="seccion1">
+                                <div class="row">
                                     
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" style="margin-top: 20px" wire:click="addRuta('1')">
-                                        <img src="{{ asset('img/add.png')}}" width="30px" alt="">
-                                    </button>
+                                    <div class="col-md-1">
+                                        <label for="txtCiudadSalida" class="">Salida:</label>
+                                        <input type="text" class="uTextBox" maxlength="3" id="txtCiudadSalida" wire:model.lazy.defer="ciudadSalida" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('ciudadSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtCiudadLlegada" class="">Llegada:</label>
+                                        <input required type="text" class="uTextBox" maxlength="3" id="txtCiudadLlegada" wire:model.lazy.defer="ciudadLlegada" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('ciudadLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="cboAerolineaRuta" class="form-label">Aerolinea:</label>
+                                        <select required name="idAerolineaRuta" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolineaRuta" wire:model.defer="idAerolineaRuta">
+                                            <option>--</option>
+                                            @foreach ($aerolineas as $aerolinea)
+                                                <option value="{{$aerolinea->id}}">{{$aerolinea->razonSocial}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idAerolineaRuta')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtVuelo" class="">Vuelo:</label>
+                                        <input required type="text" class="uTextBox" id="txtVuelo" wire:model.lazy.defer="vuelo" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('vuelo')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtClase" class="">Clase:</label>
+                                        <input required type="text" class="uTextBox" maxlength="1" id="txtClase" wire:model.lazy.defer="clase" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('clase')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFechaSalida" class="form-label">F. Salida:</label>
+                                        <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaSalida" wire:model.lazy.defer="fechaSalida">
+                                        @error('fechaSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtHoraSalida" class="">Hora:</label>
+                                        <input required type="text" class="uTextBox" maxlength="4" id="txtHoraSalida" wire:model.lazy.defer="horaSalida" onkeypress="return valideKey(event);">
+                                        @error('horaSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFechaLlegada" class="form-label">F. Llegada:</label>
+                                        <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaLlegada" wire:model.lazy.defer="fechaLlegada">
+                                        @error('fechaLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtHoraLlegada" class="">Hora:</label>
+                                        <input required type="text" class="uTextBox" maxlength="4" id="txtHoraLlegada" wire:model.lazy.defer="horaLlegada" onkeypress="return valideKey(event);">
+                                        @error('horaLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFarebasis" class="">Farebasis:</label>
+                                        <input type="text" class="uTextBox" id="txtFarebasis" wire:model.lazy.defer="farebasis" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" style="margin-top: 20px" wire:click="addRuta('1')">
+                                            <img src="{{ asset('img/add.png')}}" width="30px" alt="">
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="seccion2">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="tabla-listado">
-                                        <thead class="thead-listado">
-                                            <tr>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Ciudad Salida 
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Ciudad Llegada
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Aerolinea
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer" >
-                                                    Vuelo
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Clase
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    F. Salida
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Hora
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    F. Llegada
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Hora
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Farebasis
-                                                </th>
-                                                <th scope="col" class="py-1 thAccion">
-                                                    Acción
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($boletoRutas as $boletoRuta)
-                                
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td class="py-1">{{$boletoRuta['ciudadSalida']}}</td>
-                                                <td class="py-1">{{$boletoRuta['ciudadLlegada']}}</td>
-                                                <td class="py-1">{{$boletoRuta['aerolinea']}}</td>
-                                                <td class="py-1">{{$boletoRuta['vuelo']}}</td>
-                                                <td class="py-1">{{$boletoRuta['clase']}}</td>
-                                                <td class="py-1">{{$boletoRuta['fechaSalida']}}</td>
-                                                <td class="py-1">{{$boletoRuta['horaSalida']}}</td>
-                                                <td class="py-1">{{$boletoRuta['fechaLlegada']}}</td>
-                                                <td class="py-1">{{$boletoRuta['horaLlegada']}}</td>
-                                                <td class="py-1">{{$boletoRuta['farebasis']}}</td>
+                            <div class="seccion2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="tabla-listado">
+                                            <thead class="thead-listado">
+                                                <tr>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Ciudad Salida 
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Ciudad Llegada
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Aerolinea
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer" >
+                                                        Vuelo
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Clase
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Salida
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Hora
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Llegada
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Hora
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Farebasis
+                                                    </th>
+                                                    <th scope="col" class="py-1 thAccion">
+                                                        Acción
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($boletoRutas as $boletoRuta)
+                                    
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$boletoRuta['ciudadSalida']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['ciudadLlegada']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['aerolinea']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['vuelo']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['clase']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['fechaSalida']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['horaSalida']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['fechaLlegada']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['horaLlegada']}}</td>
+                                                    <td class="py-1">{{$boletoRuta['farebasis']}}</td>
 
-                                                <td class="py-1">
-                                                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                                                        <button type="button" style="margin-top: 0px" wire:click="quitarRuta({{$loop->index}})">
-                                                            <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div> 
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseOne">
-                            Pagos
-                        </button>
-                    </h2>
-                    <div id="flush-collapseFour" class="accordion-collapse">
-                        <div class="seccion1">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label for="cboTipoPago" class="form-label">Medio de Pago:</label>
-                                    <select required name="idMedioPago" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoPago" wire:model.defer="idMedioPago">
-                                        <option value=''>--</option>
-                                        @foreach ($medioPagos as $medioPago)
-                                            <option value="{{$medioPago->id}}">{{$medioPago->descripcion}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('idMedioPago')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                    {{$idMedioPago}}
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="cboTarjeta" class="form-label">Tarjeta:</label>
-                                    <select required name="idTarjetaCredito" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTarjeta" wire:model.defer="idTarjetaCredito">
-                                        <option value=''>--</option>
-                                        @foreach ($tarjetaCreditos as $tarjetaCredito)
-                                            <option value="{{$tarjetaCredito->id}}">{{$tarjetaCredito->descripcion}}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('idTarjetaCredito')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="txtNumeroTarjeta" class="">Número Tarjeta:</label>
-                                    <input type="text" class="uTextBox" maxlength="19"  id="txtNumeroTarjeta" wire:model.lazy.defer="numeroTarjeta" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
-                                    @error('numeroTarjeta')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="txtMonto" class="">Monto:</label>
-                                    <input required type="number" step="0.01" class="uTextBox"  id="txtMonto" wire:model.lazy.defer="monto">
-                                    @error('monto')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="txtFechaVencimiento" class="">F. Vencimiento:</label>
-                                    <input type="text" class="uTextBox" maxlength="5"  id="txtFechaVencimiento" wire:model.lazy.defer="fechaVencimientoTC" pattern="^(0[1-9]|1[0-2])\/\d{2}$" placeholder="MM/AA" onkeypress="return valideKey(event);">
-                                    @error('fechaVencimientoTC')
-                                        <span class="error">{{$message}}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" style="margin-top: 20px" wire:click="addPago()">
-                                        <img src="{{ asset('img/add.png')}}" width="30px" alt="">
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="seccion2">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="tabla-listado">
-                                        <thead class="thead-listado">
-                                            <tr>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Medio Pago 
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Tipo Tarjeta
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    Numero Tarjeta
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer" >
-                                                    Monto
-                                                </th>
-                                                <th scope="col" class="py-1 cursor-pointer">
-                                                    F. Vencimiento
-                                                </th>
-                                                <th scope="col" class="py-1 thAccion">
-                                                    Acción
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($boletoPagos as $boletoPago)
-                                
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                <td class="py-1">{{$boletoPago['medioPago']}}</td>
-                                                <td class="py-1">{{$boletoPago['tarjetaCredito']}}</td>
-                                                <td class="py-1">{{$boletoPago['numeroTarjeta']}}</td>
-                                                <td class="py-1">{{$boletoPago['monto']}}</td>
-                                                <td class="py-1">{{$boletoPago['fechaVencimientoTC']}}</td>
-
-                                                <td class="py-1">
-                                                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                                                        <button type="button" style="margin-top: 0px" wire:click="quitarPago({{$loop->index}})">
-                                                            <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click="quitarRuta({{$loop->index}})">
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
-                </div>
+                @else
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Rutas
+                            </button>
+                        </h2>
+
+                        <div id="flush-collapseThree" class="accordion-collapse">
+                            <div class="seccion1">
+                                <div class="row">
+                                    
+                                    <div class="col-md-1">
+                                        <label for="txtCiudadSalida" class="">Salida:</label>
+                                        <input type="text" class="uTextBox" maxlength="3" id="txtCiudadSalida" wire:model.lazy.defer="ciudadSalida" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('ciudadSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtCiudadLlegada" class="">Llegada:</label>
+                                        <input required type="text" class="uTextBox" maxlength="3" id="txtCiudadLlegada" wire:model.lazy.defer="ciudadLlegada" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('ciudadLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="cboAerolineaRuta" class="form-label">Aerolinea:</label>
+                                        <select required name="idAerolineaRuta" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboAerolineaRuta" wire:model.defer="idAerolineaRuta">
+                                            <option>--</option>
+                                            @foreach ($aerolineas as $aerolinea)
+                                                <option value="{{$aerolinea->id}}">{{$aerolinea->razonSocial}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idAerolineaRuta')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtVuelo" class="">Vuelo:</label>
+                                        <input required type="text" class="uTextBox" id="txtVuelo" wire:model.lazy.defer="vuelo" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('vuelo')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtClase" class="">Clase:</label>
+                                        <input required type="text" class="uTextBox" maxlength="1" id="txtClase" wire:model.lazy.defer="clase" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('clase')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFechaSalida" class="form-label">F. Salida:</label>
+                                        <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaSalida" wire:model.lazy.defer="fechaSalida">
+                                        @error('fechaSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtHoraSalida" class="">Hora:</label>
+                                        <input required type="text" class="uTextBox" maxlength="4" id="txtHoraSalida" wire:model.lazy.defer="horaSalida" onkeypress="return valideKey(event);">
+                                        @error('horaSalida')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFechaLlegada" class="form-label">F. Llegada:</label>
+                                        <input required type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaLlegada" wire:model.lazy.defer="fechaLlegada">
+                                        @error('fechaLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtHoraLlegada" class="">Hora:</label>
+                                        <input required type="text" class="uTextBox" maxlength="4" id="txtHoraLlegada" wire:model.lazy.defer="horaLlegada" onkeypress="return valideKey(event);">
+                                        @error('horaLlegada')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="txtFarebasis" class="">Farebasis:</label>
+                                        <input type="text" class="uTextBox" id="txtFarebasis" wire:model.lazy.defer="farebasis" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" style="margin-top: 20px" wire:click="addRutaEdit">
+                                            <img src="{{ asset('img/add.png')}}" width="30px" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="seccion2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="tabla-listado">
+                                            <thead class="thead-listado">
+                                                <tr>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Ciudad Salida 
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Ciudad Llegada
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Aerolinea
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer" >
+                                                        Vuelo
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Clase
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Salida
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Hora
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Llegada
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Hora
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Farebasis
+                                                    </th>
+                                                    <th scope="col" class="py-1 thAccion">
+                                                        Acción
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($this->boletoRutasEdit as $boletoRuta)
+                                    
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$boletoRuta->ciudadSalida}}</td>
+                                                    <td class="py-1">{{$boletoRuta->ciudadLlegada}}</td>
+                                                    <td class="py-1">{{$boletoRuta->tAerolinea->razonSocial}}</td>
+                                                    <td class="py-1">{{$boletoRuta->vuelo}}</td>
+                                                    <td class="py-1">{{$boletoRuta->clase}}</td>
+                                                    <td class="py-1">{{$boletoRuta->fechaSalida}}</td>
+                                                    <td class="py-1">{{$boletoRuta->horaSalida}}</td>
+                                                    <td class="py-1">{{$boletoRuta->fechaLlegada}}</td>
+                                                    <td class="py-1">{{$boletoRuta->horaLlegada}}</td>
+                                                    <td class="py-1">{{$boletoRuta->farebasis}}</td>
+
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click='quitarRutaEdit("{{$boletoRuta->id}}")'>
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                @if($idRegistro==0)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Pagos
+                            </button>
+                        </h2>
+                        <div id="flush-collapseFour" class="accordion-collapse">
+                            <div class="seccion1">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="cboTipoPago" class="form-label">Medio de Pago:</label>
+                                        <select required name="idMedioPago" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoPago" wire:model.defer="idMedioPago">
+                                            <option value=''>--</option>
+                                            @foreach ($medioPagos as $medioPago)
+                                                <option value="{{$medioPago->id}}">{{$medioPago->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idMedioPago')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                        {{$idMedioPago}}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="cboTarjeta" class="form-label">Tarjeta:</label>
+                                        <select required name="idTarjetaCredito" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTarjeta" wire:model.defer="idTarjetaCredito">
+                                            <option value=''>--</option>
+                                            @foreach ($tarjetaCreditos as $tarjetaCredito)
+                                                <option value="{{$tarjetaCredito->id}}">{{$tarjetaCredito->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idTarjetaCredito')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtNumeroTarjeta" class="">Número Tarjeta:</label>
+                                        <input type="text" class="uTextBox" maxlength="19"  id="txtNumeroTarjeta" wire:model.lazy.defer="numeroTarjeta" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('numeroTarjeta')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtMonto" class="">Monto:</label>
+                                        <input required type="number" step="0.01" class="uTextBox"  id="txtMonto" wire:model.lazy.defer="monto">
+                                        @error('monto')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtFechaVencimiento" class="">F. Vencimiento:</label>
+                                        <input type="text" class="uTextBox" maxlength="5"  id="txtFechaVencimiento" wire:model.lazy.defer="fechaVencimientoTC" pattern="^(0[1-9]|1[0-2])\/\d{2}$" placeholder="MM/AA" onkeypress="return valideKey(event);">
+                                        @error('fechaVencimientoTC')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" style="margin-top: 20px" wire:click="addPago()">
+                                            <img src="{{ asset('img/add.png')}}" width="30px" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="seccion2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="tabla-listado">
+                                            <thead class="thead-listado">
+                                                <tr>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Medio Pago 
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Tipo Tarjeta
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Numero Tarjeta
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer" >
+                                                        Monto
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Vencimiento
+                                                    </th>
+                                                    <th scope="col" class="py-1 thAccion">
+                                                        Acción
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($boletoPagos as $boletoPago)
+                                    
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$boletoPago['medioPago']}}</td>
+                                                    <td class="py-1">{{$boletoPago['tarjetaCredito']}}</td>
+                                                    <td class="py-1">{{$boletoPago['numeroTarjeta']}}</td>
+                                                    <td class="py-1">{{$boletoPago['monto']}}</td>
+                                                    <td class="py-1">{{$boletoPago['fechaVencimientoTC']}}</td>
+
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click="quitarPago({{$loop->index}})">
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed text-bg-primary" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseOne">
+                                Pagos
+                            </button>
+                        </h2>
+                        <div id="flush-collapseFour" class="accordion-collapse">
+                            <div class="seccion1">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="cboTipoPago" class="form-label">Medio de Pago:</label>
+                                        <select required name="idMedioPago" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTipoPago" wire:model.defer="idMedioPago">
+                                            <option value=''>--</option>
+                                            @foreach ($medioPagos as $medioPago)
+                                                <option value="{{$medioPago->id}}">{{$medioPago->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idMedioPago')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="cboTarjeta" class="form-label">Tarjeta:</label>
+                                        <select required name="idTarjetaCredito" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTarjeta" wire:model.defer="idTarjetaCredito">
+                                            <option value=''>--</option>
+                                            @foreach ($tarjetaCreditos as $tarjetaCredito)
+                                                <option value="{{$tarjetaCredito->id}}">{{$tarjetaCredito->descripcion}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('idTarjetaCredito')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtNumeroTarjeta" class="">Número Tarjeta:</label>
+                                        <input type="text" class="uTextBox" maxlength="19"  id="txtNumeroTarjeta" wire:model.lazy.defer="numeroTarjeta" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                                        @error('numeroTarjeta')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtMonto" class="">Monto:</label>
+                                        <input required type="number" step="0.01" class="uTextBox"  id="txtMonto" wire:model.lazy.defer="monto">
+                                        @error('monto')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="txtFechaVencimiento" class="">F. Vencimiento:</label>
+                                        <input type="text" class="uTextBox" maxlength="5"  id="txtFechaVencimiento" wire:model.lazy.defer="fechaVencimientoTC" pattern="^(0[1-9]|1[0-2])\/\d{2}$" placeholder="MM/AA" onkeypress="return valideKey(event);">
+                                        @error('fechaVencimientoTC')
+                                            <span class="error">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" style="margin-top: 20px" wire:click="addPagoEdit">
+                                            <img src="{{ asset('img/add.png')}}" width="30px" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="seccion2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="tabla-listado">
+                                            <thead class="thead-listado">
+                                                <tr>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Medio Pago 
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Tipo Tarjeta
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        Numero Tarjeta
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer" >
+                                                        Monto
+                                                    </th>
+                                                    <th scope="col" class="py-1 cursor-pointer">
+                                                        F. Vencimiento
+                                                    </th>
+                                                    <th scope="col" class="py-1 thAccion">
+                                                        Acción
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($this->boletoPagosEdit as $boletoPago)
+                                    
+                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td class="py-1">{{$boletoPago->tMedioPago->descripcion}}</td>
+                                                    <td class="py-1">{{$boletoPago->tTarjetaCredito->descripcion}}</td>
+                                                    <td class="py-1">{{$boletoPago->numeroTarjeta}}</td>
+                                                    <td class="py-1">{{$boletoPago->monto}}</td>
+                                                    <td class="py-1">{{$boletoPago->fechaVencimientoTC}}</td>
+
+                                                    <td class="py-1">
+                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                            <button type="button" style="margin-top: 0px" wire:click='quitarPagoEdit("{{$boletoPago->id}}")'>
+                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
    
         </form>

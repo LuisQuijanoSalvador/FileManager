@@ -58,9 +58,9 @@ class Boletos extends Component
     
     public $ciudadSalida,$ciudadLlegada,$idAerolineaRuta=7,$vuelo,$clase,$fechaSalida,$horaSalida,$fechaLlegada,
             $horaLlegada,$farebasis;
-    Public $boletoRutas;
+    Public $boletoRutas,$boletoRutasEdit;
 
-    public $idMedioPago=6,$idTarjetaCredito=1,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos;
+    public $idMedioPago=6,$idTarjetaCredito=1,$numeroTarjeta,$monto,$fechaVencimientoTC,$boletoPagos,$boletoPagosEdit;
 
     Public $tarifaFee=0,$tipoDocFee=1;
     
@@ -498,6 +498,9 @@ class Boletos extends Component
         $this->fechaCreacion = Carbon::parse($boleto->created_at)->format("Y-m-d");
         $this->usuarioModificacion = $boleto->usuarioModificacion;
         $this->fechaModificacion = Carbon::parse($boleto->updated_at)->format("Y-m-d");
+
+        $this->boletoRutasEdit = BoletoRuta::where('idBoleto',$boleto->id)->get();
+        $this->boletoPagosEdit = BoletoPago::where('idBoleto',$boleto->id)->get();
         
         if($this->idDocumento){
             $oDocumento = Documento::find($this->idDocumento);
@@ -602,6 +605,33 @@ class Boletos extends Component
             $this->resetRutas();
         }  
     }
+
+    public function addRutaEdit(){
+        $boletoRuta = new BoletoRuta();
+        $boletoRuta->idBoleto = $this->idRegistro;
+        $boletoRuta->idAerolinea = $this->idAerolineaRuta;
+        $boletoRuta->ciudadSalida = $this->ciudadSalida;
+        $boletoRuta->ciudadLlegada = $this->ciudadLlegada;
+        $boletoRuta->vuelo = $this->vuelo;
+        $boletoRuta->clase = $this->clase;
+        $boletoRuta->fechaSalida = $this->fechaSalida;
+        $boletoRuta->horaSalida = $this->horaSalida;
+        $boletoRuta->fechaLlegada = $this->fechaLlegada;
+        $boletoRuta->horaLlegada = $this->horaLlegada;
+        $boletoRuta->farebasis = $this->farebasis;
+        $boletoRuta->idEstado = 1;
+        $boletoRuta->usuarioCreacion = auth()->user()->id;
+        $boletoRuta->save();
+        $this->boletoRutasEdit = BoletoRuta::where('idBoleto',$this->idRegistro)->get();
+        $this->resetRutas();
+    }
+
+    public function quitarRutaEdit($id){
+        $boletoRuta = BoletoRuta::find($id);
+        $boletoRuta->delete();
+        $this->boletoRutasEdit = BoletoRuta::where('idBoleto',$this->idRegistro)->get();
+    }
+
     public function getRutaDestino($ruta){
         $cRuta = "";
         $contador = 0;
@@ -637,12 +667,9 @@ class Boletos extends Component
     public function resetRutas(){
         $this->ciudadSalida = '';
         $this->ciudadLlegada = '';
-        $this->idAerolineaRuta = '';
         $this->vuelo = '';
         $this->clase = '';
-        $this->fechaSalida = '';
         $this->horaSalida = '';
-        $this->fechaLlegada = '';
         $this->horaLlegada = '';
         $this->farebasis = '';
 
@@ -666,8 +693,6 @@ class Boletos extends Component
     }
 
     public function resetPagos(){
-        $this->idMedioPago = '';
-        $this->idTarjetaCredito = '';
         $this->numeroTarjeta = '';
         $this->monto = '';
         $this->fechaVencimientoTC = '';
@@ -675,6 +700,27 @@ class Boletos extends Component
 
     public function quitarPago($indice){
         unset($this->boletoPagos[$indice]);
+    }
+
+    public function addPagoEdit(){
+        $boletoPago = new BoletoPago();
+        $boletoPago->idBoleto = $this->idRegistro;
+        $boletoPago->idMedioPago = $this->idMedioPago;
+        $boletoPago->idTarjetaCredito = $this->idTarjetaCredito;
+        $boletoPago->numeroTarjeta = $this->numeroTarjeta;
+        $boletoPago->monto = $this->monto;
+        $boletoPago->fechaVencimientoTC = $this->fechaVencimientoTC;
+        $boletoPago->idEstado = 1;
+        $boletoPago->usuarioCreacion = auth()->user()->id;
+        $boletoPago->save();
+        $this->boletoPagosEdit = BoletoPago::where('idBoleto',$this->idRegistro)->get();
+        $this->resetPagos();
+    }
+
+    public function quitarPagoEdit($id){
+        $boletoPago = BoletoPago::find($id);
+        $boletoPago->delete();
+        $this->boletoPagosEdit = BoletoPago::where('idBoleto',$this->idRegistro)->get();
     }
 
     public function vaciarRutas($idBoleto){
