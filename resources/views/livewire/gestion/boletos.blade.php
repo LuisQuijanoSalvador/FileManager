@@ -807,29 +807,31 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($boletoRutas as $boletoRuta)
-                                    
-                                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                    <td class="py-1">{{$boletoRuta['ciudadSalida']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['ciudadLlegada']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['aerolinea']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['vuelo']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['clase']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['fechaSalida']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['horaSalida']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['fechaLlegada']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['horaLlegada']}}</td>
-                                                    <td class="py-1">{{$boletoRuta['farebasis']}}</td>
+                                                @if($boletoRutas)
+                                                    @foreach ($boletoRutas as $boletoRuta)
+                                        
+                                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                        <td class="py-1">{{$boletoRuta['ciudadSalida']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['ciudadLlegada']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['aerolinea']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['vuelo']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['clase']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['fechaSalida']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['horaSalida']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['fechaLlegada']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['horaLlegada']}}</td>
+                                                        <td class="py-1">{{$boletoRuta['farebasis']}}</td>
 
-                                                    <td class="py-1">
-                                                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                                                            <button type="button" style="margin-top: 0px" wire:click="quitarRuta({{$loop->index}})">
-                                                                <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
+                                                        <td class="py-1">
+                                                            <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                                                                <button type="button" style="margin-top: 0px" wire:click="quitarRuta({{$loop->index}})">
+                                                                    <img src="{{ asset('img/delete.png')}}" width="20px" style="margin-bottom: 3px">
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
@@ -1093,6 +1095,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @if($boletoPagos)
                                                 @foreach ($boletoPagos as $boletoPago)
                                     
                                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -1111,6 +1114,7 @@
                                                     </td>
                                                 </tr>
                                                 @endforeach
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>

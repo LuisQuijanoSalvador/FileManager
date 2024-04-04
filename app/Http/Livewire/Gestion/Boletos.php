@@ -352,27 +352,25 @@ class Boletos extends Component
 
     public function grabarRutas($idBoleto){
         //TODO: Corregir para grbar desde el array 
-        // foreach ($this->boletoRutas as $indice => $descripcion) {
-        //     $boletoRuta = new BoletoRuta();
-        //     $boletoRuta->idBoleto = $idBoleto;
-        //     $boletoRuta->idAerolinea = $this->boletoRutas[0]["idAerolinea"];
-        // }
-        $boletoRuta = new BoletoRuta();
-        $boletoRuta->idBoleto = $idBoleto;
-        $boletoRuta->idAerolinea = $this->boletoRutas[0]["idAerolinea"];
-        $boletoRuta->ciudadSalida = $this->boletoRutas[0]["ciudadSalida"];
-        $boletoRuta->ciudadLlegada = $this->boletoRutas[0]["ciudadLlegada"];
-        $boletoRuta->vuelo = $this->boletoRutas[0]["vuelo"];
-        $boletoRuta->clase = $this->boletoRutas[0]["clase"];
-        $boletoRuta->fechaSalida = $this->boletoRutas[0]["fechaSalida"];
-        $boletoRuta->horaSalida = $this->boletoRutas[0]["horaSalida"];
-        $boletoRuta->fechaLlegada = $this->boletoRutas[0]["fechaLlegada"];
-        $boletoRuta->horaLlegada = $this->boletoRutas[0]["horaLlegada"];
-        $boletoRuta->farebasis = $this->boletoRutas[0]["farebasis"];
-        $boletoRuta->idEstado = 1;
-        $boletoRuta->usuarioCreacion = auth()->user()->id;
-        // dd($boletoRuta);
-        $boletoRuta->save();
+        $tam = count($this->boletoRutas);
+        for ($i=0; $i < $tam; $i++) { 
+            $boletoRuta = new BoletoRuta();
+            $boletoRuta->idBoleto = $idBoleto;
+            $boletoRuta->idAerolinea = $this->boletoRutas[$i]["idAerolinea"];
+            $boletoRuta->ciudadSalida = $this->boletoRutas[$i]["ciudadSalida"];
+            $boletoRuta->ciudadLlegada = $this->boletoRutas[$i]["ciudadLlegada"];
+            $boletoRuta->vuelo = $this->boletoRutas[$i]["vuelo"];
+            $boletoRuta->clase = $this->boletoRutas[$i]["clase"];
+            $boletoRuta->fechaSalida = $this->boletoRutas[$i]["fechaSalida"];
+            $boletoRuta->horaSalida = $this->boletoRutas[$i]["horaSalida"];
+            $boletoRuta->fechaLlegada = $this->boletoRutas[$i]["fechaLlegada"];
+            $boletoRuta->horaLlegada = $this->boletoRutas[$i]["horaLlegada"];
+            $boletoRuta->farebasis = $this->boletoRutas[$i]["farebasis"];
+            $boletoRuta->idEstado = 1;
+            $boletoRuta->usuarioCreacion = auth()->user()->id;
+            
+            $boletoRuta->save();
+        }
     }
 
     public function grabarPagos($idBoleto){
@@ -414,21 +412,21 @@ class Boletos extends Component
         $this->ruta = '';
         $this->destino = '';
         $this->idDocumento = '';
-        $this->tipoCambio = '';
+        $this->tipoCambio = 0;
         $this->idMoneda = '';
-        $this->tarifaNeta = '';
-        $this->igv = '';
-        $this->otrosImpuestos = '';
-        $this->xm = '';
-        $this->total = '';
-        $this->totalOrigen = '';
-        $this->porcentajeComision = '';
-        $this->montoComision = '';
-        $this->descuentoCorporativo = '';
+        $this->tarifaNeta = 0;
+        $this->igv = 0;
+        $this->otrosImpuestos = 0;
+        $this->xm = 0;
+        $this->total = 0;
+        $this->totalOrigen = 0;
+        $this->porcentajeComision = 0;
+        $this->montoComision = 0;
+        $this->descuentoCorporativo = 0;
         $this->codigoDescCorp = '';
-        $this->tarifaNormal = '';
-        $this->tarifaAlta = '';
-        $this->tarifaBaja = '';
+        $this->tarifaNormal = 0;
+        $this->tarifaAlta = 0;
+        $this->tarifaBaja = 0;
         $this->idTipoPagoConsolidador = '';
         $this->centroCosto = '';
         $this->cod1 = '';
@@ -439,6 +437,8 @@ class Boletos extends Component
         $this->estado = '';
         $this->usuarioCreacion = '';
         $this->usuarioModificacion = '';
+        $this->boletoRutas = NULL;
+        $this->boletoPagos = NULL;
     }
 
     public function editar($id){

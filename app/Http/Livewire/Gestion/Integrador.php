@@ -139,7 +139,11 @@ class Integrador extends Component
             $posRuta = strpos($linea,"FARE CALC:");
             if ($posRuta !== false) {
                 $cadena = Str::remove(range(0,9),$linea);
-                $cadena = Str::remove(".",$cadena);
+                $cadena = Str::remove("USD",$cadena);
+                $cadena = Str::remove("END",$cadena);
+                // $cadena = Str::remove(".",$cadena);
+                $cadena = str_replace("."," ",$cadena);
+                
                 $cadena = Str::remove("NUC",$cadena);
                 $palabras = Str::of($cadena)->explode(' ');
                 $palabras3 = $palabras->filter(function($palabra){
@@ -149,7 +153,7 @@ class Integrador extends Component
                     $this->ruta = $this->ruta . $word . "/";
                 }
                 $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
-
+                dd($this->ruta);
                 $dest = str_replace("/","",$this->ruta);
                 $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
                 $this->destino =  substr($dest, $incioCadena, 3);
