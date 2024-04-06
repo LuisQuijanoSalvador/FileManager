@@ -153,7 +153,7 @@ class Integrador extends Component
                     $this->ruta = $this->ruta . $word . "/";
                 }
                 $this->ruta = substr($this->ruta,0,strlen($this->ruta)-1);
-                dd($this->ruta);
+                
                 $dest = str_replace("/","",$this->ruta);
                 $incioCadena = round(((strlen($dest) / 3) / 2),0,PHP_ROUND_HALF_DOWN) * 3;
                 $this->destino =  substr($dest, $incioCadena, 3);
