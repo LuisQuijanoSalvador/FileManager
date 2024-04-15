@@ -43,6 +43,7 @@ class Servicios extends Component
     public $solicitantes;
     public $selectedCliente = NULL;
     public $selectedSolicitante = NULL;
+    public $filtroCliente;
 
     public $idRegistro=0,$numeroServicio,$numeroFile,$fechaEmision,$idCounter,
             $idTipoFacturacion,$idTipoDocumento=1,$idArea,$idVendedor,$idProveedor=0,
@@ -221,10 +222,25 @@ class Servicios extends Component
     
     public function render()
     {
-        $servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
-                            ->orwhere('pasajero', 'like', "%$this->search%")
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(6);
+        $servicios = Servicio::query()
+            ->when($this->filtroCliente, function($query){
+                $query->where('idCliente', $this->filtroCliente);
+            })
+            ->when($this->search, function($query){
+                $query->where(function ($subquery) {
+                    $subquery->where('pasajero', 'like', '%' . $this->search . '%')
+                        ->orWhere('numeroFile', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->orderBy($this->sort, $this->direction)
+            ->paginate(6);
+
+            
+
+        // $servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
+        //                     ->orwhere('pasajero', 'like', "%$this->search%")
+        //                     ->orderBy($this->sort, $this->direction)
+        //                     ->paginate(6);
 
         // $servicios = Servicio::join('clientes', 'servicios.idCliente', '=', 'clientes.id')
         // ->join('documentos', 'servicios.idDocumento', '=', 'documentos.id')

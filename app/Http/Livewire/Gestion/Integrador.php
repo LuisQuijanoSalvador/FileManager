@@ -882,7 +882,14 @@ class Integrador extends Component
             }
             
         }
-
+        
+        for ($i=0; $i < count($boleto) ; $i++) { 
+            $posTotal = strpos($boleto[$i],"Itinerary");
+            if ($posTotal !== false){
+                dd($boleto[$i]);
+            }
+        }
+        dd('No hizo ni mergas');
         $this->idGds = 4;
         $this->grabarBoleto();
         // dd($this->idAerolinea);

@@ -3,13 +3,22 @@
 @endphp
 <div>
     {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="div-filtro">
         <input type="text" class="txtFiltro" id="txtFiltro" wire:model="search" placeholder="Digite el criterio a buscar">
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+        <div>
+            <select name="selectedCliente" style="width: 100%; display:block;font-size: 0.9em; height:31px;" class="rounded" id="cboCliente" wire:model="filtroCliente">
+                <option value="">-- Filtrar por Cliente --</option>
+                @foreach ($clientes as $cliente)
+                    <option value="{{$cliente->id}}">{{$cliente->razonSocial}}</option>
+                @endforeach
+            </select>
+        </div>
+        
         <div>
             <button type="button" class="btn btn-success" wire:click='exportar'>Exportar</button>
             <button type="button" class="btn btn-primary rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal">Nuevo</button>
@@ -67,25 +76,27 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($servicios as $servicio)
+            @if($servicios)
+                @foreach ($servicios as $servicio)
 
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td class="py-1">{{$servicio->id}}</td>
-                <td class="py-1">{{$servicio->numeroFile}}</td>
-                <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
-                <td class="py-1">{{Carbon::parse($servicio->fechaEmision)->format("d-m-Y")}}</td>
-                <td class="py-1">{{$servicio->pasajero}}</td>
-                <td class="py-1">@if($servicio->tDocumento){{$servicio->tDocumento->serie . '-' . str_pad($servicio->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td>
-                <td class="py-1">{{$servicio->tTipoServicio->descripcion}}</td>
-                <td class="py-1">{{$servicio->tEstado->descripcion}}</td>
-                <td class="py-1">
-                    <div class="btn-group text-end" role="group" aria-label="Botones de accion">
-                        <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$servicio->id}}")'>Editar</button>
-                        <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$servicio->id}}")'>Eliminar</button>
-                    </div>
-                </td>
-            </tr>
-            @endforeach
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <td class="py-1">{{$servicio->id}}</td>
+                    <td class="py-1">{{$servicio->numeroFile}}</td>
+                    <td class="py-1">{{$servicio->tcliente->razonSocial}}</td>
+                    <td class="py-1">{{Carbon::parse($servicio->fechaEmision)->format("d-m-Y")}}</td>
+                    <td class="py-1">{{$servicio->pasajero}}</td>
+                    <td class="py-1">@if($servicio->tDocumento){{$servicio->tDocumento->serie . '-' . str_pad($servicio->tDocumento->numero,8,"0",STR_PAD_LEFT)}}@else - @endif</td>
+                    <td class="py-1">{{$servicio->tTipoServicio->descripcion}}</td>
+                    <td class="py-1">{{$servicio->tEstado->descripcion}}</td>
+                    <td class="py-1">
+                        <div class="btn-group text-end" role="group" aria-label="Botones de accion">
+                            <button type="button" class="btn btn-outline-primary mr-2 rounded" data-bs-toggle="modal" data-bs-target="#FormularioModal" wire:click='editar("{{$servicio->id}}")'>Editar</button>
+                            <button type="button" class="btn btn-danger rounded" data-bs-toggle="modal" data-bs-target="#ModalEliminacion" wire:click='encontrar("{{$servicio->id}}")'>Eliminar</button>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
     {{$servicios->links()}}

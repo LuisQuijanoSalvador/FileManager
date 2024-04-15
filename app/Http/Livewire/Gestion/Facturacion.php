@@ -47,6 +47,14 @@ class Facturacion extends Component
         //                         ->orderBy($this->sort, $this->direction)
         //                         ->get();
 
+        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
+                            ->whereNull('idDocumento')
+                            ->where('idTipoFacturacion',1)
+                            ->where('estado',1)
+                            ->orderBy($this->sort, $this->direction)
+                            // ->paginate(10);
+                            ->get();
+
         $fechaActual = Carbon::now();
         
         $this->fechaEmision = Carbon::parse($fechaActual)->format("Y-m-d");
@@ -61,14 +69,6 @@ class Facturacion extends Component
     
     public function render()
     {
-        
-        $this->boletos = Boleto::where('numeroBoleto', 'like', "%$this->search%")
-                            ->whereNull('idDocumento')
-                            ->where('idTipoFacturacion',1)
-                            ->where('estado',1)
-                            ->orderBy($this->sort, $this->direction)
-                            // ->paginate(10);
-                            ->get();
         $monedas = moneda::all()->sortBy('codigo');
         $medioPagos = MedioPago::all()->sortBy('codigo');
         $clientes = Cliente::all()->sortBy('razonSocial');
@@ -87,7 +87,7 @@ class Facturacion extends Component
                                 ->orderBy($this->sort, $this->direction)
                                 ->get();
                                 // ->paginate(10);
-        }else{
+        }else if (!$this->idCliente and $this->startDate and $this->endDate){
             $this->boletos = Boleto::where('idTipoFacturacion',1)
                                 ->whereNull('idDocumento')
                                 ->where('estado',1)
@@ -95,7 +95,9 @@ class Facturacion extends Component
                                 ->orderBy($this->sort, $this->direction)
                                 ->get();
                                 // ->paginate(10);
-            }
+        }else{
+            session()->flash('error', 'Verifique los datos del filtro');
+        }
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -217,7 +219,7 @@ class Facturacion extends Component
             
             $this->glosa = 'SOLICITADO POR: ' . $cSolic . '<br>' . 'POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: <br>';
             foreach($boletos as $boleto){
-                $this->glosa = $this->glosa . 'PAX: ' . $boleto->pasajero . ' TKT: ' . $boleto->tAerolinea->codigoIata . ' - ' . $boleto->numeroBoleto . ' RUTA: ' . $boleto->ruta . ' ' . $boleto->tAerolinea->razonSocial .'<br>';
+                $this->glosa = $this->glosa . 'PAX: ' . strtoupper($boleto->pasajero) . ' TKT: ' . $boleto->tAerolinea->codigoIata . ' - ' . $boleto->numeroBoleto . ' RUTA: ' . $boleto->ruta . ' ' . $boleto->tAerolinea->razonSocial .'<br>';
             }
             
             // $this->glosa = 'SOLICITADO POR: ' . $cSolic . ' | POR LA COMPRA DE BOLETO(S) AEREOS A FAVOR DE: ' . $dataBoleto->pasajero . ' | ' . 'RUTA: ' . $dataBoleto->ruta . ' TKT: ' . $dataBoleto->tAerolinea->codigoIata . ' - ' . $dataBoleto->numeroBoleto . ' EN ' . $dataBoleto->tAerolinea->razonSocial;

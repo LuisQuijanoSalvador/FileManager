@@ -19,6 +19,8 @@ use App\Models\TipoDocumentoIdentidad;
 use App\Models\Cargo;
 use App\Models\MedioPago;
 use App\Models\ServicioPago;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\FacservacExport;
 
 class Facturacionserv extends Component
 {
@@ -28,16 +30,23 @@ class Facturacionserv extends Component
     public $sort= 'numeroFile';
     public $direction = 'asc';
 
-    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",
+    public $idRegistro,$idMoneda=1,$tipoCambio,$fechaEmision,$detraccion=0,$glosa="",$descripcion="",$idCliente,
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$monedaLetra,$respSenda,
             $numeroTelefono,$chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, 
             $desc_metodopago,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0;
+            $totalTotal = 0, $startDate, $endDate;
     protected $servicios=[];
 
     public $selectedRows = [];
 
     public function mount(){
+        $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
+                            ->whereNull('idDocumento')
+                            ->where('idTipoFacturacion',1)
+                            ->where('estado',1)
+                            ->orderBy($this->sort, $this->direction)
+                            ->get();
+
         $fechaActual = Carbon::now();
         
         $this->fechaEmision = Carbon::parse($fechaActual)->format("Y-m-d");
@@ -52,16 +61,11 @@ class Facturacionserv extends Component
 
     public function render()
     {
-        $this->servicios = Servicio::where('numeroFile', 'like', "%$this->search%")
-                            ->whereNull('idDocumento')
-                            ->where('idTipoFacturacion',1)
-                            ->where('estado',1)
-                            ->orderBy($this->sort, $this->direction)
-                            ->paginate(10);
         $monedas = moneda::all()->sortBy('codigo');
+        $clientes = Cliente::all()->sortBy('razonSocial');
         $medioPagos = MedioPago::all()->sortBy('codigo');
         
-        return view('livewire.gestion.facturacionserv',compact('monedas','medioPagos'));
+        return view('livewire.gestion.facturacionserv',compact('monedas','medioPagos','clientes'));
     }
 
     public function updatedfechaEmision($fechaEmision){
@@ -72,6 +76,31 @@ class Facturacionserv extends Component
             $this->tipoCambio = 0.00;
         }
         //dd($this->tipoCambio);
+    }
+
+    public function filtrar(){
+        if ($this->idCliente and $this->startDate and $this->endDate) {
+
+            $this->servicios = Servicio::where('idCliente', $this->idCliente)
+                                ->whereNull('idDocumento')
+                                ->where('idTipoFacturacion',1)
+                                ->where('estado',1)
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->get();
+                                // ->paginate(10);
+        }else if (!$this->idCliente and $this->startDate and $this->endDate){
+            $this->servicios = Servicio::where('idTipoFacturacion',1)
+                                ->whereNull('idDocumento')
+                                ->where('estado',1)
+                                ->whereBetween('fechaEmision', [$this->startDate, $this->endDate])
+                                ->orderBy($this->sort, $this->direction)
+                                ->get();
+                                // ->paginate(10);
+        }else{
+            session()->flash('error', 'Verifique los datos del filtro');
+        }
+        
     }
 
     public function emitirComprobante()
@@ -1511,4 +1540,8 @@ class Facturacionserv extends Component
         
         
     } 
+
+    public function exportar(){
+        return Excel::download(new FacservacExport($this->idCliente,$this->startDate,$this->endDate),'ServiciosFacturados.xlsx');
+    }
 }

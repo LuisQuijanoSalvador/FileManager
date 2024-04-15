@@ -1,8 +1,18 @@
 <div>
     {{-- The best athlete wants his opponent at his best. --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="row">
         <div class="col-md-3">
-            <select name="vendedor" class="form-select" id="cboVendedor" wire:model.lazy="vendedor">
+            <select name="vendedor" class="" id="cboVendedor" wire:model.lazy="vendedor">
                 <option>==Seleccione un Vendedor==</option>
                 @foreach ($vendedors as $vendedor)
                     <option value={{$vendedor->id}}>{{$vendedor->nombre}}</option>
@@ -22,6 +32,14 @@
             <input type="date" wire:model.lazy.defer="fechaFin" id="fechaFin">
         </div>
         <div class="col-md-2">
+            <select name="vendedor" class="" id="cboVendedor" wire:model.lazy="tipoComision">
+                <option>Seleccione Tipo</option>
+                <option value="BOLETOS">BOLETOS</option>
+                <option value="SERVICIOS">SERVICIOS</option>
+            
+            </select>
+        </div>
+        <div class="col-md-1">
             <button type="button" class="btn btn-primary" wire:click="filtrar" >Filtrar</button>
         </div>
     </div>
@@ -59,47 +77,44 @@
                         TARIFA
                     </th>
                     <th scope="col" class="py-1">
-                        MONTO COMISION
+                        XM
                     </th>
                     <th scope="col" class="py-1">
-                        % COMISION
+                        NETO XM
                     </th>
                     <th scope="col" class="py-1">
-                        OVER
+                        NUM DOCUMENTO
                     </th>
                     <th scope="col" class="py-1">
-                        OVER_
+                        MEDIO PAGO
                     </th>
                     <th scope="col" class="py-1">
-                        % OVER
+                        %COMISION
                     </th>
                     <th scope="col" class="py-1">
-                        NUM. DOCUMENTO
-                    </th>
-                    <th scope="col" class="py-1">
-                        TOTAL
-                    </th>
-                    <th scope="col" class="py-1">
-                        FORMA PAGO
-                    </th>
-                    <th scope="col" class="py-1">
-                        COM. VENDEDOR
+                        COMISION
                     </th>
                 </tr>
             </thead>
             <tbody>
                 @if($this->comisiones)
-                    @foreach ($this->comisiones as $margen)
+                    @foreach ($this->comisiones as $comision)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="py-1">{{$margen->Origen}}</td>
-                            <td class="py-1">{{$margen->Tipo}}</td>
-                            <td class="py-1">{{$margen->NumeroBoleto}}</td>
-                            <td class="py-1">{{$margen->FILE}}</td>
-                            <td class="py-1">{{$margen->Cliente}}</td>
-                            <td class="py-1">{{$margen->Counter}}</td>
-                            <td class="py-1">{{$margen->FechaEmision}}</td>
-                            <td class="py-1">{{$margen->Ruta}}</td>
-                            <td class="py-1">{{$margen->XM}}</td>
+                            <td class="py-1">{{\Carbon\Carbon::parse($comision->fechaEmision)->format('d-m-Y')}}</td>
+                            <td class="py-1">{{$comision->Proveedor}}</td>
+                            <td class="py-1">{{$comision->numeroBoleto}}</td>
+                            <td class="py-1">{{$comision->Cliente}}</td>
+                            <td class="py-1">{{$comision->pasajero}}</td>
+                            <td class="py-1">{{$comision->tipoRuta}}</td>
+                            <td class="py-1">{{$comision->ruta}}</td>
+                            <td class="py-1">{{$comision->Moneda}}</td>
+                            <td class="py-1">{{$comision->tarifaNeta}}</td>
+                            <td class="py-1">{{$comision->xm}}</td>
+                            <td class="py-1">{{$comision->netoXM}}</td>
+                            <td class="py-1">{{$comision->numeroDocumento}}</td>
+                            <td class="py-1">{{$comision->medioPago}}</td>
+                            <td class="py-1">{{$comision->Porcentaje}}</td>
+                            <td class="py-1">{{$comision->Comision}}</td>
                         </tr>
                     @endforeach
                 @endif

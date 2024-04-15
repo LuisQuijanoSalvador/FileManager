@@ -12,7 +12,7 @@ use App\Models\Vendedor;
 class Comisiones extends Component
 {
     protected $comisiones;
-    public $fechaInicio, $fechaFin;
+    public $fechaInicio, $fechaFin, $vendedor, $tipoComision;
 
     public function mount(){
         $fechaActual = Carbon::now();
@@ -27,10 +27,48 @@ class Comisiones extends Component
     }
 
     public function filtrar(){
-        // $this->comisiones = DB::select('CALL get_comision_fechas(?, ?)', [$this->fechaInicio, $this->fechaFin]);
+        // dd($this->tipoComision);
+        if($this->tipoComision == 'BOLETOS'){
+            $this->filtrarBoletos();
+        }else if($this->tipoComision == 'SERVICIOS'){
+            $this->filtrarServicios();
+        }else{
+            session()->flash('error', 'Seleccione tipo de comisión');
+        }
+    }
+    public function filtrarBoletos(){
+        if($this->fechaInicio and $this->fechaFin and $this->vendedor){
+            $this->comisiones = DB::table('vista_comision_boletos')
+                            ->where('idVendedor',$this->vendedor)
+                            ->whereBetween('FechaEmision',[$this->fechaInicio, $this->fechaFin])
+                            ->orderby('fechaEmision')
+                            ->get();
+        }
+        if($this->fechaInicio and $this->fechaFin and !$this->vendedor){
+            $this->comisiones = DB::table('vista_comision_boletos')
+                            ->whereBetween('fechaEmision',[$this->fechaInicio, $this->fechaFin])
+                            ->orderBy('fechaEmision')
+                            ->get();
+        }
+    }
+
+    public function filtrarServicios(){
+        if($this->fechaInicio and $this->fechaFin and $this->vendedor){
+            $this->comisiones = DB::table('vista_comision_servicios')
+                            ->where('idVendedor',$this->vendedor)
+                            ->whereBetween('FechaEmision',[$this->fechaInicio, $this->fechaFin])
+                            ->orderby('fechaEmision')
+                            ->get();
+        }
+        if($this->fechaInicio and $this->fechaFin and !$this->vendedor){
+            $this->comisiones = DB::table('vista_comision_servicios')
+                            ->whereBetween('fechaEmision',[$this->fechaInicio, $this->fechaFin])
+                            ->orderBy('fechaEmision')
+                            ->get();
+        }
     }
 
     public function exportar(){
-        // return Excel::download(new ComisionesExport($this->fechaInicio,$this->fechaFin),'Comision.xlsx');
+        return Excel::download(new ComisionesExport($this->fechaInicio,$this->fechaFin,$this->vendedor, $this->tipoComision),'Comision.xlsx');
     }
 }
