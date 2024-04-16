@@ -17,9 +17,9 @@ use Maatwebsite\Excel\Facades\Excel;
 class Abonos extends Component
 {
     public $selectedIds, $datos, $fechaAbono, $tipoCambio, $moneda = 1, $idBanco = 2, $idTarjetaCredito = 1,
-    $idMedioPago = 1, $observaciones = '', $referencia = '', $totalPagos = 0;
+    $idMedioPago = 1, $observaciones = '', $referencia = '', $totalPagos = 0, $totalAbono;
 
-    public $abonos,$fechaInicio,$fechaFin;
+    public $abonos,$abonosVista, $fechaInicio,$fechaFin;
 
     public function mount(){
         $this->poblarGrid();
@@ -68,7 +68,16 @@ class Abonos extends Component
     }
 
     public function ver($numAbono){
-        $abonos = Abono::where('numeroAbono',$numAbono)->get();
+        $this->abonosVista = DB::table('vista_abonos')
+                            ->where('numeroAbono',$numAbono)
+                            ->orderBy('fechaAbono')
+                            ->get();
+        $totalAb = 0;
+        foreach($this->abonosVista as $abonoVIsta){
+            $totalAb = $totalAb + $abonoVIsta->Abono;
+        }
+        // $this->totalAbono = round($totalAb,2);
+        $this->totalAbono = number_format($totalAb, 2, '.', '');
         $abono = Abono::where('numeroAbono',$numAbono)->first();
         $this->fechaAbono = $abono->fechaAbono;
         $this->idMedioPago = $abono->idMedioPago;

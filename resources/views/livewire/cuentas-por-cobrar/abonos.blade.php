@@ -94,7 +94,7 @@
     </div>
     <button @if(!$abonos) disabled @elseif(count($abonos) == 0) disabled @endif type="button" class="btn btn-success rounded" wire:click='exportar'>Exportar</button>
 
-
+    {{-- Modal para visualizar --}}
     <div class="modal fade" id="modalVer" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -106,11 +106,11 @@
                 <div class="row">
                     <div class="col-md-4">
                         <label for="txtFechaAbono" class="form-label">F. Abono:</label>
-                        <input type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaAbono" wire:model.lazy.defer="fechaAbono">
+                        <input disabled type="date" class="" style="width: 100%; display:block;font-size: 0.8em;font-size: 0.8em;" id="txtFechaAbono" wire:model.lazy.defer="fechaAbono">
                     </div>
                     <div class="col-md-4">
                         <label for="idMedioPago" class="form-label">Medio Pago:</label>
-                        <select name="idMedioPago" style="width: 100%;font-size: 0.8em; display:inline;" id="cboFPago" wire:model.lazy.defer="idMedioPago">
+                        <select disabled name="idMedioPago" style="width: 100%;font-size: 0.8em; display:inline;" id="cboFPago" wire:model.lazy.defer="idMedioPago">
                             <option>==Seleccione una opción==</option>
                             @foreach ($medioPagos as $medioPago)
                                 <option value={{$medioPago->id}}>{{$medioPago->descripcion}}</option>
@@ -119,13 +119,13 @@
                     </div>
                     <div class="col-md-4">
                         <label for="txtReferencia" class="">Nro.Tarj/Deposito:</label>
-                        <input type="text" class="uTextBox" id="txtReferencia" wire:model.lazy="referencia" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        <input disabled type="text" class="uTextBox" id="txtReferencia" wire:model.lazy="referencia" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">
                         <label for="cboTarjeta" class="form-label">Tarjeta:</label>
-                        <select name="idTarjetaCredito" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTarjeta" wire:model.defer="idTarjetaCredito">
+                        <select disabled name="idTarjetaCredito" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboTarjeta" wire:model.defer="idTarjetaCredito">
                             <option>Seleccione una Opción</option>
                             @foreach ($tarjetaCreditos as $tarjetaCredito)
                                 <option value="{{$tarjetaCredito->id}}">{{$tarjetaCredito->descripcion}}</option>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="cboBanco" class="form-label">Banco:</label>
-                        <select name="idBanco" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboBanco" wire:model.defer="idBanco">
+                        <select disabled name="idBanco" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboBanco" wire:model.defer="idBanco">
                             <option>Seleccione una Opción</option>
                             @foreach ($bancos as $banco)
                                 <option value="{{$banco->id}}">{{$banco->nombre}}</option>
@@ -143,7 +143,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="cboMoneda" class="form-label">Moneda:</label>
-                        <select name="moneda" style="width: 100%;font-size: 0.8em; display:block;" id="cboMoneda" wire:model.lazy.defer="moneda">
+                        <select disabled name="moneda" style="width: 100%;font-size: 0.8em; display:block;" id="cboMoneda" wire:model.lazy.defer="moneda">
                             <option>==Seleccione una opción==</option>
                             @foreach ($monedas as $moneda)
                                 <option value={{$moneda->id}}>{{$moneda->codigo}}</option>
@@ -156,21 +156,69 @@
                         <label for="txtTipoCambio" class="form-label">Tipo Cambio:</label>
                         <input type="number" disabled class="uTextBox" id="txtTipoCambio" wire:model.lazy.defer="tipoCambio">
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <label for="txtObservaciones" class="form-label">Concepto:</label>
-                        <input type="text" class="uTextBox" id="txtObservaciones" wire:model.lazy.defer="observaciones" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                        <input disabled type="text" class="uTextBox" id="txtObservaciones" wire:model.lazy.defer="observaciones" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="txtTotal" class="form-label">Total:</label>
+                        <input disabled type="text" class="uTextBox" id="txtTotal" wire:model.lazy.defer="totalAbono">
                     </div>
                 </div>
+                <hr>
+                <div class="contenedorTabla">
+                    <table class="tabla-listado">
+                        <thead class="thead-listado">
+                            <tr>
+                                <th scope="col">Abono</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Documento</th>
+                                <th scope="col">Cargo</th>
+                                <th scope="col">Abono</th>
+                                <th scope="col">Saldo</th>
+                                <th scope="col">Moneda</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if($this->abonosVista)
+                            @foreach ($this->abonosVista as $abono)
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="py-1">{{$abono->numeroAbono}}</td>
+                                    <td class="py-1">{{$abono->fechaAbono}}</td>
+                                    <td class="py-1">{{$abono->Documento}}</td>
+                                    <td class="py-1">{{$abono->montoCargo}}</td>
+                                    <td class="py-1">{{$abono->Abono}}</td>
+                                    <td class="py-1">{{$abono->Saldo}}</td>
+                                    <td class="py-1">{{$abono->Moneda}}</td>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @endif
+                            {{-- @php
+                                $totalPagos = 0;
+                                foreach ($this->abonos as $cargo) {
+                                    $totalPagos += $pagos[$cargo->id] ?? 0;
+                                }
+                                $this->totalPagos = $totalPagos;
+                            @endphp
+                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td colspan="6"></td>
+                                <td colspan="4" class="text-right font-weight-bold">Total de Pagos: {{$totalPagos}} &nbsp;&nbsp;&nbsp;</td>
+                            </tr> --}}
+                            
+                        </tbody>
+                    </table>
+                </div> 
                 <hr>
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
           </div>
         </div>
     </div>
+    {{-- Fin del modal  --}}
 
 </div>
 
