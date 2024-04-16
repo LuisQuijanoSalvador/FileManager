@@ -196,6 +196,7 @@ class Facturacion extends Component
         if($cliente->montoCredito > 0){
             $this->idMedioPago = 10;
         }
+        
         if($this->chkMedioPago){
             $this->idMedioPago = $this->idMedioPagoCambio;
             if(!$this->idMedioPago){
@@ -262,6 +263,23 @@ class Facturacion extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
+
+        $medioPago = MedioPago::find($documento->idMedioPago);
+        if($medioPago->id == 10){
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CRE";
+            $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
+        }else{
+            $this->metodo_pago = $medioPago->descripcion;
+            $this->codigo_metodopago = "CON";
+            $this->desc_metodopago = "";
+        }
+
+        // if($dataBoleto->idTipoDocumento == 6){
+        //     $this->enviaDC($documento);
+        // }else{
+        //     $this->enviaCPE($documento);
+        // }
         
         $documento->save();
 
@@ -276,27 +294,9 @@ class Facturacion extends Component
                 $funciones->grabarCorrelativo('BOLETA',$numComprobante);
                 break;
         }
-        
-        $medioPago = MedioPago::find($documento->idMedioPago);
-        
-        if($medioPago->id == 10){
-            $this->metodo_pago = $medioPago->descripcion;
-            $this->codigo_metodopago = "CRE";
-            $this->desc_metodopago = $documento->total . "," . "1;" . $documento->total . ";" . $documento->fechaVencimiento;
-        }else{
-            $this->metodo_pago = $medioPago->descripcion;
-            $this->codigo_metodopago = "CON";
-            $this->desc_metodopago = "";
-        }
 
         Boleto::whereIn('id',$this->selectedRows)
         ->update(['idDocumento' => $documento->id]);
-
-        if($dataBoleto->idTipoDocumento == 6){
-            $this->enviaDC($documento);
-        }else{
-            $this->enviaCPE($documento);
-        }
         
         if($documento->idMedioPago <> 6){
             $this->generarCargo($documento->id);
@@ -343,23 +343,31 @@ class Facturacion extends Component
         $documento = Documento::find($docId);
         if($documento->idMedioPago <> 6){
             $cliente = Cliente::find($documento->idCliente);
+            $boletos = Boleto::where('idDocumento',$documento->id)->get();
+            $numBoletos = $boletos->count();
             $boleto = Boleto::where('idDocumento',$documento->id)->first();
             $cargo = new Cargo();
             $cargo->idDocumento = $documento->id;
             $cargo->idCliente = $documento->idCliente;
-            $cargo->idCobrador = $cliente->idCobrador;
-            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idCobrador = $cliente->cobrador;
+            $cargo->idCounter = $cliente->counter;
             $cargo->idProveedor = $boleto->idProveedor;
+            $cargo->idAerolinea = $boleto->idAerolinea;
             if($boleto->idSolicitante){
                 $cargo->idSolicitante = $boleto->idSolicitante;
             }
-            $cargo->idServicio = $boleto->id;
+            $cargo->idBoleto = $boleto->id;
             $cargo->montoCredito = $cliente->montoCredito;
             $cargo->diasCredito = $cliente->diasCredito;
             $cargo->fechaEmision = $documento->fechaEmision;
             $cargo->fechaVencimiento = $documento->fechaVencimiento;
-            $cargo->numeroBoleto = $boleto->numeroBoleto;
-            $cargo->pasajero = $boleto->pasajero;
+            if($numBoletos > 1){
+                $cargo->numeroBoleto = 'BOLETOS VARIOS';
+                $cargo->pasajero = 'PASAJEROS VARIOS';
+            }else{
+                $cargo->numeroBoleto = $boleto->numeroBoleto;
+                $cargo->pasajero = strtoupper($boleto->pasajero);
+            }
             $cargo->tipoRuta = $boleto->tipoRuta;
             $cargo->ruta = $boleto->ruta;
             $cargo->moneda = $documento->moneda;
@@ -376,7 +384,8 @@ class Facturacion extends Component
             $cargo->saldo = $documento->total;
             $cargo->idEstado = 1;
             $cargo->usuarioCreacion = auth()->user()->id;
-            $cargo->usuarioModificacion = auth()->user()->id;
+
+            $cargo->save();
         }
     }
 

@@ -319,19 +319,20 @@ class Facturacionac extends Component
             $cargo = new Cargo();
             $cargo->idDocumento = $documento->id;
             $cargo->idCliente = $documento->idCliente;
-            $cargo->idCobrador = $cliente->idCobrador;
-            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idCobrador = $cliente->cobrador;
+            $cargo->idCounter = $cliente->counter;
             $cargo->idProveedor = $boleto->idProveedor;
+            $cargo->idAerolinea = $boleto->idAerolinea;
             if($boleto->idSolicitante){
                 $cargo->idSolicitante = $boleto->idSolicitante;
             }
-            $cargo->idServicio = $boleto->id;
+            $cargo->idBoleto = $boleto->id;
             $cargo->montoCredito = $cliente->montoCredito;
             $cargo->diasCredito = $cliente->diasCredito;
             $cargo->fechaEmision = $documento->fechaEmision;
             $cargo->fechaVencimiento = $documento->fechaVencimiento;
             $cargo->numeroBoleto = "BOLETOS ACUMULADOS";
-            $cargo->pasajero = $boleto->pasajero;
+            $cargo->pasajero = 'PASAJEROS VARIOS';
             $cargo->tipoRuta = $boleto->tipoRuta;
             $cargo->ruta = $boleto->ruta;
             $cargo->moneda = $documento->moneda;
@@ -348,7 +349,8 @@ class Facturacionac extends Component
             $cargo->saldo = $documento->total;
             $cargo->idEstado = 1;
             $cargo->usuarioCreacion = auth()->user()->id;
-            $cargo->usuarioModificacion = auth()->user()->id;
+
+            $cargo->save();
         }
     }
 

@@ -325,8 +325,8 @@ class Facturacionservac extends Component
             $cargo = new Cargo();
             $cargo->idDocumento = $documento->id;
             $cargo->idCliente = $documento->idCliente;
-            $cargo->idCobrador = $cliente->idCobrador;
-            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idCobrador = $cliente->cobrador;
+            $cargo->idCounter = $cliente->counter;
             $cargo->idProveedor = $servicio->idProveedor;
             if($servicio->idSolicitante){
                 $cargo->idSolicitante = $servicio->idSolicitante;
@@ -337,7 +337,7 @@ class Facturacionservac extends Component
             $cargo->fechaEmision = $documento->fechaEmision;
             $cargo->fechaVencimiento = $documento->fechaVencimiento;
             $cargo->numeroBoleto = "FEE ACUMULADO";
-            $cargo->pasajero = $servicio->pasajero;
+            $cargo->pasajero = 'PASAJEROS VARIOS';
             $cargo->tipoRuta = $servicio->tipoRuta;
             $cargo->ruta = $servicio->ruta;
             $cargo->moneda = $documento->moneda;
@@ -354,7 +354,8 @@ class Facturacionservac extends Component
             $cargo->saldo = $documento->total;
             $cargo->idEstado = 1;
             $cargo->usuarioCreacion = auth()->user()->id;
-            $cargo->usuarioModificacion = auth()->user()->id;
+
+            $cargo->save();
         }
     }
 

@@ -357,12 +357,14 @@ class Facturacionserv extends Component
         $documento = Documento::find($docId);
         if($documento->idMedioPago <> 6){
             $cliente = Cliente::find($documento->idCliente);
+            $servicios = Servicio::where('idDocumento',$documento->id)->get();
+            $numServicios = $servicios->count();
             $servicio = Servicio::where('idDocumento',$documento->id)->first();
             $cargo = new Cargo();
             $cargo->idDocumento = $documento->id;
             $cargo->idCliente = $documento->idCliente;
-            $cargo->idCobrador = $cliente->idCobrador;
-            $cargo->idCounter = $cliente->idCounter;
+            $cargo->idCobrador = $cliente->cobrador;
+            $cargo->idCounter = $cliente->counter;
             $cargo->idProveedor = $servicio->idProveedor;
             if($servicio->idSolicitante){
                 $cargo->idSolicitante = $servicio->idSolicitante;
@@ -372,8 +374,13 @@ class Facturacionserv extends Component
             $cargo->diasCredito = $cliente->diasCredito;
             $cargo->fechaEmision = $documento->fechaEmision;
             $cargo->fechaVencimiento = $documento->fechaVencimiento;
-            $cargo->numeroBoleto = $servicio->tTipoServicio->descripcion;
-            $cargo->pasajero = $servicio->pasajero;
+            if($numServicios > 1){
+                $cargo->numeroBoleto = 'SERVICIOS VARIOS';
+                $cargo->pasajero = 'PASAJEROS VARIOS';
+            }else{
+                $cargo->numeroBoleto = $servicio->tTipoServicio->descripcion;
+                $cargo->pasajero = $servicio->pasajero;
+            }
             $cargo->tipoRuta = $servicio->tipoRuta;
             $cargo->ruta = $servicio->ruta;
             $cargo->moneda = $documento->moneda;
@@ -390,7 +397,8 @@ class Facturacionserv extends Component
             $cargo->saldo = $documento->total;
             $cargo->idEstado = 1;
             $cargo->usuarioCreacion = auth()->user()->id;
-            $cargo->usuarioModificacion = auth()->user()->id;
+
+            $cargo->save();
         }
     }
 
