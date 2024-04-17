@@ -34,7 +34,7 @@ class Facturacion extends Component
             $tipoDocumentoIdentidad,$codigoDocumentoIdentidad,$descDocumentoIdentidad,$numeroTelefono,
             $chkMedioPago,$idMedioPagoCambio,$idMedioPago,$metodo_pago, $codigo_metodopago, $desc_metodopago,
             $centroCosto, $codUsuario,$totalNeto = 0,$totalInafecto = 0,$totalIGV = 0,$totalOtrosImpuestos = 0,
-            $totalTotal = 0, $idCliente, $startDate, $endDate;
+            $totalTotal = 0, $idCliente, $startDate, $endDate, $respSenda;
     protected $boletos=[],$numerosBoleto = [],$paxs = [];
 
     public $selectedRows = [];
@@ -281,6 +281,7 @@ class Facturacion extends Component
             $this->enviaCPE($documento);
         }
         
+        $jsonDoc = json_encode($dataJson, JSON_PRETTY_PRINT);
         $documento->save();
 
         switch ($dataBoleto->idTipoDocumento) {
@@ -293,6 +294,18 @@ class Facturacion extends Component
             case 2:
                 $funciones->grabarCorrelativo('BOLETA',$numComprobante);
                 break;
+        }
+
+        if ($this->respSenda['type'] == 'success') {
+            $doc = Documento::find($documento->id);
+            $doc->respuestaSunat = $this->respSenda['type'];
+            $doc->jsonDoc = $jsonDoc;
+            $doc->save();
+        } else {
+            session()->flash('error', 'Ocurrió un error enviando a Sunat');
+            $doc = Documento::find($documento->id);
+            $doc->jsonDoc = $jsonDoc;
+            $doc->save();
         }
 
         Boleto::whereIn('id',$this->selectedRows)
@@ -536,10 +549,11 @@ class Facturacion extends Component
         ];
         $funciones = new Funciones();
 
-        $file = $funciones->enviarDC($dataToSend);
-        $doc = Documento::find($comprobante->id);
-        $doc->respuestaSunat = $file;
-        $doc->save();
+        $this->respSenda = $funciones->enviarDC($dataToSend);
+        return($dataToSend);
+        // $doc = Documento::find($comprobante->id);
+        // $doc->respuestaSunat = $file;
+        // $doc->save();
         // if ($file['type'] == 'success') {
         //     $doc = Documento::find($comprobante->id);
         //     $doc->respuestaSunat = $file['type'];
