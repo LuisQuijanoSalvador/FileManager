@@ -275,11 +275,11 @@ class Facturacion extends Component
             $this->desc_metodopago = "";
         }
 
-        // if($dataBoleto->idTipoDocumento == 6){
-        //     $this->enviaDC($documento);
-        // }else{
-        //     $this->enviaCPE($documento);
-        // }
+        if($dataBoleto->idTipoDocumento == 6){
+            $this->enviaDC($documento);
+        }else{
+            $this->enviaCPE($documento);
+        }
         
         $documento->save();
 
