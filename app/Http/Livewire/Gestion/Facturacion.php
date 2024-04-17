@@ -263,6 +263,7 @@ class Facturacion extends Component
         $documento->idEstado = 1;
         $documento->usuarioCreacion = auth()->user()->id;
         $documento->usuarioModificacion = auth()->user()->id;
+        $dataJson = "";
 
         $medioPago = MedioPago::find($documento->idMedioPago);
         if($medioPago->id == 10){
@@ -276,9 +277,9 @@ class Facturacion extends Component
         }
 
         if($dataBoleto->idTipoDocumento == 6){
-            $this->enviaDC($documento);
+            $dataJson = $this->enviaDC($documento);
         }else{
-            $this->enviaCPE($documento);
+            $dataJson = $this->enviaCPE($documento);
         }
         
         $jsonDoc = json_encode($dataJson, JSON_PRETTY_PRINT);
