@@ -83,6 +83,12 @@
                         TICKET
                     </th>
                     <th scope="col" class="py-1">
+                        SOLICITANTE
+                    </th>
+                    <th scope="col" class="py-1">
+                        CENTRO COSTO
+                    </th>
+                    <th scope="col" class="py-1">
                         NUM. FILE
                     </th>
                 </tr>
@@ -108,6 +114,8 @@
                             <td class="py-1">{{$venta->IGVFee}}</td>
                             <td class="py-1">{{$venta->TotalFee}}</td>
                             <td class="py-1">{{$venta->Ticket}}</td>
+                            <td class="py-1">{{$venta->Solicitante}}</td>
+                            <td class="py-1">{{$venta->centroCosto}}</td>
                             <td class="py-1">{{$venta->numeroFile}}</td>
                         </tr>
                     @endforeach

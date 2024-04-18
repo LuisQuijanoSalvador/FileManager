@@ -49,7 +49,7 @@
                     <td class="py-1">{{$margen->FILE}}</td>
                     <td class="py-1">{{$margen->Cliente}}</td>
                     <td class="py-1">{{$margen->Counter}}</td>
-                    <td class="py-1">{{$margen->FechaEmision}}</td>
+                    <td class="py-1">{{\Carbon\Carbon::parse($margen->FechaEmision)->format('d-m-Y')}}</td>
                     <td class="py-1">{{$margen->Ruta}}</td>
                     <td class="py-1">{{$margen->XM}}</td>
                 </tr>

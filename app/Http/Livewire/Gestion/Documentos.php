@@ -15,6 +15,7 @@ use App\Exports\DocumentoExport;
 use App\Models\Servicio;
 use App\Models\Boleto;
 use App\Models\MedioPago;
+use App\Models\Cargo;
 
 class Documentos extends Component
 {
@@ -199,6 +200,10 @@ class Documentos extends Component
                 $boleto->save();
             }
 
+            $cargo = Cargo::where('idDocumento',$docu->id)->first();
+            $cargo->idEstado = 2;
+            $cargo->save();
+
             session()->flash('success', 'El documento se ha anulado correctamente');
         }else{
             $dataToSend = [
@@ -227,6 +232,10 @@ class Documentos extends Component
                     $servicio->idDocumento = NULL;
                     $servicio->save();
                 }
+
+                $cargo = Cargo::where('idDocumento',$doc->id)->first();
+                $cargo->idEstado = 2;
+                $cargo->save();
                 
                 session()->flash('success', 'El documento se ha anulado correctamente');
     
