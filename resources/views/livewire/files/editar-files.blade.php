@@ -29,8 +29,9 @@
             <button type="button" class="btn btn-success" >Agregar Servicio</button>
         </div>
     </div>
-
     <hr>
+
+    
     {{-- Modal para Insertar y Actualizar --}}
     <div class="modal fade" id="FormularioModalBoleto" wire:ignore.self tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen" id="modalxl1">
@@ -133,7 +134,7 @@
                                     <label for="cboSolicitante" class="form-label">Solicitante:</label>
                                     <select name="selectedSolicitante" style="width: 100%; display:block;font-size: 0.8em;" class="" id="cboSolicitante" wire:model="selectedSolicitante">
                                         <option value="0">--</option>
-                                        @foreach ($solicitantes as $solicitante)
+                                        @foreach ($this->solicitantes as $solicitante)
                                             <option value={{$solicitante->id}}>{{$solicitante->nombres}}</option>
                                         @endforeach
                                     </select>

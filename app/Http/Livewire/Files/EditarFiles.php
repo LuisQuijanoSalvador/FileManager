@@ -24,13 +24,14 @@ class EditarFiles extends Component
 
     public $idRegistro,$numeroBoleto,$idCounter, $idArea=1,$idVendedor,$idConsolidador=2,
             $idTipoTicket=1,$idAerolinea=7,$pasajero,$idMoneda=1,$tarifaNeta=0,$xm=0,$total=0,$totalOrigen=0,
-            $porcentajeComision,$montoComision=0,
+            $porcentajeComision,$montoComision=0,$idSolicitante,
             $centroCosto,$cod1,$cod2,$cod3,$cod4,$usuarioModificacion,$fechaModificacion;
     public $numeroFile, $descripcion, $cliente, $area;
     public $solicitantes;
 
     public function mount(){
-        $file = File::find(request()->route('id'));
+        $this->idRegistro = request()->route('id');
+        $file = File::find($this->idRegistro);
         $this->numeroFile = $file->numeroFile;
         $this->descripcion = $file->descripcion;
         $this->cliente = $file->tCliente->razonSocial;
@@ -80,7 +81,20 @@ class EditarFiles extends Component
         $this->totalOrigen = $boleto->totalOrigen;
         $this->xm = $boleto->xm;
         $this->montoComision = $boleto->montoComision;
-        // $this->solicitantes = Solicitante::where('cliente', $cliente_id)->get();
+        $this->solicitantes = Solicitante::where('cliente', $boleto->idCliente)->get();
+        $this->idSolicitante = $boleto->idSolicitante;
+
+    }
+
+    public function guardarBoleto(){
+        $fileDetalle = new FileDetalle();
+        $fileDetalle->idFile = $this->idRegistro;
+        $fileDetalle->numeroFile = $this->numeroFile;
+        $fileDetalle->idBoleto = $boleto->id;
+        $fileDetalle->idEstado = 1;
+        $fileDetalle->usuarioCreacion = auth()->user()->id;
+        $fileDetalle->save();
+        
     }
 
     public function actualizar(){
